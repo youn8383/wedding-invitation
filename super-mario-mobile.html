@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🍄 DD 의 결혼식 | Super Wedding Bros Mobile</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;-webkit-user-select:none}
+body{font-family:'Press Start 2P',cursive;background:#5c94fc;overflow:hidden;width:100vw;height:100vh}
+#game{display:block;margin:0 auto;background:linear-gradient(#5c94fc 0%,#5c94fc 60%,#e89c30 60%,#e89c30 100%);max-width:100%}
+.ui{position:absolute;top:10px;left:10px;color:#fff;text-shadow:2px 2px #000;font-size:10px;z-index:10}
+#startScreen{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#fff;text-shadow:3px 3px #000;z-index:20}
+#startScreen h1{font-size:18px;margin-bottom:15px;color:#ff6b6b}#startScreen p{font-size:10px;margin:8px 0;animation:blink .5s infinite}@keyframes blink{0%,50%,100%{opacity:1}25%,75%{opacity:0}}
+.controls{position:absolute;bottom:20px;width:100%;display:flex;justify-content:space-between;padding:0 20px;z-index:10}.btn-group{display:flex;gap:10px}.ctrl-btn{width:60px;height:60px;background:rgba(255,255,255,.3);border:3px solid #fff;border-radius:50%;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}.ctrl-btn:active{background:rgba(255,255,255,.6)}.ctrl-btn.jump{width:70px;height:70px}@media(max-width:600px){#game{width:100%;height:auto}.ctrl-btn{width:50px;height:50px;font-size:20px}.ctrl-btn.jump{width:60px;height:60px}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div class="ui"><div>💒 WEDDING QUEST</div><div style="margin-top:5px">📅 2026.11.23</div></div>
+<div id="startScreen"><h1>🍄 SUPER WEDDING BROS 🍄</h1><p>TAP SCREEN TO START</p><p style="font-size:8px;margin-top:15px">Reach the wedding hall!</p></div>
+<div class="controls"><div class="btn-group"><div class="ctrl-btn" id="btnLeft">⬅️</div><div class="ctrl-btn" id="btnRight">➡️</div></div><div class="btn-group"><div class="ctrl-btn jump" id="btnJump">⬆️</div></div></div>
+<script>
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),startScreen=document.getElementById('startScreen');
+function resize(){canvas.width=Math.min(innerWidth,800);canvas.height=Math.min(innerHeight-150,400)}resize();addEventListener('resize',resize);
+let running=false,player,platforms=[],coins=[],goal,keys={};
+function level(){platforms=[{x:0,y:canvas.height-50,width:canvas.width,height:50},{x:canvas.width*.25,y:canvas.height-120,width:100,height:20},{x:canvas.width*.45,y:canvas.height-180,width:100,height:20},{x:canvas.width*.65,y:canvas.height-120,width:100,height:20},{x:canvas.width*.8,y:canvas.height-200,width:80,height:20}];coins=[.28,.48,.68,.83].map((x,i)=>({x:canvas.width*x,y:canvas.height-(i==1||i==3?210:150),collected:false}));goal={x:canvas.width-80,y:canvas.height-240,width:40,height:40}}
+function start(){if(running)return;running=true;startScreen.style.display='none';player={x:50,y:canvas.height-100,width:30,height:40,vx:0,vy:0,grounded:false};level();loop()}
+canvas.addEventListener('click',start);canvas.addEventListener('touchstart',e=>{e.preventDefault();start()});
+[['btnLeft','ArrowLeft'],['btnRight','ArrowRight'],['btnJump','ArrowUp']].forEach(([id,key])=>{let b=document.getElementById(id);b.addEventListener('touchstart',e=>{e.preventDefault();keys[key]=true});b.addEventListener('touchend',e=>{e.preventDefault();keys[key]=false});b.addEventListener('mousedown',()=>keys[key]=true);b.addEventListener('mouseup',()=>keys[key]=false)});
+document.addEventListener('keydown',e=>keys[e.code]=true);document.addEventListener('keyup',e=>keys[e.code]=false);
+function update(){player.vx=(keys.ArrowRight||keys.KeyD)?3:(keys.ArrowLeft||keys.KeyA)?-3:0;if((keys.ArrowUp||keys.KeyW||keys.Space)&&player.grounded){player.vy=-10;player.grounded=false}player.vy+=.5;player.x+=player.vx;player.y+=player.vy;player.grounded=false;platforms.forEach(p=>{if(player.x<p.x+p.width&&player.x+player.width>p.x&&player.y+player.height>p.y&&player.y+player.height<p.y+p.height+10&&player.vy>=0){player.grounded=true;player.vy=0;player.y=p.y-player.height}});if(player.y>canvas.height){player.x=50;player.y=canvas.height-100;player.vy=0}player.x=Math.max(0,Math.min(canvas.width-player.width,player.x));coins.forEach(c=>{if(!c.collected&&Math.abs(player.x-c.x)<30&&Math.abs(player.y-c.y)<30)c.collected=true});if(Math.abs(player.x-goal.x)<30&&Math.abs(player.y-goal.y)<30){setTimeout(()=>alert('🎉 WEDDING COMPLETE! 🎉\n\nDate: 2026.11.23\nTime: 14:00 KST\nPlace: Grand Ballroom 3F'),100);running=false;startScreen.style.display='block'}}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);platforms.forEach(p=>{ctx.fillStyle='#c84c0c';ctx.fillRect(p.x,p.y,p.width,p.height);ctx.fillStyle='#f8b800';ctx.fillRect(p.x,p.y,p.width,5)});coins.forEach(c=>{if(!c.collected){ctx.fillStyle='#ffd700';ctx.beginPath();ctx.arc(c.x,c.y,10,0,Math.PI*2);ctx.fill()}});ctx.fillStyle='#ff6b6b';ctx.fillRect(goal.x,goal.y,goal.width,goal.height);ctx.fillStyle='#fff';ctx.font='10px Press Start 2P';ctx.fillText('💒',goal.x+5,goal.y+25);ctx.fillStyle='#ff6b6b';ctx.fillRect(player.x,player.y,player.width,player.height);ctx.font='20px Press Start 2P';ctx.fillText('🤵',player.x,player.y+30)}
+function loop(){if(!running)return;update();draw();requestAnimationFrame(loop)}level();player={x:50,y:canvas.height-100,width:30,height:40};draw();
+</script>
+</body>
+</html>
