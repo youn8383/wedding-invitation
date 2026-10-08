@@ -93,12 +93,8 @@
         .cal .sun { color: #ff6b6b; }
 
 
-        .map-box { border: 1px solid var(--green); border-radius: 6px; overflow: hidden; margin-top: 8px; }
         .nav-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
         .nav-row .btn { font-size: 12px; padding: 8px 4px; gap: 4px; }
-        .map { width: 100%; height: 280px; background: #111; }
-        .map-fallback { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--dim); font-size: 12px; text-align: center; padding: 16px; }
-        .map-fallback b { color: var(--green); font-size: 14px; }
 
         .gb-form { display: grid; gap: 8px; margin-top: 10px; }
         .gb-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -257,9 +253,6 @@
   <span class="p">"parking"</span>: <span class="s">"웨딩홀 주차장 이용 가능"</span>
 }</pre>
                 <div class="prompt" style="margin-top:16px"><b>$</b> open --map</div>
-                <div class="map-box">
-                    <div class="map" id="map-naver"></div>
-                </div>
                 <div class="nav-row">
                     <a class="btn full" href="https://map.naver.com/p/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟢 네이버지도</a>
                     <a class="btn full" href="https://map.kakao.com/link/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟡 카카오맵</a>
@@ -338,16 +331,6 @@ Date:   Sun Dec 20 13:00:00 2026 +0900
         location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
     };
 
-    // ===== MAP CONFIG =====
-    // 네이버 지도를 페이지 안에 띄우려면 Client ID 가 필요합니다. (없으면 '네이버지도' 버튼 안내가 표시됩니다)
-    //  - https://console.ncloud.com > Maps > Application 등록 (Dynamic Map + Geocoding 선택) > Client ID 복사
-    //  - Web 서비스 URL 에 배포 도메인 등록 (예: https://xxx.vercel.app)
-    const MAP = {
-        naverClientId: '',   // TODO: 네이버 클라우드 Maps Client ID
-        name: '더화이트베일',
-        address: '서울 서초구 서초중앙로 14',
-        lat: null, lng: null, // 좌표를 알면 입력 (비워두면 주소로 자동 검색)
-    };
 
     // ===== Toast / Clipboard =====
     const toastEl = document.getElementById('toast');
@@ -464,37 +447,6 @@ Date:   Sun Dec 20 13:00:00 2026 +0900
             document.body.appendChild(a); a.click(); a.remove();
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         });
-    })();
-
-
-    // ===== Naver Map =====
-    (function naverMap() {
-        const el = document.getElementById('map-naver');
-        const fallback = (reason) => {
-            el.innerHTML = `<div class="map-fallback"><b>📍 ${MAP.name}</b>${MAP.address}<br><br>
-                <span>${reason}</span><span>아래 '네이버지도' 버튼으로 열어주세요.</span></div>`;
-        };
-        if (!MAP.naverClientId) return fallback('# naverClientId 미설정');
-        window.__onNaverMapLoad = () => {
-            const draw = (lat, lng) => {
-                const pos = new naver.maps.LatLng(lat, lng);
-                const map = new naver.maps.Map(el, { center: pos, zoom: 16, scrollWheel: false });
-                const marker = new naver.maps.Marker({ map, position: pos, title: MAP.name });
-                new naver.maps.InfoWindow({
-                    content: `<div style="padding:6px 10px;font-size:12px;font-family:monospace">💒 ${MAP.name} 3층 V홀</div>`,
-                }).open(map, marker);
-            };
-            if (MAP.lat && MAP.lng) return draw(MAP.lat, MAP.lng);
-            naver.maps.Service.geocode({ query: MAP.address }, (status, res) => {
-                const a = status === naver.maps.Service.Status.OK && res.v2.addresses[0];
-                if (a) draw(a.y, a.x); else fallback('# 주소 검색 실패');
-            });
-        };
-        const sc = document.createElement('script');
-        sc.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${MAP.naverClientId}&submodules=geocoder&callback=__onNaverMapLoad`;
-        sc.async = true;
-        sc.onerror = () => fallback('# 지도 로딩 실패');
-        document.head.appendChild(sc);
     })();
 
     // ===== TMAP: 앱이 없으면 스토어로 이동 =====
