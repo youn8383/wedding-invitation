@@ -1,0 +1,7 @@
+.vercel
+.env*
+
+# Vercel CLI가 설치한 에이전트 스킬 (로컬 전용)
+.agents
+.claude/skills
+skills-lock.json

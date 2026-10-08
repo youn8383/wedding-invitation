@@ -68,6 +68,9 @@
         .message { color: #d6d6d6; text-align: center; font-size: 14.5px; line-height: 2; margin: 16px 0 4px; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .parents { text-align: center; color: #d6d6d6; font-size: 15px; line-height: 2; margin: 14px 0 4px; }
+        .parents span { color: var(--dim); font-size: 13px; }
+        .parents b { color: #fff; }
         .person { border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center; }
         .person .role { font-size: 12px; color: var(--dim); }
         .person .name { color: #fff; font-size: 17px; font-weight: 700; margin: 2px 0; }
@@ -100,6 +103,30 @@
         .map-fallback { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--dim); font-size: 12px; text-align: center; padding: 16px; }
         .map-fallback b { color: var(--green); font-size: 14px; }
 
+        .gb-form { display: grid; gap: 8px; margin-top: 10px; }
+        .gb-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .gb-input {
+            font-family: inherit; font-size: 16px; color: #e6e6e6; background: #0a0a0a; width: 100%;
+            border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; outline: none;
+        }
+        .gb-input:focus { border-color: var(--green); }
+        .gb-input::placeholder { color: #555; }
+        textarea.gb-input { resize: vertical; min-height: 84px; line-height: 1.6; }
+        .gb-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--dim); font-size: 12px; }
+        .gb-list { margin-top: 16px; display: grid; gap: 10px; }
+        .gb-item { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: #0a0a0a; font-size: 13px; }
+        .gb-item .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .gb-item .hash { color: var(--yellow); }
+        .gb-item .author { color: var(--cyan); }
+        .gb-item .date { color: var(--dim); font-size: 11px; }
+        .gb-item .msg { color: #e6e6e6; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .gb-item .del { font-family: inherit; background: none; border: 0; color: var(--dim); font-size: 11px; cursor: pointer; padding: 4px; }
+        .gb-item .del:hover { color: #ff6b6b; }
+        .gb-item .del-form { display: flex; gap: 6px; margin-top: 8px; }
+        .gb-item .del-form .gb-input { font-size: 16px; padding: 6px 8px; }
+        .gb-empty { color: var(--dim); font-size: 13px; text-align: center; padding: 10px 0; }
+        .gb-more { margin-top: 10px; }
+
         .toast {
             position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
             background: var(--green); color: var(--bg); padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 700;
@@ -114,6 +141,7 @@
             .terminal-content { padding: 14px; }
             pre, .code-block { font-size: 12px; padding: 10px; }
             .names .ko { font-size: 21px; }
+            .parents { font-size: 13.5px; }
         }
         @media (prefers-reduced-motion: reduce) {
             #matrix-bg { display: none; }
@@ -160,9 +188,15 @@
 <pre><span class="k">groom</span>:
   <span class="p">name</span>: <span class="s">"윤상현"</span>
   <span class="p">en</span>: <span class="s">"Youn Sanghyoun"</span>
+  <span class="p">parents</span>: [<span class="s">"윤태락"</span>, <span class="s">"신정순"</span>]  <span class="c"># 의 아들</span>
 <span class="k">bride</span>:
   <span class="p">name</span>: <span class="s">"신아람"</span>
-  <span class="p">en</span>: <span class="s">"Shin Ahram"</span></pre>
+  <span class="p">en</span>: <span class="s">"Shin Ahram"</span>
+  <span class="p">parents</span>: [<span class="s">"신동직"</span>, <span class="s">"이선옥"</span>]  <span class="c"># 의 딸</span></pre>
+                <p class="parents">
+                    윤태락 · 신정순 <span>의 아들</span> <b>윤상현</b><br>
+                    신동직 · 이선옥 <span>의 딸</span> <b>신아람</b>
+                </p>
                 <div class="grid-2">
                     <div class="person">
                         <div class="role">🤵 groom</div>
@@ -246,7 +280,36 @@
         </section>
 
 
-        <!-- 05. SHARE -->
+        <!-- 05. GUESTBOOK -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/guestbook</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> git commit -m "축하 메시지"</div>
+                <form class="gb-form" id="gb-form" autocomplete="off">
+                    <div class="row">
+                        <input class="gb-input" name="name" placeholder="이름" maxlength="20" required aria-label="이름">
+                        <input class="gb-input" name="password" type="password" placeholder="비밀번호" maxlength="32" required aria-label="삭제용 비밀번호">
+                    </div>
+                    <textarea class="gb-input" name="message" placeholder="두 사람에게 축하 메시지를 남겨주세요 ♥" maxlength="500" required aria-label="축하 메시지"></textarea>
+                    <div class="gb-meta">
+                        <span id="gb-count">0 / 500</span>
+                        <span>비밀번호는 삭제할 때 필요해요</span>
+                    </div>
+                    <button class="btn full" type="submit" id="gb-submit">💌 축하 메시지 commit</button>
+                </form>
+
+                <div class="prompt" style="margin-top:18px"><b>$</b> git log --oneline guestbook</div>
+                <div class="gb-list" id="gb-list"><div class="gb-empty">loading...</div></div>
+                <div class="btn-row gb-more" id="gb-more" hidden>
+                    <button class="btn full" type="button">더 보기</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06. SHARE -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
@@ -464,6 +527,123 @@ Date:   Sun Dec 20 13:00:00 2026 +0900
             toast('✓ 링크가 복사되었습니다');
         }
     });
+
+    // ===== Guestbook (api/guestbook.js) =====
+    (function guestbook() {
+        const API = '/api/guestbook';
+        const PAGE = 10;
+        const form = document.getElementById('gb-form');
+        const listEl = document.getElementById('gb-list');
+        const moreEl = document.getElementById('gb-more');
+        const countEl = document.getElementById('gb-count');
+        const submitBtn = document.getElementById('gb-submit');
+        let entries = [], shown = PAGE;
+
+        async function api(method, body) {
+            const res = await fetch(API, {
+                method,
+                headers: body ? { 'Content-Type': 'application/json' } : undefined,
+                body: body ? JSON.stringify(body) : undefined,
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw Object.assign(new Error(data.error || '요청에 실패했습니다.'), { status: res.status });
+            return data;
+        }
+
+        const el = (tag, cls, text) => {
+            const node = document.createElement(tag);
+            if (cls) node.className = cls;
+            if (text != null) node.textContent = text;
+            return node;
+        };
+        const fmtDate = (ts) => new Date(ts).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+        });
+
+        function renderItem(entry) {
+            const item = el('div', 'gb-item');
+            const head = el('div', 'head');
+            const who = el('span');
+            who.append(el('span', 'hash', entry.id.slice(0, 7)), ' ', el('span', 'author', entry.name));
+            const right = el('span');
+            const del = el('button', 'del', '✕ revert');
+            del.type = 'button';
+            del.setAttribute('aria-label', `${entry.name} 님의 메시지 삭제`);
+            right.append(el('span', 'date', fmtDate(entry.createdAt)), del);
+            head.append(who, right);
+            item.append(head, el('div', 'msg', entry.message));
+
+            del.addEventListener('click', () => {
+                if (item.querySelector('.del-form')) return;
+                const f = el('form', 'del-form');
+                const pw = el('input', 'gb-input');
+                Object.assign(pw, { type: 'password', placeholder: '비밀번호', maxLength: 32, required: true });
+                pw.setAttribute('aria-label', '삭제용 비밀번호');
+                const ok = el('button', 'btn sm', '삭제');
+                const cancel = el('button', 'btn sm', '취소');
+                cancel.type = 'button';
+                cancel.addEventListener('click', () => f.remove());
+                f.append(pw, ok, cancel);
+                f.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    ok.disabled = true;
+                    try {
+                        await api('DELETE', { id: entry.id, password: pw.value });
+                        entries = entries.filter((x) => x.id !== entry.id);
+                        render();
+                        toast('✓ 메시지가 삭제되었습니다');
+                    } catch (err) {
+                        toast(err.message);
+                        ok.disabled = false;
+                    }
+                });
+                item.append(f);
+                pw.focus();
+            });
+            return item;
+        }
+
+        function render() {
+            listEl.replaceChildren();
+            if (!entries.length) listEl.append(el('div', 'gb-empty', '# 첫 번째 축하 메시지를 남겨주세요 ♥'));
+            entries.slice(0, shown).forEach((e) => listEl.append(renderItem(e)));
+            moreEl.hidden = entries.length <= shown;
+        }
+
+        async function load() {
+            try {
+                entries = (await api('GET')).entries;
+                render();
+            } catch (err) {
+                listEl.replaceChildren(el('div', 'gb-empty', err.status === 503
+                    ? '# guestbook storage 미설정'
+                    : '# 메시지를 불러오지 못했어요'));
+            }
+        }
+
+        form.elements.message.addEventListener('input', () => { countEl.textContent = `${form.elements.message.value.length} / 500`; });
+        moreEl.querySelector('button').addEventListener('click', () => { shown += PAGE; render(); });
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = { name: form.elements.name.value.trim(), message: form.elements.message.value.trim(), password: form.elements.password.value };
+            if (!body.name || !body.message || !body.password) return toast('이름, 메시지, 비밀번호를 입력해주세요');
+            submitBtn.disabled = true;
+            try {
+                const { entry } = await api('POST', body);
+                entries.unshift(entry);
+                render();
+                form.elements.message.value = '';
+                countEl.textContent = '0 / 500';
+                toast('✓ 축하 메시지가 commit 되었습니다 💌');
+            } catch (err) {
+                toast(err.message);
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        load();
+    })();
 
     // ===== Matrix rain =====
     (function matrix() {
