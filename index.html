@@ -5,221 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💒 DD 의 결혼식 | wedding.deploy()</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Fira Code', 'JetBrains Mono', 'Courier New', monospace;
-            background: #0d0d0d;
-            color: #00ff00;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        /* Matrix Rain Background */
-        #matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.15;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Terminal Window Style */
-        .terminal-window {
-            background: rgba(13, 13, 13, 0.95);
-            border: 1px solid #333;
-            border-radius: 8px;
-            margin: 20px 0;
-            box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1);
-        }
-        
-        .terminal-header {
-            background: #1a1a1a;
-            padding: 10px 15px;
-            border-bottom: 1px solid #333;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .terminal-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Fira Code', 'JetBrains Mono', 'Courier New', monospace; background: #0d0d0d; color: #00ff00; line-height: 1.6; overflow-x: hidden; }
+        #matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        .terminal-window { background: rgba(13, 13, 13, 0.95); border: 1px solid #333; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1); }
+        .terminal-header { background: #1a1a1a; padding: 10px 15px; border-bottom: 1px solid #333; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 8px; }
+        .terminal-btn { width: 12px; height: 12px; border-radius: 50%; }
         .btn-red { background: #ff5f56; }
         .btn-yellow { background: #ffbd2e; }
         .btn-green { background: #27c93f; }
-        
-        .terminal-title {
-            margin-left: 10px;
-            font-size: 14px;
-            color: #888;
-        }
-        
-        .terminal-content {
-            padding: 20px;
-        }
-        
-        /* Code Blocks */
-        .code-block {
-            background: #0d0d0d;
-            border: 1px solid #333;
-            border-radius: 4px;
-            padding: 15px;
-            margin: 15px 0;
-            overflow-x: auto;
-            font-size: 14px;
-        }
-        
-        .code-block bash::before {
-            content: "$ ";
-            color: #00ff00;
-        }
-        
-        /* Headers */
-        h1 {
-            font-size: 24px;
-            margin: 20px 0;
-            color: #00ff00;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        }
-        
-        h2 {
-            font-size: 18px;
-            margin: 25px 0 15px;
-            color: #00ff00;
-            border-left: 3px solid #00ff00;
-            padding-left: 10px;
-        }
-        
-        /* Animations */
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 18px;
-            background: #00ff00;
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-        
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        .typing {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typewriter 2s steps(40);
-        }
-        
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            background: #00ff00;
-            color: #0d0d0d;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
-        
-        th, td {
-            border: 1px solid #333;
-            padding: 10px;
-            text-align: left;
-        }
-        
-        th {
-            background: #1a1a1a;
-            color: #00ff00;
-        }
-        
-        /* Links */
-        a {
-            color: #00ff00;
-            text-decoration: none;
-            border-bottom: 1px dashed #00ff00;
-        }
-        
-        a:hover {
-            background: rgba(0, 255, 0, 0.1);
-        }
-        
-        /* Quote */
-        blockquote {
-            border-left: 3px solid #00ff00;
-            padding-left: 15px;
-            margin: 20px 0;
-            color: #888;
-            font-style: italic;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            h2 {
-                font-size: 16px;
-            }
-            
-            .code-block {
-                font-size: 12px;
-                padding: 10px;
-            }
-        }
+        .terminal-title { margin-left: 10px; font-size: 14px; color: #888; }
+        .terminal-content { padding: 20px; }
+        .code-block { background: #0d0d0d; border: 1px solid #333; border-radius: 4px; padding: 15px; margin: 15px 0; overflow-x: auto; font-size: 14px; }
+        .code-block bash::before { content: "$ "; color: #00ff00; }
+        h1 { font-size: 24px; margin: 20px 0; color: #00ff00; text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+        h2 { font-size: 18px; margin: 25px 0 15px; color: #00ff00; border-left: 3px solid #00ff00; padding-left: 10px; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        .cursor { display: inline-block; width: 10px; height: 18px; background: #00ff00; animation: blink 1s infinite; vertical-align: middle; }
+        .status-badge { display: inline-block; background: #00ff00; color: #0d0d0d; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #1a1a1a; color: #00ff00; }
+        a { color: #00ff00; text-decoration: none; border-bottom: 1px dashed #00ff00; }
+        a:hover { background: rgba(0, 255, 0, 0.1); }
+        blockquote { border-left: 3px solid #00ff00; padding-left: 15px; margin: 20px 0; color: #888; font-style: italic; }
+        .footer { text-align: center; margin-top: 40px; padding: 20px; color: #666; font-size: 12px; }
+        @media (max-width: 600px) { .container { padding: 10px; } h1 { font-size: 20px; } h2 { font-size: 16px; } .code-block { font-size: 12px; padding: 10px; } }
     </style>
 </head>
 <body>
     <canvas id="matrix-bg"></canvas>
-    
     <div class="container">
-        <!-- Main Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div>
@@ -229,156 +46,50 @@
             </div>
             <div class="terminal-content">
                 <h1>💒 `wedding.deploy()`</h1>
-                
-                <div class="code-block bash">
-$ ./wedding --couple "DD & Partner" --date 2026.11.23<br>
-> Build success ✓<br>
-> Deploying to production...<span class="cursor"></span>
-                </div>
-                
+                <div class="code-block bash">$ ./wedding --couple "DD & Partner" --date 2026.11.23<br>> Build success ✓<br>> Deploying to production...<span class="cursor"></span></div>
                 <div class="status-badge">STATUS: PRODUCTION_READY</div>
-                
                 <h2>📋 `cat invitation.txt`</h2>
-                <div class="code-block">
-<span style="color: #ff79c6">couple:</span><br>
-  <span style="color: #8be9fd">groom</span>: "신랑 이름"<br>
-  <span style="color: #8be9fd">bride</span>: "신부 이름"<br>
-<br>
-<span style="color: #8be9fd">date</span>: "2026.11.23 (토) 오후 2 시"<br>
-<span style="color: #8be9fd">location</span>: "서울시 강남구 결혼식장"<br>
-<span style="color: #8be9fd">hall</span>: "그랜드 볼룸 3 층"<br>
-<br>
-<span style="color: #8be9fd">status</span>: "PRODUCTION_READY"
-                </div>
-                
+                <div class="code-block"><span style="color: #ff79c6">couple:</span><br>  <span style="color: #8be9fd">groom</span>: "신랑 이름"<br>  <span style="color: #8be9fd">bride</span>: "신부 이름"<br><br><span style="color: #8be9fd">date</span>: "2026.11.23 (토) 오후 2 시"<br><span style="color: #8be9fd">location</span>: "서울시 강남구 결혼식장"<br><span style="color: #8be9fd">hall</span>: "그랜드 볼룸 3 층"<br><br><span style="color: #8be9fd">status</span>: "PRODUCTION_READY"</div>
                 <h2>🗺️ `npm install location`</h2>
-                <div class="code-block">
-<span style="color: #ff79c6">const</span> <span style="color: #8be9fd">venue</span> = {<br>
-  <span style="color: #8be9fd">name</span>: <span style="color: #f1fa8c">"결혼식장 이름"</span>,<br>
-  <span style="color: #8be9fd">address</span>: <span style="color: #f1fa8c">"서울시 강남구 테헤란로 123"</span>,<br>
-  <span style="color: #8be9fd">floor</span>: <span style="color: #f1fa8c">"3F 그랜드 볼룸"</span>,<br>
-  <span style="color: #8be9fd">naverMap</span>: <span style="color: #f1fa8c">"https://map.naver.com/..."</span><br>
-};
-                </div>
-                
+                <div class="code-block"><span style="color: #ff79c6">const</span> <span style="color: #8be9fd">venue</span> = {<br>  <span style="color: #8be9fd">name</span>: <span style="color: #f1fa8c">"결혼식장 이름"</span>,<br>  <span style="color: #8be9fd">address</span>: <span style="color: #f1fa8c">"서울시 강남구 테헤란로 123"</span>,<br>  <span style="color: #8be9fd">floor</span>: <span style="color: #f1fa8c">"3F 그랜드 볼룸"</span>,<br>  <span style="color: #8be9fd">naverMap</span>: <span style="color: #f1fa8c">"https://map.naver.com/..."</span><br>};</div>
                 <h2>💳 `account.copy()`</h2>
-                <div class="code-block bash">
-$ cat account.txt<br>
-<br>
-# 신랑 측<br>
-은행: 토스뱅크<br>
-계좌: 1000-123-456789<br>
-예금주: 홍길동<br>
-<br>
-# 신부 측<br>
-은행: 카카오페이<br>
-계좌: 1000-987-654321<br>
-예금주: 김철수
-                </div>
-                
+                <div class="code-block bash">$ cat account.txt<br><br># 신랑 측<br>은행: 토스뱅크<br>계좌: 1000-123-456789<br>예금주: 홍길동<br><br># 신부 측<br>은행: 카카오페이<br>계좌: 1000-987-654321<br>예금주: 김철수</div>
                 <h2>📸 `ls -la ./gallery`</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>파일</th>
-                            <th>크기</th>
-                            <th>설명</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>couple_01.jpg</td>
-                            <td>2.4M</td>
-                            <td>커플 사진 1</td>
-                        </tr>
-                        <tr>
-                            <td>couple_02.jpg</td>
-                            <td>3.1M</td>
-                            <td>커플 사진 2</td>
-                        </tr>
-                        <tr>
-                            <td>proposal.jpg</td>
-                            <td>1.8M</td>
-                            <td>프러포즈</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
+                <table><thead><tr><th>파일</th><th>크기</th><th>설명</th></tr></thead><tbody><tr><td>couple_01.jpg</td><td>2.4M</td><td>커플 사진 1</td></tr><tr><td>couple_02.jpg</td><td>3.1M</td><td>커플 사진 2</td></tr><tr><td>proposal.jpg</td><td>1.8M</td><td>프러포즈</td></tr></tbody></table>
                 <h2>💌 `echo "축하 메시지" >> guestbook.txt`</h2>
-                <div class="code-block bash">
-$ <a href="#">./submit_guestbook.sh</a><br>
-> Enter your message: [Type here...]<br>
-> Message saved ✓
-                </div>
-                
+                <div class="code-block bash">$ <a href="#">./submit_guestbook.sh</a><br>> Enter your message: [Type here...]<br>> Message saved ✓</div>
                 <h2>🚀 `git push origin wedding`</h2>
-                <div class="code-block bash">
-$ git log --oneline<br>
-commit abc123 (HEAD -> main)<br>
-Author: DD & Partner <wedding@example.com><br>
-Date: 2026.11.23<br>
-<br>
-    We're getting married! 💒
-                </div>
-                
-                <blockquote>
-                    💡 <strong>공유하기</strong>: 이 페이지를 하객분들과 공유하세요!<br>
-                    <br>
-                    <em>"It's not a bug, it's a feature — for life."</em>
-                </blockquote>
+                <div class="code-block bash">$ git log --oneline<br>commit abc123 (HEAD -> main)<br>Author: DD & Partner <wedding@example.com><br>Date: 2026.11.23<br><br>    We're getting married! 💒</div>
+                <blockquote>💡 <strong>공유하기</strong>: 이 페이지를 하객분들과 공유하세요!<br><br><em>"It's not a bug, it's a feature — for life."</em></blockquote>
             </div>
         </div>
-        
-        <div class="footer">
-            Made with ❤️ by DD | Powered by Matrix Rain<br>
-            © 2026 DD's Wedding. All rights reserved.
-        </div>
+        <div class="footer">Made with ❤️ by DD | Powered by Matrix Rain<br>© 2026 DD's Wedding. All rights reserved.</div>
     </div>
-    
     <script>
-        // Matrix Rain Effect (English characters only)
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
-        
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        
-        // English alphabet + numbers + symbols
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
         const charArray = chars.split('');
-        const fontSize = 14;
+        const fontSize = 18;
         const columns = canvas.width / fontSize;
         const drops = [];
-        
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
-        
+        for (let i = 0; i < columns; i++) { drops[i] = 1; }
         function draw() {
             ctx.fillStyle = 'rgba(13, 13, 13, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
             ctx.fillStyle = '#00ff00';
             ctx.font = fontSize + 'px monospace';
-            
             for (let i = 0; i < drops.length; i++) {
                 const text = charArray[Math.floor(Math.random() * charArray.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; }
                 drops[i]++;
             }
         }
-        
         setInterval(draw, 33);
-        
-        // Resize handler
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
 </html>
