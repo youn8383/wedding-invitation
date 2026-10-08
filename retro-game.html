@@ -94,10 +94,10 @@
             <div class="section">
                 <div class="section-title">🎮 PLAYER SELECT</div>
                 <p class="intro ko">
-                    서로 다른 branch 에서 자라온 두 사람이<br>
-                    이제 하나의 main 으로 merge 하려 합니다.<br>
-                    오랜 test 끝에 내린 commit 이니<br>
-                    오셔서 따뜻한 축복으로 approve 해주세요.
+                    서로 다른 map 에서 level up 해온 두 player 가<br>
+                    이제 하나의 party 로 co-op 을 시작합니다.<br>
+                    수많은 stage 끝에 찾아낸 true ending 이니<br>
+                    오셔서 따뜻한 축복으로 buff 를 걸어주세요.
                 </p>
                 <div class="character-select">
                     <div class="character">
@@ -231,7 +231,7 @@
             const btn = e.target.closest('[data-copy]');
             if (!btn) return;
             await copyText(btn.dataset.copy);
-            toast(`✓ ${btn.dataset.label || ''} 복사되었습니다`);
+            toast(`🎁 ITEM GET! ${btn.dataset.label || ''} 복사 완료`);
         });
 
         // ===== D-day countdown =====
@@ -360,7 +360,7 @@
                             await api('DELETE', { id: entry.id, password: pw.value });
                             entries = entries.filter((x) => x.id !== entry.id);
                             render();
-                            toast('✓ 메시지가 삭제되었습니다');
+                            toast('🗑️ SAVE DATA 삭제 완료');
                         } catch (err) {
                             toast(err.message);
                             ok.disabled = false;
@@ -401,7 +401,7 @@
                     render();
                     form.elements.message.value = '';
                     countEl.textContent = '0 / 500';
-                    toast('✓ 축하 메시지가 저장되었습니다 💌');
+                    toast('💾 SAVE COMPLETE! 축하 메시지 저장 완료');
                 } catch (err) {
                     toast(err.message);
                 } finally {
@@ -419,7 +419,7 @@
                 try { await navigator.share(data); } catch { /* 사용자가 취소 */ }
             } else {
                 await copyText(location.href);
-                toast('✓ 링크가 복사되었습니다');
+                toast('🎁 ITEM GET! 초대 링크 복사 완료');
             }
         });
     </script>
