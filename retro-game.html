@@ -12,12 +12,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 한글 픽셀 글꼴: Galmuri (SIL OFL 1.1) -->
+    <link href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
         html { -webkit-text-size-adjust: 100%; }
-        body { font-family: 'Press Start 2P', 'Nanum Gothic Coding', monospace; background: #1a1a2e; color: #fff; line-height: 1.8; overflow-x: hidden; }
-        .ko { font-family: 'Nanum Gothic Coding', monospace; font-weight: 700; }
+        body { font-family: 'Press Start 2P', 'Galmuri11', monospace; background: #1a1a2e; color: #fff; line-height: 1.8; overflow-x: hidden; }
+        .ko { font-family: 'Galmuri11', monospace; font-weight: 700; }
         .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px); pointer-events: none; z-index: 999; }
         .container { max-width: 640px; margin: 0 auto; padding: 16px; }
         .start-screen { text-align: center; padding: 50px 8px; }
@@ -55,7 +58,7 @@
         .btn:disabled { opacity: 0.5; cursor: default; }
         .gb-form { display: grid; gap: 8px; }
         .gb-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .gb-input { font-family: 'Nanum Gothic Coding', monospace; font-size: 16px; color: #fff; background: #0f3460; border: 3px solid #4ecdc4; padding: 8px; width: 100%; outline: none; border-radius: 0; }
+        .gb-input { font-family: 'Galmuri11', monospace; font-size: 16px; color: #fff; background: #0f3460; border: 3px solid #4ecdc4; padding: 8px; width: 100%; outline: none; border-radius: 0; }
         .gb-input:focus { border-color: #ffe66d; }
         .gb-input::placeholder { color: #6b7fa8; }
         textarea.gb-input { resize: vertical; min-height: 84px; line-height: 1.6; }
@@ -63,8 +66,8 @@
         .gb-list { display: grid; gap: 10px; margin-top: 16px; }
         .gb-item { background: #0f3460; border: 3px solid #ff6b6b; padding: 10px; }
         .gb-item .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 7px; color: #4ecdc4; }
-        .gb-item .author { font-family: 'Nanum Gothic Coding', monospace; font-weight: 700; font-size: 14px; color: #ffe66d; }
-        .gb-item .msg { font-family: 'Nanum Gothic Coding', monospace; font-size: 14px; color: #fff; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .gb-item .author { font-family: 'Galmuri11', monospace; font-weight: 700; font-size: 14px; color: #ffe66d; }
+        .gb-item .msg { font-family: 'Galmuri11', monospace; font-size: 14px; color: #fff; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
         .gb-item .del { font-family: inherit; font-size: 7px; color: #6b7fa8; background: none; border: 0; padding: 4px; cursor: pointer; }
         .gb-item .del:hover { color: #ff6b6b; }
         .gb-item .del-form { display: flex; gap: 6px; margin-top: 8px; }
@@ -72,11 +75,12 @@
         @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0; } }
         .footer { text-align: center; margin-top: 30px; padding: 20px; font-size: 7px; color: #4ecdc4; }
         .footer a { color: #4ecdc4; }
-        .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px); background: #ffe66d; color: #1a1a2e; border: 3px solid #fff; padding: 10px 14px; font-family: 'Nanum Gothic Coding', monospace; font-weight: 700; font-size: 13px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 1000; white-space: nowrap; }
+        .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px); background: #ffe66d; color: #1a1a2e; border: 3px solid #fff; padding: 10px 14px; font-family: 'Galmuri11', monospace; font-weight: 700; font-size: 13px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 1000; white-space: nowrap; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         @media (max-width: 400px) {
             .title { font-size: 15px; } .section-title { font-size: 11px; }
             .stats-box { font-size: 8px; } .btn { font-size: 8px; padding: 8px; }
+            .intro { font-size: 13px; }
         }
         @media (prefers-reduced-motion: reduce) { .press-start { animation: none; } }
     </style>
