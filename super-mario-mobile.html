@@ -1,203 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🍄 DD 의 결혼식 | Super Wedding Bros Mobile</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; user-select: none; -webkit-user-select: none; }
-        body { font-family: 'Press Start 2P', cursive; background: #5c94fc; overflow: hidden; width: 100vw; height: 100vh; }
-        #game { display: block; margin: 0 auto; background: linear-gradient(#5c94fc 0%, #5c94fc 60%, #e89c30 60%, #e89c30 100%); max-width: 100%; }
-        .ui { position: absolute; top: 10px; left: 10px; color: #fff; text-shadow: 2px 2px #000; font-size: 10px; z-index: 10; }
-        #startScreen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; text-shadow: 3px 3px #000; z-index: 20; }
-        #startScreen h1 { font-size: 18px; margin-bottom: 15px; color: #ff6b6b; }
-        #startScreen p { font-size: 10px; margin: 8px 0; animation: blink 0.5s infinite; }
-        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0; } }
-        .controls { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 10; }
-        .btn-group { display: flex; gap: 10px; }
-        .ctrl-btn { width: 60px; height: 60px; background: rgba(255,255,255,0.3); border: 3px solid #fff; border-radius: 50%; color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .ctrl-btn:active { background: rgba(255,255,255,0.6); }
-        .ctrl-btn.jump { width: 70px; height: 70px; }
-        @media (max-width: 600px) { #game { width: 100%; height: auto; } .ctrl-btn { width: 50px; height: 50px; font-size: 20px; } .ctrl-btn.jump { width: 60px; height: 60px; } }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>DD Wedding Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Press+Start+2P&display=swap');
+:root{--ink:#18233f;--pink:#ff6f91;--cream:#fff8ed;--gold:#f5b942}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;height:100%;overflow:hidden;background:#90c7ff;font-family:'Do Hyeon',sans-serif;touch-action:none}#app{height:100%;display:grid;place-items:center;background:linear-gradient(#86c8ff 0 62%,#ffe5b2 62%)}#game{display:block;max-width:100vw;max-height:100vh;box-shadow:0 18px 60px #264b8666;border-radius:18px;background:#86c8ff}.hud{position:fixed;inset:0 auto auto 0;width:100%;padding:12px 15px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;z-index:5;color:white;text-shadow:2px 2px 0 #34527c;font-family:'Press Start 2P',monospace;font-size:9px}.hud .panel{display:flex;gap:12px;align-items:center;background:#263a65aa;border:2px solid #ffffff99;padding:10px;border-radius:12px}.progress{width:104px;height:10px;border:2px solid #fff;border-radius:8px;overflow:hidden}.progress b{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd55d,#ff8bad)}#intro,#result{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:24px;background:#233b6880}.card{max-width:520px;width:min(92vw,520px);padding:30px 22px;text-align:center;color:#25385d;background:linear-gradient(135deg,#fffdf8,#ffe7ef);border:6px solid #fff;border-radius:28px;box-shadow:0 14px 0 #d48ca4,0 28px 70px #17234588}.card h1{font-family:'Press Start 2P',monospace;font-size:20px;line-height:1.55;color:#e95f87;margin:0 0 18px}.card p{font-size:19px;line-height:1.5;margin:8px}.card small{font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.8;display:block;margin-top:18px}.start{margin-top:22px;border:0;border-radius:14px;padding:16px 18px;background:#ff6f91;color:#fff;font:14px 'Press Start 2P',monospace;box-shadow:0 5px 0 #bd4164;cursor:pointer}.start:active{transform:translateY(4px);box-shadow:0 1px 0 #bd4164}#result{display:none}.controls{position:fixed;z-index:7;bottom:max(16px,env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:space-between;padding:0 22px;pointer-events:none}.cluster{display:flex;gap:12px;pointer-events:auto}.key{width:66px;height:66px;border:3px solid #fff;border-radius:50%;background:#284976a8;color:#fff;font:27px sans-serif;box-shadow:0 5px 0 #153050;cursor:pointer;touch-action:none}.key.jump{width:78px;height:78px;background:#f06d90d9;box-shadow:0 5px 0 #b33f60}.key.active,.key:active{transform:translateY(4px);box-shadow:0 1px 0 #153050}@media(min-width:800px){.controls{opacity:.65}.key{width:58px;height:58px}.key.jump{width:70px;height:70px}}
+</style>
 </head>
 <body>
-    <canvas id="game"></canvas>
-    <div class="ui"><div>💒 WEDDING QUEST</div><div style="margin-top:5px;">📅 2026.11.23</div></div>
-    <div id="startScreen">
-        <h1>🍄 SUPER WEDDING BROS 🍄</h1>
-        <p>TAP SCREEN TO START</p>
-        <p style="font-size:8px;margin-top:15px;">Reach the wedding hall!</p>
-    </div>
-    <div class="controls">
-        <div class="btn-group">
-            <div class="ctrl-btn" id="btnLeft">⬅️</div>
-            <div class="ctrl-btn" id="btnRight">➡️</div>
-        </div>
-        <div class="btn-group">
-            <div class="ctrl-btn jump" id="btnJump">⬆️</div>
-        </div>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('game');
-        const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('startScreen');
-        
-        function resize() {
-            const maxWidth = Math.min(window.innerWidth, 800);
-            const maxHeight = Math.min(window.innerHeight - 150, 400);
-            canvas.width = maxWidth;
-            canvas.height = maxHeight;
-        }
-        resize();
-        window.addEventListener('resize', resize);
-        
-        let gameRunning = false;
-        let player = { x: 50, y: 300, width: 30, height: 40, vx: 0, vy: 0, grounded: false };
-        let platforms = [
-            { x: 0, y: 350, width: 800, height: 50 },
-            { x: 200, y: 280, width: 100, height: 20 },
-            { x: 350, y: 220, width: 100, height: 20 },
-            { x: 500, y: 280, width: 100, height: 20 },
-            { x: 650, y: 200, width: 80, height: 20 }
-        ];
-        let coins = [
-            { x: 230, y: 250, collected: false },
-            { x: 380, y: 190, collected: false },
-            { x: 530, y: 250, collected: false },
-            { x: 680, y: 170, collected: false }
-        ];
-        let goal = { x: 720, y: 160, width: 40, height: 40 };
-        let keys = { ArrowLeft: false, ArrowRight: false, ArrowUp: false };
-        
-        function startGame() {
-            if (gameRunning) return;
-            gameRunning = true;
-            startScreen.style.display = 'none';
-            player = { x: 50, y: canvas.height - 100, width: 30, height: 40, vx: 0, vy: 0, grounded: false };
-            platforms = [
-                { x: 0, y: canvas.height - 50, width: canvas.width, height: 50 },
-                { x: canvas.width * 0.25, y: canvas.height - 120, width: 100, height: 20 },
-                { x: canvas.width * 0.45, y: canvas.height - 180, width: 100, height: 20 },
-                { x: canvas.width * 0.65, y: canvas.height - 120, width: 100, height: 20 },
-                { x: canvas.width * 0.8, y: canvas.height - 200, width: 80, height: 20 }
-            ];
-            coins = [
-                { x: canvas.width * 0.28, y: canvas.height - 150, collected: false },
-                { x: canvas.width * 0.48, y: canvas.height - 210, collected: false },
-                { x: canvas.width * 0.68, y: canvas.height - 150, collected: false },
-                { x: canvas.width * 0.83, y: canvas.height - 230, collected: false }
-            ];
-            goal = { x: canvas.width - 80, y: canvas.height - 240, width: 40, height: 40 };
-            gameLoop();
-        }
-        
-        canvas.addEventListener('click', startGame);
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); });
-        
-        document.getElementById('btnLeft').addEventListener('touchstart', (e) => { e.preventDefault(); keys.ArrowLeft = true; });
-        document.getElementById('btnLeft').addEventListener('touchend', (e) => { e.preventDefault(); keys.ArrowLeft = false; });
-        document.getElementById('btnRight').addEventListener('touchstart', (e) => { e.preventDefault(); keys.ArrowRight = true; });
-        document.getElementById('btnRight').addEventListener('touchend', (e) => { e.preventDefault(); keys.ArrowRight = false; });
-        document.getElementById('btnJump').addEventListener('touchstart', (e) => { e.preventDefault(); keys.ArrowUp = true; });
-        document.getElementById('btnJump').addEventListener('touchend', (e) => { e.preventDefault(); keys.ArrowUp = false; });
-        
-        document.getElementById('btnLeft').addEventListener('mousedown', () => keys.ArrowLeft = true);
-        document.getElementById('btnLeft').addEventListener('mouseup', () => keys.ArrowLeft = false);
-        document.getElementById('btnRight').addEventListener('mousedown', () => keys.ArrowRight = true);
-        document.getElementById('btnRight').addEventListener('mouseup', () => keys.ArrowRight = false);
-        document.getElementById('btnJump').addEventListener('mousedown', () => keys.ArrowUp = true);
-        document.getElementById('btnJump').addEventListener('mouseup', () => keys.ArrowUp = false);
-        
-        document.addEventListener('keydown', e => keys[e.code] = true);
-        document.addEventListener('keyup', e => keys[e.code] = false);
-        
-        function update() {
-            if (keys['ArrowRight'] || keys['KeyD']) player.vx = 3;
-            else if (keys['ArrowLeft'] || keys['KeyA']) player.vx = -3;
-            else player.vx = 0;
-            
-            if ((keys['ArrowUp'] || keys['KeyW'] || keys['Space']) && player.grounded) {
-                player.vy = -10;
-                player.grounded = false;
-            }
-            
-            player.vy += 0.5;
-            player.x += player.vx;
-            player.y += player.vy;
-            
-            player.grounded = false;
-            platforms.forEach(p => {
-                if (player.x < p.x + p.width && player.x + player.width > p.x &&
-                    player.y + player.height > p.y && player.y + player.height < p.y + p.height + 10 &&
-                    player.vy >= 0) {
-                    player.grounded = true;
-                    player.vy = 0;
-                    player.y = p.y - player.height;
-                }
-            });
-            
-            if (player.y > canvas.height) { player.x = 50; player.y = canvas.height - 100; player.vy = 0; }
-            if (player.x < 0) player.x = 0;
-            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
-            
-            coins.forEach(c => {
-                if (!c.collected && Math.abs(player.x - c.x) < 30 && Math.abs(player.y - c.y) < 30) {
-                    c.collected = true;
-                }
-            });
-            
-            if (Math.abs(player.x - goal.x) < 30 && Math.abs(player.y - goal.y) < 30) {
-                setTimeout(() => {
-                    alert('🎉 WEDDING COMPLETE! 🎉\n\nDate: 2026.11.23\nTime: 14:00 KST\nPlace: Grand Ballroom 3F\n\nThank you for playing!');
-                }, 100);
-                gameRunning = false;
-                startScreen.style.display = 'block';
-            }
-        }
-        
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            platforms.forEach(p => {
-                ctx.fillStyle = '#c84c0c';
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-                ctx.fillStyle = '#f8b800';
-                ctx.fillRect(p.x, p.y, p.width, 5);
-            });
-            
-            coins.forEach(c => {
-                if (!c.collected) {
-                    ctx.fillStyle = '#ffd700';
-                    ctx.beginPath();
-                    ctx.arc(c.x, c.y, 10, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-            
-            ctx.fillStyle = '#ff6b6b';
-            ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
-            ctx.fillStyle = '#fff';
-            ctx.font = '10px "Press Start 2P"';
-            ctx.fillText('💒', goal.x + 5, goal.y + 25);
-            
-            ctx.fillStyle = '#ff6b6b';
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            ctx.fillStyle = '#fff';
-            ctx.font = '20px "Press Start 2P"';
-            ctx.fillText('🤵', player.x, player.y + 30);
-        }
-        
-        function gameLoop() {
-            if (!gameRunning) return;
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-        
-        draw();
-    </script>
+<div id="app"><canvas id="game"></canvas></div>
+<div class="hud"><div class="panel"><span id="zone">정원길</span><span>♥ <i id="life">3</i></span><span>💍 <i id="rings">0</i>/12</span></div><div class="panel"><span id="score">000000</span><div class="progress"><b id="bar"></b></div></div></div>
+<section id="intro"><div class="card"><h1>DD WEDDING<br>QUEST</h1><p>반지를 모아 웨딩홀에 도착하세요!</p><p>꽃길을 지나 사랑의 문을 열어 보세요. 💒</p><button class="start" id="start">START GAME</button><small>PC: ← → / A D 이동 · ↑ / W / SPACE 점프<br>MOBILE: 아래 버튼으로 조작</small></div></section>
+<section id="result"><div class="card"><h1>WEDDING<br>COMPLETE!</h1><p id="final"></p><p>2026.11.23 · 14:00 KST<br>Grand Ballroom 3F</p><button class="start" id="again">PLAY AGAIN</button></div></section>
+<div class="controls"><div class="cluster"><button class="key" data-key="left">◀</button><button class="key" data-key="right">▶</button></div><div class="cluster"><button class="key jump" data-key="jump">▲</button></div></div>
+<script>
+(()=>{const c=document.querySelector('#game'),x=c.getContext('2d'),intro=document.querySelector('#intro'),result=document.querySelector('#result');const ui={zone:document.querySelector('#zone'),life:document.querySelector('#life'),rings:document.querySelector('#rings'),score:document.querySelector('#score'),bar:document.querySelector('#bar'),final:document.querySelector('#final')};let W,H,run=false,raf,last=0,keys={left:false,right:false,jump:false},p,plats,items,npcs,checkpoint,score,rings,lives,goal,clouds;
+function size(){W=Math.min(innerWidth,900);H=Math.min(innerHeight,590);c.width=W*devicePixelRatio;c.height=H*devicePixelRatio;c.style.width=W+'px';c.style.height=H+'px';x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}addEventListener('resize',size);size();
+function reset(){p={x:42,y:H-122,w:32,h:42,vx:0,vy:0,on:false,face:1};score=0;rings=0;lives=3;checkpoint=42;clouds=[{x:W*.36,y:H*.42,w:90,base:W*.36,amp:70,dir:1},{x:W*.68,y:H*.31,w:90,base:W*.68,amp:58,dir:-1}];plats=[{x:0,y:H-55,w:W,h:55,type:'ground'},{x:W*.12,y:H-130,w:120,h:18},{x:W*.31,y:H-200,w:110,h:18},{x:W*.53,y:H-145,w:120,h:18},{x:W*.76,y:H-220,w:115,h:18},{x:W*.90,y:H-115,w:90,h:18}];items=[.16,.24,.36,.44,.56,.62,.71,.79,.85,.91,.95,.98].map((n,i)=>({x:W*n,y:H-(i%3===1?230:i%3===2?165:108),got:false}));npcs=[{x:W*.27,y:H-97,text:'꽃길을 따라가요! 🌸'},{x:W*.59,y:H-97,text:'반지를 모두 찾아봐요! 💍'},{x:W*.82,y:H-97,text:'거의 다 왔어요!'}];goal={x:W-65,y:H-170,w:48,h:115};updateUI()}
+function updateUI(){ui.life.textContent=lives;ui.rings.textContent=rings;ui.score.textContent=String(score).padStart(6,'0');ui.bar.style.width=Math.min(100,p.x/(W-65)*100)+'%';ui.zone.textContent=p.x<W*.33?'정원길':p.x<W*.68?'꽃길':'웨딩홀 앞'}
+function press(k,v){keys[k]=v;document.querySelectorAll('[data-key="'+k+'"]').forEach(b=>b.classList.toggle('active',v))}document.querySelectorAll('.key').forEach(b=>{let k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);press(k,true)});['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,e=>{e.preventDefault();press(k,false)}))});addEventListener('keydown',e=>{if(['ArrowLeft','KeyA'].includes(e.code))press('left',true);if(['ArrowRight','KeyD'].includes(e.code))press('right',true);if(['ArrowUp','KeyW','Space'].includes(e.code)){e.preventDefault();press('jump',true)}});addEventListener('keyup',e=>{if(['ArrowLeft','KeyA'].includes(e.code))press('left',false);if(['ArrowRight','KeyD'].includes(e.code))press('right',false);if(['ArrowUp','KeyW','Space'].includes(e.code))press('jump',false)});
+function start(){reset();intro.style.display='none';result.style.display='none';run=true;last=performance.now();raf=requestAnimationFrame(loop)}document.querySelector('#start').onclick=start;document.querySelector('#again').onclick=start;
+function hit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function update(dt){clouds.forEach(q=>{q.x+=q.dir*dt*.035;if(Math.abs(q.x-q.base)>q.amp)q.dir*=-1});p.vx=keys.left?-235:keys.right?235:0;if(p.vx)p.face=Math.sign(p.vx);if(keys.jump&&p.on){p.vy=-465;p.on=false;keys.jump=false}p.vy+=1150*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.on=false;let all=plats.concat(clouds.map(q=>({x:q.x,y:q.y,w:q.w,h:15,cloud:true})));all.forEach(a=>{if(p.vy>=0&&p.x+p.w>a.x&&p.x<a.x+a.w&&p.y+p.h>=a.y&&p.y+p.h<=a.y+a.h+18){p.y=a.y-p.h;p.vy=0;p.on=true}});p.x=Math.max(0,Math.min(W-p.w,p.x));items.forEach(o=>{if(!o.got&&Math.hypot(p.x+p.w/2-o.x,p.y+p.h/2-o.y)<31){o.got=true;rings++;score+=100}});if(p.x>W*.48)checkpoint=W*.48;if(p.y>H+40){lives--;if(lives<=0){reset()}else{p.x=checkpoint;p.y=H-125;p.vy=0}}if(hit(p,goal)&&p.y+p.h>goal.y+30){run=false;cancelAnimationFrame(raf);ui.final.textContent=`반지 ${rings}개를 모아 ${score.toLocaleString()}점을 기록했어요!`;result.style.display='grid'}updateUI()}
+function rect(a,b,d,e,col){x.fillStyle=col;x.fillRect(a,b,d,e)}function cloud(q){x.fillStyle='#fff';for(let i=0;i<4;i++){x.beginPath();x.arc(q.x+15+i*22,q.y+9-(i%2)*8,17,0,Math.PI*2);x.fill()}rect(q.x,q.y+8,q.w,13,'#fff')}
+function draw(){x.clearRect(0,0,W,H);let sky=x.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#81c9ff');sky.addColorStop(.68,'#ffe2bc');sky.addColorStop(.69,'#9ddc9c');sky.addColorStop(1,'#61b86a');rect(0,0,W,H,sky);for(let i=0;i<7;i++){cloud({x:(i*177+35)%W,y:60+(i%3)*36,w:75})}for(let i=0;i<35;i++){x.fillStyle=i%2?'#ffe0eb':'#fff8a7';x.fillRect((i*61)%W,H-67-(i%4)*9,5,5)}plats.forEach(a=>{rect(a.x,a.y,a.w,a.h,'#a86a46');rect(a.x,a.y,a.w,6,'#ffe2a4');for(let q=a.x+8;q<a.x+a.w;q+=21){x.fillStyle='#f18baa';x.beginPath();x.arc(q,a.y-2,4,0,7);x.fill()}});clouds.forEach(cloud);npcs.forEach(n=>{if(Math.abs(p.x-n.x)<85){x.fillStyle='#ffffffdd';x.fillRect(n.x-25,n.y-55,120,29);x.fillStyle='#32405f';x.font='12px Do Hyeon';x.fillText(n.text,n.x-20,n.y-36)}x.font='30px sans-serif';x.fillText('🧑‍🤝‍🧑',n.x,n.y)});items.forEach(o=>{if(!o.got){x.save();x.translate(o.x,o.y);x.rotate(performance.now()/300);x.font='24px sans-serif';x.fillText('💍',-12,10);x.restore()}});rect(goal.x,goal.y,goal.w,goal.h,'#fff6e7');rect(goal.x+5,goal.y+36,goal.w-10,goal.h-36,'#f18aa8');x.font='30px sans-serif';x.fillText('💒',goal.x+6,goal.y+31);x.font='14px Do Hyeon';x.fillStyle='#fff';x.fillText('WEDDING',goal.x+4,goal.y+65);x.fillStyle='#d95a7c';x.fillRect(p.x,p.y,p.w,p.h);x.fillStyle='#fff';x.fillRect(p.x+6,p.y+10,20,20);x.font='22px sans-serif';x.fillText(p.face<0?'🤵':'🤵',p.x+2,p.y+34);x.fillStyle='#fff';x.font='15px Do Hyeon';x.fillText('DD의 결혼식에 오신 것을 환영합니다!',20,H-23)}
+function loop(t){if(!run)return;let dt=Math.min(.034,(t-last)/1000);last=t;update(dt);draw();raf=requestAnimationFrame(loop)}reset();draw()})();
+</script>
 </body>
 </html>
