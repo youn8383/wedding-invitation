@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -241,12 +241,12 @@ $ ./wedding --couple "DD & Partner" --date 2026.11.23<br>
                 <h2>📋 `cat invitation.txt`</h2>
                 <div class="code-block">
 <span style="color: #ff79c6">couple:</span><br>
-  <span style="color: #8be9fd">groom</span>: "신랑 이름"<br>
-  <span style="color: #8be9fd">bride</span>: "신부 이름"<br>
+  <span style="color: #8be9fd">groom</span>: "Groom Name"<br>
+  <span style="color: #8be9fd">bride</span>: "Bride Name"<br>
 <br>
-<span style="color: #8be9fd">date</span>: "2026.11.23 (토) 오후 2시"<br>
-<span style="color: #8be9fd">location</span>: "서울시 강남구 결혼식장"<br>
-<span style="color: #8be9fd">hall</span>: "그랜드 볼룸 3 층"<br>
+<span style="color: #8be9fd">date</span>: "Nov 23, 2026 (Sat) 2:00 PM"<br>
+<span style="color: #8be9fd">location</span>: "Seoul Gangnam Wedding Hall"<br>
+<span style="color: #8be9fd">hall</span>: "Grand Ballroom 3F"<br>
 <br>
 <span style="color: #8be9fd">status</span>: "PRODUCTION_READY"
                 </div>
@@ -254,9 +254,9 @@ $ ./wedding --couple "DD & Partner" --date 2026.11.23<br>
                 <h2>🗺️ `npm install location`</h2>
                 <div class="code-block">
 <span style="color: #ff79c6">const</span> <span style="color: #8be9fd">venue</span> = {<br>
-  <span style="color: #8be9fd">name</span>: <span style="color: #f1fa8c">"결혼식장 이름"</span>,<br>
-  <span style="color: #8be9fd">address</span>: <span style="color: #f1fa8c">"서울시 강남구 테헤란로 123"</span>,<br>
-  <span style="color: #8be9fd">floor</span>: <span style="color: #f1fa8c">"3F 그랜드 볼룸"</span>,<br>
+  <span style="color: #8be9fd">name</span>: <span style="color: #f1fa8c">"Wedding Hall Name"</span>,<br>
+  <span style="color: #8be9fd">address</span>: <span style="color: #f1fa8c">"123 Teheran-ro, Gangnam-gu, Seoul"</span>,<br>
+  <span style="color: #8be9fd">floor</span>: <span style="color: #f1fa8c">"3F Grand Ballroom"</span>,<br>
   <span style="color: #8be9fd">naverMap</span>: <span style="color: #f1fa8c">"https://map.naver.com/..."</span><br>
 };
                 </div>
@@ -265,46 +265,46 @@ $ ./wedding --couple "DD & Partner" --date 2026.11.23<br>
                 <div class="code-block bash">
 $ cat account.txt<br>
 <br>
-# 신랑 측<br>
-은행: 토스뱅크<br>
-계좌: 1000-123-456789<br>
-예금주: 홍길동<br>
+# Groom Side<br>
+Bank: Toss Bank<br>
+Account: 1000-123-456789<br>
+Name: Hong Gildong<br>
 <br>
-# 신부 측<br>
-은행: 카카오페이<br>
-계좌: 1000-987-654321<br>
-예금주: 김철수
+# Bride Side<br>
+Bank: KakaoPay<br>
+Account: 1000-987-654321<br>
+Name: Kim Cheolsu
                 </div>
                 
                 <h2>📸 `ls -la ./gallery`</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>파일</th>
-                            <th>크기</th>
-                            <th>설명</th>
+                            <th>File</th>
+                            <th>Size</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>couple_01.jpg</td>
                             <td>2.4M</td>
-                            <td>커플 사진 1</td>
+                            <td>Couple Photo 1</td>
                         </tr>
                         <tr>
                             <td>couple_02.jpg</td>
                             <td>3.1M</td>
-                            <td>커플 사진 2</td>
+                            <td>Couple Photo 2</td>
                         </tr>
                         <tr>
                             <td>proposal.jpg</td>
                             <td>1.8M</td>
-                            <td>프러포즈</td>
+                            <td>Proposal</td>
                         </tr>
                     </tbody>
                 </table>
                 
-                <h2>💌 `echo "축하 메시지" >> guestbook.txt`</h2>
+                <h2>💌 `echo "Congrats!" >> guestbook.txt`</h2>
                 <div class="code-block bash">
 $ <a href="#">./submit_guestbook.sh</a><br>
 > Enter your message: [Type here...]<br>
@@ -322,7 +322,7 @@ Date: 2026.11.23<br>
                 </div>
                 
                 <blockquote>
-                    💡 <strong>공유하기</strong>: 이 페이지를 하객분들과 공유하세요!<br>
+                    💡 <strong>Share</strong>: Share this page with your guests!<br>
                     <br>
                     <em>"It's not a bug, it's a feature — for life."</em>
                 </blockquote>
@@ -336,14 +336,15 @@ Date: 2026.11.23<br>
     </div>
     
     <script>
-        // Matrix Rain Effect
+        // Matrix Rain Effect (English characters only)
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
         
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        // English alphabet + numbers + symbols
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
         const charArray = chars.split('');
         const fontSize = 14;
         const columns = canvas.width / fontSize;
