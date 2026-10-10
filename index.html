@@ -215,7 +215,14 @@
         .gb-item .del-form .btn { min-height: 40px; font-size: 13px; }
         .gb-empty { text-align: center; padding: 18px 0; font-family: var(--mono); font-size: 12px; color: var(--faint); }
 
-        footer { padding: 88px 0 56px; text-align: center; }
+        .switch { display: grid; gap: 4px; margin-top: 64px; padding: 16px 18px; border-radius: var(--radius); text-decoration: none; color: var(--text);
+            background: rgba(17, 17, 20, .92); border: 1px dashed #34343b; transition: border-color .2s, background .2s; }
+        .switch:hover { border-color: rgba(74, 222, 128, .5); background: rgba(74, 222, 128, .05); }
+        .switch-cmd { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+        .switch-cmd .ps { color: var(--accent); }
+        .switch-go { font-size: 15px; font-weight: 500; }
+        .switch-go span { color: var(--accent); }
+        footer { padding: 56px 0 56px; text-align: center; }
         footer .commit { font-family: var(--mono); font-size: 11.5px; color: var(--faint); line-height: 2; }
         footer .commit b { color: var(--accent); font-weight: 400; }
         footer .sig { margin-top: 18px; font-size: 13px; color: var(--muted); }
@@ -459,6 +466,11 @@
                 </div>
             </div>
         </section>
+
+        <a class="switch reveal" href="/retro-game.html">
+            <span class="switch-cmd"><span class="ps">$</span> ./wedding --theme retro</span>
+            <span class="switch-go">레트로 게임 버전 청첩장 보기 <span aria-hidden="true">→</span></span>
+        </a>
 
         <footer class="reveal">
             <div class="commit">"It's not a bug, it's a feature — <b>for life</b>."</div>
@@ -925,8 +937,14 @@
     })();
 
     // ===== Share =====
+    // 공유할 때마다 새 초대 링크(/i/<code>) — code 에 따라 터미널/레트로가 정해지고 카카오 썸네일도 그에 맞게 랜덤
+    function inviteUrl() {
+        const abc = 'abcdefghijkmnpqrstuvwxyz23456789';
+        const code = Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => abc[b % abc.length]).join('');
+        return `${location.origin}/i/${code}`;
+    }
     document.getElementById('share').addEventListener('click', async () => {
-        const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: location.origin + '/' };
+        const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: inviteUrl() };
         if (navigator.share) {
             try { await navigator.share(data); } catch { /* 사용자가 취소 */ }
         } else {

@@ -175,6 +175,10 @@
         .credits dl { margin-top: 26px; display: grid; gap: 14px; font-size: 13px; }
         .credits dt { font-size: 9px; color: var(--dim); letter-spacing: 2px; }
         .credits .fin { margin-top: 30px; font-size: 11px; color: var(--mint); letter-spacing: 2px; }
+        .switch { display: grid; gap: 4px; margin: 36px auto 0; max-width: 280px; padding: 12px 14px; text-decoration: none; color: var(--cream); border-color: var(--mint); -webkit-tap-highlight-color: transparent; }
+        .switch-top { font-size: 11px; color: var(--mint); letter-spacing: 2px; }
+        .switch-go { font-size: 14px; }
+        .switch:hover .switch-go, .switch:focus-visible .switch-go { color: var(--gold); }
 
         /* screen-wipe when pressing start */
         .wipe { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: var(--void); transform: scaleY(0); }
@@ -366,6 +370,10 @@
                 <div><dt>SPECIAL THANKS</dt><dd>축하해 주신 모든 PLAYER 여러분</dd></div>
             </dl>
             <div class="fin">GAME OVER? NO, JUST THE BEGINNING!</div>
+            <a class="px ink switch" href="/">
+                <span class="switch-top">▶ SWITCH MODE</span>
+                <span class="switch-go">터미널 버전 청첩장 보기</span>
+            </a>
         </footer>
     </div>
 
@@ -810,8 +818,14 @@
     })();
 
     // ===== Share =====
+    // 공유할 때마다 새 초대 링크(/i/<code>) — code 에 따라 터미널/레트로가 정해지고 카카오 썸네일도 그에 맞게 랜덤
+    function inviteUrl() {
+        const abc = 'abcdefghijkmnpqrstuvwxyz23456789';
+        const code = Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => abc[b % abc.length]).join('');
+        return `${location.origin}/i/${code}`;
+    }
     document.getElementById('share').addEventListener('click', async () => {
-        const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: location.origin + '/retro-game.html' };
+        const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: inviteUrl() };
         if (navigator.share) {
             try { await navigator.share(data); } catch { /* 사용자가 취소 */ }
         } else {
