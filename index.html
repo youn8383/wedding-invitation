@@ -231,10 +231,28 @@
             .card { padding: 18px; }
             .when .big { font-size: 48px; }
         }
+        /* sound: one toggle for BGM + SFX, with a tiny terminal log above it */
+        .sound { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .sound-btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+            font-family: var(--mono); font-size: 11.5px; color: var(--muted); background: rgba(17, 17, 20, .88); border: 1px solid var(--line);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px -10px rgba(0,0,0,.8); -webkit-tap-highlight-color: transparent; transition: color .2s, border-color .2s; }
+        .sound-btn .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+        .sound-btn .eq i { width: 2px; height: 3px; background: currentColor; border-radius: 1px; }
+        .sound-btn[aria-pressed="true"] { color: var(--accent); border-color: rgba(74, 222, 128, .4); }
+        .sound-btn[aria-pressed="true"] .eq i { animation: eq .9s ease-in-out infinite; }
+        .sound-btn[aria-pressed="true"] .eq i:nth-child(2) { animation-delay: -.3s; }
+        .sound-btn[aria-pressed="true"] .eq i:nth-child(3) { animation-delay: -.6s; }
+        @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+        .sound-log { max-width: min(300px, calc(100vw - 28px)); padding: 10px 12px; border-radius: 10px; background: rgba(11, 11, 13, .94); border: 1px solid var(--line);
+            font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--muted); white-space: pre-wrap; word-break: break-all;
+            opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s var(--ease); pointer-events: none; }
+        .sound-log.show { opacity: 1; transform: none; }
+        .sound-log .ps { color: var(--accent); } .sound-log .ok { color: var(--text); }
+
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .cursor, .hero-top .live::before, .scroll-hint::after { animation: none; }
+            .cursor, .hero-top .live::before, .scroll-hint::after, .sound-btn .eq i { animation: none !important; }
         }
     </style>
 </head>
@@ -450,6 +468,11 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <div class="sound">
+        <div class="sound-log" id="sound-log" aria-live="polite"></div>
+        <button class="sound-btn" id="sound-btn" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">./bgm.sh</span></button>
+    </div>
+
     <script>
     const WEDDING = {
         start: new Date('2026-12-20T13:00:00+09:00'),
@@ -542,6 +565,138 @@
         await copyText(btn.dataset.copy);
         toast(`${btn.dataset.label || ''} 복사되었습니다`);
     });
+
+    // ===== Sound: Pachelbel "Canon in D" (public domain) as a synth arpeggio + key-click SFX, all synthesized =====
+    const Synth = (() => {
+        let ctx = null, bus = null, loopTimer = null, t0 = 0, noise = null, loopNo = 0;
+        const freq = (n) => {
+            const m = /^([A-G])(b|#)?(\d)$/.exec(n);
+            const semi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (+m[3] + 1) * 12;
+            return 440 * Math.pow(2, (semi - 69) / 12);
+        };
+        const BEAT = 60 / 72;
+        // the famous 8-chord ground: D A Bm F#m G D G A (2 beats each)
+        const BASS = ['D3', 'A2', 'B2', 'F#2', 'G2', 'D2', 'G2', 'A2'];
+        const ARP = [
+            ['D4', 'F#4', 'A4', 'D5'], ['A3', 'C#4', 'E4', 'A4'], ['B3', 'D4', 'F#4', 'B4'], ['F#3', 'A3', 'C#4', 'F#4'],
+            ['G3', 'B3', 'D4', 'G4'], ['D4', 'F#4', 'A4', 'D5'], ['G3', 'B3', 'D4', 'G4'], ['A3', 'C#4', 'E4', 'A4'],
+        ];
+        const VIOLIN = ['F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'B4', 'C#5'];
+        const LOOP = 16 * BEAT;
+
+        function ensure() {
+            if (ctx) return;
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const out = ctx.createGain(); out.gain.value = 0.55;
+            const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200;
+            const delay = ctx.createDelay(); delay.delayTime.value = BEAT * 0.75;
+            const fb = ctx.createGain(); fb.gain.value = 0.3;
+            const wet = ctx.createGain(); wet.gain.value = 0.28;
+            lp.connect(out); lp.connect(delay); delay.connect(fb).connect(delay); delay.connect(wet).connect(out);
+            out.connect(ctx.destination);
+            bus = lp;
+            noise = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+            const d = noise.getChannelData(0);
+            for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+        }
+        function tone(f, t, dur, type, vol, attack = 0.02) {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.type = type; o.frequency.setValueAtTime(f, t);
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(vol, t + attack);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+            o.connect(g).connect(bus);
+            o.start(t); o.stop(t + dur + 0.05);
+        }
+        function scheduleLoop(start, n) {
+            BASS.forEach((b, i) => tone(freq(b), start + i * 2 * BEAT, 2 * BEAT, 'triangle', 0.22, 0.03));
+            const order = n % 2 ? [0, 2, 1, 3] : [0, 1, 2, 3];      // vary the arpeggio every other loop
+            ARP.forEach((chord, i) => order.forEach((k, j) => tone(freq(chord[k]), start + (i * 2 + j * 0.5) * BEAT, BEAT * 0.9, 'sine', 0.09, 0.005)));
+            if (n > 0) VIOLIN.forEach((v, i) => tone(freq(v), start + i * 2 * BEAT, 2 * BEAT, 'triangle', 0.05, 0.25));   // melody joins from the 2nd loop
+        }
+        return {
+            get on() { return !!loopTimer; },
+            async start() {
+                ensure(); await ctx.resume();
+                if (loopTimer) return;
+                loopNo = 0; t0 = ctx.currentTime + 0.1;
+                scheduleLoop(t0, loopNo);
+                loopTimer = setInterval(() => {
+                    if (ctx.currentTime > t0 + LOOP - 1) { t0 += LOOP; scheduleLoop(t0, ++loopNo); }
+                }, 250);
+            },
+            stop() {
+                clearInterval(loopTimer); loopTimer = null;
+                if (ctx) { const c = ctx; ctx = null; c.close(); }   // closing drops every note already queued
+            },
+            async unlock() { ensure(); await ctx.resume(); },
+            click() {                                            // mechanical key: filtered noise burst
+                if (!ctx) return;
+                const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+                src.buffer = noise; bp.type = 'bandpass'; bp.frequency.value = 1800 + Math.random() * 1600; bp.Q.value = 1.2;
+                g.gain.value = 0.35;
+                src.connect(bp).connect(g).connect(ctx.destination);
+                src.start();
+            },
+            blip() {
+                if (!ctx) return;
+                const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+                o.type = 'sine'; o.frequency.setValueAtTime(1240, t); o.frequency.exponentialRampToValueAtTime(820, t + 0.06);
+                g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+                o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.1);
+            },
+            suspend() { if (ctx) ctx.suspend(); },
+            resume() { if (ctx && loopTimer) ctx.resume(); },
+        };
+    })();
+
+    (function soundToggle() {
+        const btn = document.getElementById('sound-btn');
+        const log = document.getElementById('sound-log');
+        const lbl = btn.querySelector('.lbl');
+        let hideTimer, typingRun = 0;
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        async function type(lines) {                             // [cls, text] pairs, typed with key clicks
+            const run = ++typingRun;
+            clearTimeout(hideTimer);
+            log.innerHTML = ''; log.classList.add('show');
+            for (const [cls, text] of lines) {
+                const span = document.createElement('span');
+                if (cls) span.className = cls;
+                log.appendChild(span);
+                for (const ch of text) {
+                    if (run !== typingRun) return false;
+                    span.textContent += ch;
+                    if (ch !== ' ' && ch !== '\n') Synth.click();
+                    await sleep(reduceMotion ? 0 : 38);
+                }
+            }
+            hideTimer = setTimeout(() => log.classList.remove('show'), 2600);
+            return true;
+        }
+        function set(on) {
+            btn.setAttribute('aria-pressed', on);
+            btn.setAttribute('aria-label', on ? '배경음악과 효과음 끄기' : '배경음악과 효과음 켜기');
+            lbl.textContent = on ? 'canon_in_d' : './bgm.sh';
+        }
+        btn.addEventListener('click', async () => {
+            if (btn.getAttribute('aria-pressed') === 'true') {
+                typingRun++;                                     // cancel an intro that is still typing
+                Synth.stop(); set(false);
+                log.innerHTML = '<span class="ps">^C</span> stopped'; log.classList.add('show');
+                clearTimeout(hideTimer); hideTimer = setTimeout(() => log.classList.remove('show'), 1600);
+                return;
+            }
+            set(true);
+            await Synth.unlock();
+            const done = await type([['ps', '$ '], ['', './bgm.sh --play canon_in_d\n'], ['', '> pachelbel · 1680 · '], ['ok', 'public domain\n'], ['', '> while (true) { love(); }']]);
+            if (done && btn.getAttribute('aria-pressed') === 'true') Synth.start();
+        });
+        // SFX while sound is on: key clicks in the guestbook, a soft blip on buttons
+        document.addEventListener('input', (e) => { if (Synth.on && e.target.closest('.field')) Synth.click(); });
+        document.addEventListener('click', (e) => { if (Synth.on && e.target.closest('.btn, .icon-btn')) Synth.blip(); });
+        document.addEventListener('visibilitychange', () => (document.hidden ? Synth.suspend() : Synth.resume()));
+    })();
 
     // ===== Reveal on scroll =====
     (function reveal() {
