@@ -167,6 +167,8 @@
         .countdown div { background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px 0 10px; text-align: center; }
         .countdown b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
         .countdown small { font-family: var(--mono); font-size: 10px; color: var(--faint); letter-spacing: .12em; }
+        .hero-note { margin: 18px auto 0; max-width: 340px; padding: 14px 16px; border-radius: 12px; background: var(--accent-soft); border: 1px solid rgba(74, 222, 128, .25);
+            font-size: 14.5px; line-height: 1.8; color: var(--text); white-space: pre-line; }
         .dday-note { margin-top: 12px; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
         .dday-note b { color: var(--accent); font-weight: 500; }
 
@@ -260,10 +262,11 @@
                 <div class="term-body" id="typing" aria-label="./wedding --groom 윤상현 --bride 신아람 --date 2026.12.20"></div>
             </div>
             <div class="names reveal">
-                <div class="eyebrow">We're getting married</div>
+                <div class="eyebrow" id="eyebrow">We're getting married</div>
                 <h1>윤상현<span class="amp">♥</span>신아람</h1>
                 <p class="date"><b>2026.12.20</b> SUN 13:00 · 더화이트베일 3F V홀</p>
-                <span class="status">STATUS: PRODUCTION_READY</span>
+                <p class="hero-note" id="hero-note" hidden></p>
+                <span class="status" id="status">STATUS: PRODUCTION_READY</span>
             </div>
             <div class="scroll-hint" aria-hidden="true">SCROLL</div>
         </header>
@@ -455,6 +458,29 @@
         location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
     };
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 결혼식 전 / 당일 / 이후 (KST). 미리보기: ?phase=before|day|after
+    const kstDate = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+    const PHASE = (() => {
+        const q = new URLSearchParams(location.search).get('phase');
+        if (['before', 'day', 'after'].includes(q)) return q;
+        const today = kstDate(new Date()), day = kstDate(WEDDING.start);
+        return today < day ? 'before' : today === day ? 'day' : 'after';
+    })();
+
+    // ===== Wedding-day / after switch =====
+    (function phaseCopy() {
+        if (PHASE === 'before') return;
+        const copy = {
+            day: { eyebrow: 'Today we merge', status: 'STATUS: DEPLOYING NOW', note: '오늘 오후 1시, 더화이트베일 3층 V홀에서\n두 사람의 merge 가 시작됩니다 ♥' },
+            after: { eyebrow: 'Thank you', status: 'STATUS: DEPLOYED ♥', note: '축하해 주신 모든 분들 덕분에\n무사히 main 에 merge 되었습니다.\n진심으로 감사합니다 ♥' },
+        }[PHASE];
+        document.getElementById('eyebrow').textContent = copy.eyebrow;
+        document.getElementById('status').textContent = copy.status;
+        const note = document.getElementById('hero-note');
+        note.textContent = copy.note;
+        note.hidden = false;
+        if (PHASE === 'after') document.getElementById('countdown').hidden = true;
+    })();
 
     // ===== Matrix rain (slow + dim; the CSS mask keeps it off the reading column) =====
     (function matrix() {
@@ -535,7 +561,9 @@
             ['', '> resolving dependencies… '], ['ok', 'love@∞\n'],
             ['', '> running tests… '], ['ok', '2 passed\n'],
             ['', '> build '], ['ok', 'success ✓\n'],
-            ['', '> deploying to production…'],
+            ...(PHASE === 'before' ? [['', '> deploying to production…']]
+                : PHASE === 'day' ? [['', '> deploying to production… '], ['ok', 'LIVE']]
+                : [['', '> deployed '], ['ok', 'successfully ✓\n'], ['', '> uptime: '], ['ok', 'forever ♥']]),
         ];
         const render = (n) => {
             let left = n, html = '';
@@ -587,9 +615,10 @@
             u.h.textContent = pad(Math.floor(diff / 3600e3) % 24);
             u.m.textContent = pad(Math.floor(diff / 60e3) % 60);
             u.s.textContent = pad(Math.floor(diff / 1e3) % 60);
-            const kst = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
-            const dayDiff = Math.round((new Date(kst(WEDDING.start)) - new Date(kst(now))) / 86400e3);
-            note.innerHTML = dayDiff > 0 ? `deploy in <b>D-${dayDiff}</b>` : dayDiff === 0 ? '<b>D-DAY</b> · deploying now' : `<b>${-dayDiff}</b> days merged ♥`;
+            const dayDiff = Math.round((new Date(kstDate(WEDDING.start)) - new Date(kstDate(now))) / 86400e3);
+            note.innerHTML = PHASE === 'before' ? `deploy in <b>D-${dayDiff}</b>`
+                : PHASE === 'day' ? '<b>D-DAY</b> · deploying now'
+                : dayDiff < 0 ? `<b>${-dayDiff}</b> days merged ♥` : '<b>merged</b> · thank you ♥';
         }
         tick();
         setInterval(tick, 1000);

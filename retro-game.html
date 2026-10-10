@@ -186,6 +186,30 @@
             box-shadow: 0 0 0 4px var(--void), 0 0 0 8px var(--cream); transition: opacity .15s steps(2), transform .15s steps(2); }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+        /* wedding-day / after banner on the title screen */
+        .phase-note { margin-top: 18px; padding: 12px 14px; font-size: 13px; line-height: 1.8; color: var(--cream); white-space: pre-line; border-color: var(--rose); }
+
+        /* BGM toggle */
+        .bgm { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 10px 6px; font-family: var(--font); font-size: 11px; letter-spacing: 1px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
+            box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
+        .bgm .note { color: var(--dim); }
+        .bgm[aria-pressed="true"] { color: var(--void); background: var(--mint); box-shadow: 0 0 0 2px var(--cream), 0 3px 0 2px var(--void); }
+        .bgm[aria-pressed="true"] .note { color: var(--void); animation: bop .5s steps(2) infinite; }
+        @keyframes bop { 50% { transform: translateY(-2px); } }
+
+        /* Konami secret */
+        .secret { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 24px; background: rgba(15, 14, 31, .82); }
+        .secret-box { max-width: 320px; padding: 20px 18px 18px; text-align: center; border-color: var(--gold); animation: pop .3s steps(3); }
+        @keyframes pop { from { transform: scale(.6); } to { transform: scale(1); } }
+        .secret-title { font-size: 15px; font-weight: 700; color: var(--gold); text-shadow: 2px 2px 0 var(--rose); letter-spacing: 1px; }
+        .secret p { margin-top: 12px; font-size: 13px; line-height: 1.8; }
+        .secret-item { color: var(--rose); }
+        .secret-sub { color: var(--mint); font-size: 11px !important; }
+        .secret .pbtn { margin-top: 16px; }
+        .heart-fall { position: fixed; top: -24px; z-index: 79; width: 14px; height: 12px; pointer-events: none; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(calc(100vh + 48px)); } }
+
         @media (max-width: 360px) {
             .logo { font-size: 28px; } .logo small { font-size: 18px; }
             .player .name { font-size: 18px; }
@@ -195,6 +219,7 @@
             html { scroll-behavior: auto; }
             .press, .menu a .cur { animation: none !important; }
             .wipe.go { animation: none; }
+            .bgm[aria-pressed="true"] .note, .secret-box { animation: none; }
         }
     </style>
 </head>
@@ -206,10 +231,11 @@
     <div class="wrap">
         <!-- TITLE SCREEN -->
         <header class="title">
-            <div class="coin">INSERT COIN · CREDIT 01</div>
+            <div class="coin" id="coin">INSERT COIN · CREDIT 01</div>
             <h1 class="logo">WEDDING<br>QUEST<small>웨딩 퀘스트</small></h1>
             <div class="couple-name">윤상현<span data-icon="heart"></span>신아람</div>
             <div class="release">RELEASE 2026.12.20 SUN · THE WHITE VEIL</div>
+            <p class="phase-note px ink" id="phase-note" hidden></p>
 
             <nav class="menu px ink" aria-label="메뉴">
                 <a href="#story" class="on"><span class="cur">▶</span>START<small>스토리</small></a>
@@ -217,7 +243,7 @@
                 <a href="#world"><span class="cur">▶</span>MAP<small>오시는 길</small></a>
                 <a href="#save"><span class="cur">▶</span>SAVE<small>축하 메시지</small></a>
             </nav>
-            <div class="press">PRESS START</div>
+            <div class="press" id="press">PRESS START</div>
             <div class="copy">© 2026 YOUN &amp; SHIN STUDIOS</div>
         </header>
 
@@ -337,13 +363,25 @@
             <dl>
                 <div><dt>STARRING</dt><dd>윤상현 · 신아람</dd></div>
                 <div><dt>PRODUCED BY</dt><dd>윤태락 · 신정순 · 신동직 · 이선옥</dd></div>
-                <div><dt>SPECIAL THANKS</dt><dd>와 주신 모든 PLAYER 여러분</dd></div>
+                <div><dt>SPECIAL THANKS</dt><dd>축하해 주신 모든 PLAYER 여러분</dd></div>
             </dl>
             <div class="fin">GAME OVER? NO, JUST THE BEGINNING!</div>
         </footer>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="배경음악 켜기"><span class="note">♪</span><span class="lbl">BGM OFF</span></button>
+
+    <div class="secret" id="secret" role="dialog" aria-modal="true" aria-labelledby="secret-title" hidden>
+        <div class="px ink secret-box">
+            <div class="secret-title" id="secret-title">★ SECRET COMMAND ★</div>
+            <p>숨겨진 커맨드를 찾아낸 당신은<br>진정한 고수 PLAYER!</p>
+            <p class="secret-item"><span data-icon="heart"></span> 신랑·신부의 무한 감사 x99 획득</p>
+            <p class="secret-sub">12.20 SUN 13:00 · 더화이트베일에서 만나요!</p>
+            <button class="pbtn rose" type="button" id="secret-close">CONTINUE ▶</button>
+        </div>
+    </div>
 
     <script>
     const WEDDING = {
@@ -353,6 +391,29 @@
         location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
     };
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 결혼식 전 / 당일 / 이후 (KST). 미리보기: ?phase=before|day|after
+    const kstDate = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+    const PHASE = (() => {
+        const q = new URLSearchParams(location.search).get('phase');
+        if (['before', 'day', 'after'].includes(q)) return q;
+        const today = kstDate(new Date()), day = kstDate(WEDDING.start);
+        return today < day ? 'before' : today === day ? 'day' : 'after';
+    })();
+
+    // ===== Wedding-day / after switch =====
+    (function phaseCopy() {
+        if (PHASE === 'before') return;
+        const copy = {
+            day: { coin: 'TODAY · BOSS STAGE', press: 'GAME START!', note: '오늘 오후 1시, 더화이트베일 3층 V홀에서\n두 PLAYER 의 duo play 가 시작됩니다!' },
+            after: { coin: 'STAGE CLEAR · TRUE ENDING', press: 'THANK YOU FOR PLAYING', note: '축하해 주신 모든 PLAYER 덕분에\nTRUE ENDING 을 달성했습니다.\n진심으로 감사합니다 ♥' },
+        }[PHASE];
+        document.getElementById('coin').textContent = copy.coin;
+        document.getElementById('press').textContent = copy.press;
+        const note = document.getElementById('phase-note');
+        note.textContent = copy.note;
+        note.hidden = false;
+        if (PHASE === 'after') document.getElementById('timer').hidden = true;
+    })();
 
     // ===== Pixel icons: drawn from bitmaps, so they sit on the same pixel grid as the font =====
     const ICONS = {
@@ -448,6 +509,140 @@
         toast(`ITEM GET! ${btn.dataset.label || ''} 복사 완료`);
     });
 
+    // ===== BGM: 8-bit "Bridal Chorus" (Wagner, public domain) synthesized with Web Audio — no audio files =====
+    const Chip = (() => {
+        let ctx = null, master = null, loopTimer = null, t0 = 0;
+        const freq = (n) => {
+            const m = /^([A-G])(b|#)?(\d)$/.exec(n);
+            const semi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (+m[3] + 1) * 12;
+            return 440 * Math.pow(2, (semi - 69) / 12);
+        };
+        const BEAT = 60 / 96;
+        // melody: [note, beats] — "Here comes the bride…"
+        const MELODY = [
+            ['G4', 1], ['C5', 1.5], ['C5', .5], ['C5', 2],
+            ['G4', 1], ['D5', 1.5], ['B4', .5], ['C5', 2],
+            ['G4', 1], ['C5', 1.5], ['F5', .5], ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1],
+            ['B4', 1], ['C5', 1], ['D5', 2], ['R', 3],
+        ];
+        // bass: one chord per 2 beats, root + fifth on quarter notes
+        const CHORDS = ['C', 'C', 'C', 'G', 'C', 'F', 'F', 'C', 'G', 'C', 'G', 'C'];
+        const BASS = { C: ['C3', 'G3'], G: ['G2', 'D3'], F: ['F2', 'C3'] };
+        const LOOP = 24 * BEAT;
+        function tone(f, t, dur, type, vol) {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.type = type; o.frequency.setValueAtTime(f, t);
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(vol, t + 0.01);
+            g.gain.setValueAtTime(vol, t + dur * 0.75);
+            g.gain.linearRampToValueAtTime(0, t + dur * 0.95);
+            o.connect(g).connect(master);
+            o.start(t); o.stop(t + dur);
+        }
+        function scheduleLoop(start) {
+            let b = 0;
+            for (const [n, beats] of MELODY) {
+                if (n !== 'R') tone(freq(n), start + b * BEAT, beats * BEAT, 'square', 0.07);
+                b += beats;
+            }
+            CHORDS.forEach((c, i) => {
+                const [root, fifth] = BASS[c];
+                tone(freq(root), start + (i * 2) * BEAT, BEAT, 'triangle', 0.16);
+                tone(freq(fifth), start + (i * 2 + 1) * BEAT, BEAT, 'triangle', 0.12);
+            });
+        }
+        function ensure() {
+            if (ctx) return;
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+            master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination);
+        }
+        return {
+            get playing() { return !!loopTimer; },
+            async play() {
+                ensure();
+                await ctx.resume();
+                if (loopTimer) return;
+                t0 = ctx.currentTime + 0.08;
+                scheduleLoop(t0);
+                loopTimer = setInterval(() => {                 // queue the next loop ~1s before this one ends
+                    if (ctx.currentTime > t0 + LOOP - 1) { t0 += LOOP; scheduleLoop(t0); }
+                }, 250);
+            },
+            stop() {
+                clearInterval(loopTimer); loopTimer = null;
+                if (ctx) { master.disconnect(); master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination); }
+            },
+            async jingle() {                                     // short "1-UP" fanfare for the secret
+                ensure(); await ctx.resume();
+                const t = ctx.currentTime + 0.03;
+                ['E5', 'G5', 'E6', 'C6', 'D6', 'G6'].forEach((n, i) => tone(freq(n), t + i * 0.09, 0.1, 'square', 0.08));
+            },
+            suspend() { if (ctx) ctx.suspend(); },
+            resume() { if (ctx && loopTimer) ctx.resume(); },
+        };
+    })();
+
+    (function bgmToggle() {
+        const btn = document.getElementById('bgm');
+        const set = (on) => {
+            btn.setAttribute('aria-pressed', on);
+            btn.setAttribute('aria-label', on ? '배경음악 끄기' : '배경음악 켜기');
+            btn.querySelector('.lbl').textContent = on ? 'BGM ON' : 'BGM OFF';
+        };
+        btn.addEventListener('click', async () => {
+            if (Chip.playing) { Chip.stop(); set(false); }
+            else { await Chip.play(); set(true); }
+        });
+        document.addEventListener('visibilitychange', () => (document.hidden ? Chip.suspend() : Chip.resume()));
+    })();
+
+    // ===== Konami code: ↑↑↓↓←→←→BA (keyboard) or the same swipes + 2 taps (touch) =====
+    (function konami() {
+        const KEYS = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        const TOUCH = [...KEYS.slice(0, 8), 'tap', 'tap'];
+        const box = document.getElementById('secret');
+        let buf = [];
+        function push(tok) {
+            buf.push(tok); buf = buf.slice(-10);
+            if (buf.join() === KEYS.join() || buf.join() === TOUCH.join()) { buf = []; unlock(); }
+        }
+        function unlock() {
+            box.hidden = false;
+            document.getElementById('secret-close').focus();
+            Chip.jingle();
+            if (reduceMotion) return;
+            const colors = ['#ff6f91', '#ffcf5c', '#6ee7c8', '#f5ecd7'];
+            for (let i = 0; i < 36; i++) {
+                const h = document.createElement('div');
+                h.className = 'heart-fall';
+                h.innerHTML = `<svg viewBox="0 0 7 6" width="14" height="12" fill="${colors[i % colors.length]}" shape-rendering="crispEdges">${ICONS.heart.map((row, y) => [...row].map((c, x) => c === 'X' ? `<rect x="${x}" y="${y}" width="1" height="1"/>` : '').join('')).join('')}</svg>`;
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = 1.6 + Math.random() * 1.8 + 's';
+                h.style.animationDelay = Math.random() * 0.8 + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4500);
+            }
+        }
+        document.getElementById('secret-close').addEventListener('click', () => { box.hidden = true; });
+        box.addEventListener('click', (e) => { if (e.target === box) box.hidden = true; });
+        addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !box.hidden) { box.hidden = true; return; }
+            if (e.target instanceof Element && e.target.closest('input, textarea')) return;
+            push(e.key.length === 1 ? e.key.toLowerCase() : e.key);
+        });
+        let sx = 0, sy = 0;
+        addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        addEventListener('touchend', (e) => {
+            if (e.target instanceof Element && e.target.closest('input, textarea')) return;
+            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+            const ax = Math.abs(dx), ay = Math.abs(dy);
+            if (ax < 12 && ay < 12) return push('tap');
+            if (Math.max(ax, ay) < 30) return;
+            // finger moving up = swipe up
+            push(ay > ax ? (dy < 0 ? 'ArrowUp' : 'ArrowDown') : (dx < 0 ? 'ArrowLeft' : 'ArrowRight'));
+        }, { passive: true });
+    })();
+
     // ===== Countdown =====
     (function countdown() {
         const u = Object.fromEntries([...document.querySelectorAll('#timer [data-u]')].map((b) => [b.dataset.u, b]));
@@ -460,9 +655,10 @@
             u.h.textContent = pad(Math.floor(diff / 3600e3) % 24);
             u.m.textContent = pad(Math.floor(diff / 60e3) % 60);
             u.s.textContent = pad(Math.floor(diff / 1e3) % 60);
-            const kst = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
-            const dayDiff = Math.round((new Date(kst(WEDDING.start)) - new Date(kst(now))) / 86400e3);
-            note.innerHTML = dayDiff > 0 ? `BOSS STAGE IN <b>D-${dayDiff}</b>` : dayDiff === 0 ? '<b>D-DAY</b> · GAME START!' : '<b>STAGE CLEAR</b> ♥';
+            const dayDiff = Math.round((new Date(kstDate(WEDDING.start)) - new Date(kstDate(now))) / 86400e3);
+            note.innerHTML = PHASE === 'before' ? `BOSS STAGE IN <b>D-${dayDiff}</b>`
+                : PHASE === 'day' ? '<b>D-DAY</b> · GAME START!'
+                : '<b>STAGE CLEAR</b> · THANK YOU ♥';
         }
         tick();
         setInterval(tick, 1000);
