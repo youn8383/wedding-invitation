@@ -35,24 +35,27 @@
         .boot .pick.terminal { color: var(--green); text-shadow: 0 0 14px rgba(74, 222, 128, .5); }
         .boot .pick.retro { color: var(--gold); text-shadow: 2px 2px 0 var(--rose); }
         .bar { margin-top: 14px; height: 2px; background: #1a1a1f; overflow: hidden; }
-        .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--mint), var(--gold), var(--rose)); transition: width 1.3s cubic-bezier(.4, 0, .2, 1); }
+        .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--mint), var(--gold), var(--rose)); transition: width 2.3s cubic-bezier(.4, 0, .2, 1); }
         .cursor { display: inline-block; width: 8px; height: 1em; vertical-align: -2px; background: var(--green); animation: blink 1s steps(1) infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
         /* glitch-out right before switching pages */
-        .glitch { position: fixed; inset: 0; pointer-events: none; opacity: 0; }
-        .glitch.go { animation: glitch .32s steps(4) forwards; }
-        .glitch::before, .glitch::after { content: ''; position: absolute; left: 0; right: 0; height: 18%; }
-        .glitch::before { top: 22%; background: rgba(0, 255, 255, .55); mix-blend-mode: screen; }
-        .glitch::after { top: 61%; background: rgba(255, 0, 160, .55); mix-blend-mode: screen; }
-        @keyframes glitch {
-            0% { opacity: 1; transform: translateX(-8px); }
-            25% { opacity: 1; transform: translateX(10px) skewX(-6deg); }
-            50% { opacity: 1; transform: translateX(-4px); background: rgba(255, 255, 255, .08); }
-            100% { opacity: 1; background: var(--bg); }
+        /* soft glitch-out: drifting RGB bands + blur fade instead of a hard shake */
+        .glitch { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: transparent; }
+        .glitch.go { opacity: 1; animation: veil .45s ease-in .1s forwards; }
+        .glitch::before, .glitch::after { content: ''; position: absolute; left: -10%; right: -10%; height: 16%; opacity: 0; mix-blend-mode: screen; filter: blur(6px); }
+        .glitch::before { top: 24%; background: linear-gradient(90deg, transparent, rgba(0, 255, 255, .45), transparent); }
+        .glitch::after { top: 60%; background: linear-gradient(90deg, transparent, rgba(255, 0, 160, .45), transparent); }
+        .glitch.go::before { animation: band .55s ease-in-out forwards; }
+        .glitch.go::after { animation: band .55s ease-in-out .06s reverse forwards; }
+        @keyframes band { 0% { opacity: 0; transform: translateX(-14px); } 45% { opacity: 1; } 100% { opacity: 0; transform: translateX(14px); } }
+        @keyframes veil { to { background: var(--bg); } }
+        .boot.out { animation: out .5s cubic-bezier(.4, 0, .6, 1) forwards; }
+        @keyframes out {
+            0% { opacity: 1; transform: none; filter: none; }
+            35% { transform: translateX(1.5px); filter: blur(.4px) drop-shadow(-2px 0 0 rgba(0, 255, 255, .5)) drop-shadow(2px 0 0 rgba(255, 0, 160, .5)); }
+            100% { opacity: 0; transform: scale(.985); filter: blur(3px); }
         }
-        .boot.shake { animation: shake .3s steps(3); }
-        @keyframes shake { 33% { transform: translate(3px, -1px); filter: hue-rotate(90deg); } 66% { transform: translate(-3px, 1px); } }
 
         noscript { display: block; text-align: center; line-height: 2.2; }
         noscript a { color: var(--green); }
@@ -92,20 +95,20 @@
             line('<b>wedding.os</b> v1.0 — 윤상현 ♥ 신아람');
             box.appendChild(bar);
             requestAnimationFrame(() => { bar.firstChild.style.width = '100%'; });
-            await sleep(260);
+            await sleep(420);
             line('&gt; mounting 2026-12-20 ......... <span class="ok">ok</span>');
-            await sleep(260);
+            await sleep(420);
             {
                 const roll = line('&gt; rolling theme dice ');
-                for (let i = 0; i < 8; i++) { roll.innerHTML = '&gt; rolling theme dice ' + '|/-\\'[i % 4]; await sleep(60); }
+                for (let i = 0; i < 8; i++) { roll.innerHTML = '&gt; rolling theme dice ' + '|/-\\'[i % 4]; await sleep(70); }
                 roll.innerHTML = '&gt; rolling theme dice ........ <span class="ok">ok</span>';
             }
-            await sleep(160);
+            await sleep(220);
             line(label + ' <span class="cursor"></span>', 'pick ' + theme);
-            await sleep(520);
-            box.classList.add('shake');
+            await sleep(560);
+            box.classList.add('out');
             document.getElementById('glitch').classList.add('go');
-            await sleep(300);
+            await sleep(450);
             go();
         })();
     })();
