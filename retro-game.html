@@ -31,8 +31,6 @@
         .game-container { display: none; }
         .section { background: #16213e; border: 3px solid #4ecdc4; margin: 20px 0; padding: 15px; }
         .section-title { font-size: 14px; color: #ff6b6b; border-bottom: 3px dashed #4ecdc4; padding-bottom: 10px; margin-bottom: 15px; }
-        .intro { font-size: 14px; color: #fff; text-align: center; line-height: 2; margin-top: 15px; }
-        .intro em { font-family: 'Press Start 2P', monospace; font-style: normal; font-size: 10px; color: #ffe66d; }
         .character-select { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .character { text-align: center; padding: 12px 8px; background: #0f3460; border: 3px solid #ff6b6b; }
         .p-tag { display: inline-block; font-size: 8px; color: #1a1a2e; background: #ffe66d; padding: 4px 6px; line-height: 1; margin-bottom: 8px; }
@@ -83,7 +81,6 @@
         @media (max-width: 400px) {
             .title { font-size: 15px; } .section-title { font-size: 11px; }
             .stats-box { font-size: 8px; } .btn { font-size: 8px; padding: 8px; }
-            .intro { font-size: 13px; }
         }
         @media (prefers-reduced-motion: reduce) { .press-start { animation: none; } }
     </style>
@@ -101,14 +98,8 @@
             <div class="section">
                 <div class="section-title">🎮 PLAYER SELECT</div>
                 <div class="stage-shot">
-                    <img src="images/garden-stage.webp?v=1" alt="정원 웨딩 아치 앞에 선 신부 신아람과 신랑 윤상현의 픽셀 아트 게임 화면" width="813" height="1260">
+                    <img src="images/garden-stage.webp?v=2" alt="정원 웨딩 아치 앞에 선 신부 신아람과 신랑 윤상현. 서로 다른 map 에서 level up 해온 두 player 가 이제 하나의 party 로 co-op 을 시작합니다. 수많은 stage 끝에 찾아낸 true ending 이니 오셔서 따뜻한 축복으로 buff 를 걸어주세요." width="813" height="1284">
                 </div>
-                <p class="intro ko">
-                    서로 다른 map 에서 level up 해온 두 player 가<br>
-                    이제 하나의 party 로 co-op 을 시작합니다.<br>
-                    수많은 stage 끝에 찾아낸 true ending 이니<br>
-                    오셔서 따뜻한 축복으로 buff 를 걸어주세요.
-                </p>
                 <div class="character-select">
                     <div class="character">
                         <div class="p-tag">PLAYER 1</div>
