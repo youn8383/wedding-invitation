@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>윤상현 ♥ 신아람 결혼합니다 | wedding.deploy()</title>
+    <meta name="description" content="2026년 12월 20일 (일) 오후 1시, 더화이트베일 3층 V홀">
+    <meta name="theme-color" content="#0d0d0d">
+    <meta name="robots" content="noindex">
+
+    <!-- 카카오톡/SNS 공유 미리보기 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="윤상현 ♥ 신아람 결혼합니다">
+    <meta property="og:description" content="2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀">
+    <meta property="og:image" content="https://wedding-invitation-new-delta.vercel.app/images/og-terminal.jpg?v=1">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="윤상현 ♥ 신아람 · 2026.12.20 SUN 13:00 · 더화이트베일 3F V홀">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --panel: rgba(13, 13, 13, 0.94);
+            --line: #333;
+            --green: #00ff66;
+            --dim: #8a8a8a;
+            --pink: #ff79c6;
+            --cyan: #8be9fd;
+            --yellow: #f1fa8c;
+            --purple: #bd93f9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        html { -webkit-text-size-adjust: 100%; }
+        body {
+            font-family: 'JetBrains Mono', 'Nanum Gothic Coding', 'Courier New', monospace;
+            background: var(--bg); color: var(--green); line-height: 1.7; overflow-x: hidden;
+        }
+        #matrix-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.35; }
+        .container { max-width: 640px; margin: 0 auto; padding: 16px; }
+
+        .terminal-window { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin: 18px 0; box-shadow: 0 4px 24px rgba(0, 255, 102, 0.08); overflow: hidden; }
+        .terminal-header { background: #1a1a1a; padding: 10px 14px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+        .terminal-btn { width: 12px; height: 12px; border-radius: 50%; }
+        .btn-red { background: #ff5f56; } .btn-yellow { background: #ffbd2e; } .btn-green { background: #27c93f; }
+        .terminal-title { margin-left: 8px; font-size: 13px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .terminal-content { padding: 18px; }
+
+        .prompt { color: var(--dim); font-size: 13px; margin-bottom: 8px; }
+        .prompt b { color: var(--green); font-weight: 400; }
+        pre, .code-block {
+            font-family: inherit; background: #0a0a0a; border: 1px solid var(--line); border-radius: 6px;
+            padding: 14px; margin: 10px 0 4px; font-size: 13.5px; white-space: pre-wrap; word-break: keep-all; overflow-wrap: anywhere;
+        }
+        .k { color: var(--pink); } .p { color: var(--cyan); } .s { color: var(--yellow); } .c { color: #6272a4; } .n { color: var(--purple); }
+
+        h1 { font-size: 22px; margin: 6px 0 12px; text-shadow: 0 0 10px rgba(0, 255, 102, 0.45); }
+        h1 code, h2 code { font-family: inherit; }
+        .typing { min-height: 4.6em; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        .cursor { display: inline-block; width: 9px; height: 1.1em; background: var(--green); animation: blink 1s infinite; vertical-align: text-bottom; }
+        .status-badge { display: inline-block; background: var(--green); color: var(--bg); padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+
+        .names { text-align: center; margin: 18px 0 6px; }
+        .names .ko { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+        .names .ko .heart { color: var(--pink); margin: 0 10px; }
+        .names .en { font-size: 12px; color: var(--dim); letter-spacing: 2px; margin-top: 4px; }
+        .message { color: #d6d6d6; text-align: center; font-size: 14.5px; line-height: 2; margin: 16px 0 4px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .person { border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center; }
+        .person .role { font-size: 12px; color: var(--dim); }
+        .person .name { color: #fff; font-size: 17px; font-weight: 700; margin: 2px 0; }
+        .person .en { font-size: 11px; color: var(--dim); }
+
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .person .btn-row { justify-content: center; }
+        .btn {
+            font-family: inherit; font-size: 13px; color: var(--green); background: transparent;
+            border: 1px solid var(--green); border-radius: 6px; padding: 8px 12px; cursor: pointer;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px; min-height: 40px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active, .btn:hover { background: rgba(0, 255, 102, 0.12); }
+        .btn.sm { font-size: 12px; padding: 6px 10px; min-height: 34px; }
+        .btn.full { flex: 1; justify-content: center; white-space: nowrap; }
+
+        .dday { text-align: center; margin: 14px 0 4px; }
+        .dday .big { font-size: 32px; font-weight: 700; color: #fff; text-shadow: 0 0 12px rgba(0, 255, 102, 0.5); }
+        .dday .countdown { color: var(--dim); font-size: 13px; }
+        .cal { width: fit-content; margin-left: auto; margin-right: auto; white-space: pre; }
+        .cal .today { background: var(--green); color: var(--bg); border-radius: 3px; font-weight: 700; }
+        .cal .sun { color: #ff6b6b; }
+
+
+        .build-log { color: #cfe9d6; }
+        .build-log .info { color: var(--cyan); }
+        .build-log .ok { color: var(--green); }
+        .photo-box { border: 1px solid var(--green); border-radius: 6px; overflow: hidden; margin-top: 8px; box-shadow: 0 0 18px rgba(0, 255, 102, 0.18); background: #050805; }
+        .photo-box img { display: block; width: 100%; height: auto; }
+        .photo-caption { text-align: center; font-size: 13px; margin-top: 10px; }
+        .photo-caption .heart { color: var(--pink); }
+        .nav-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+        .nav-row .btn { font-size: 12px; padding: 8px 4px; gap: 4px; }
+
+        .gb-form { display: grid; gap: 8px; margin-top: 10px; }
+        .gb-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .gb-input {
+            font-family: inherit; font-size: 16px; color: #e6e6e6; background: #0a0a0a; width: 100%;
+            border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; outline: none;
+        }
+        .gb-input:focus { border-color: var(--green); }
+        .gb-input::placeholder { color: #555; }
+        textarea.gb-input { resize: vertical; min-height: 84px; line-height: 1.6; }
+        .gb-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--dim); font-size: 12px; }
+        .gb-list { margin-top: 16px; display: grid; gap: 10px; }
+        .gb-item { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: #0a0a0a; font-size: 13px; }
+        .gb-item .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .gb-item .hash { color: var(--yellow); }
+        .gb-item .author { color: var(--cyan); }
+        .gb-item .date { color: var(--dim); font-size: 11px; }
+        .gb-item .msg { color: #e6e6e6; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .gb-item .del { font-family: inherit; background: none; border: 0; color: var(--dim); font-size: 11px; cursor: pointer; padding: 4px; }
+        .gb-item .del:hover { color: #ff6b6b; }
+        .gb-item .del-form { display: flex; gap: 6px; margin-top: 8px; }
+        .gb-item .del-form .gb-input { font-size: 16px; padding: 6px 8px; }
+        .gb-empty { color: var(--dim); font-size: 13px; text-align: center; padding: 10px 0; }
+        .gb-more { margin-top: 10px; }
+
+        .toast {
+            position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
+            background: var(--green); color: var(--bg); padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 700;
+            opacity: 0; transition: all .25s; pointer-events: none; z-index: 10;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .footer { text-align: center; margin: 30px 0 20px; color: var(--dim); font-size: 12px; }
+        a { color: var(--green); }
+
+        @media (max-width: 380px) {
+            .terminal-content { padding: 14px; }
+            pre, .code-block { font-size: 12px; padding: 10px; }
+            .names .ko { font-size: 21px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #matrix-bg { display: none; }
+            .cursor { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg" aria-hidden="true"></canvas>
+    <div class="container">
+
+        <!-- 01. HERO -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">bash — wedding.deploy()</span>
+            </div>
+            <div class="terminal-content">
+                <h1>💒 <code>wedding.deploy()</code></h1>
+                <pre class="typing" id="typing" aria-label="./wedding --groom 윤상현 --bride 신아람 --date 2026.12.20"></pre>
+                <span class="status-badge">STATUS: PRODUCTION_READY</span>
+
+                <div class="names">
+                    <div class="ko">윤상현<span class="heart">♥</span>신아람</div>
+                    <div class="en">YOUN SANGHYOUN &amp; SHIN AHRAM</div>
+                </div>
+                <p class="message">
+                    서로 다른 branch 에서 자라온 두 사람이<br>
+                    이제 하나의 main 으로 merge 하려 합니다.<br>
+                    오랜 test 끝에 내린 commit 이니<br>
+                    오셔서 따뜻한 축복으로 approve 해주세요.
+                </p>
+            </div>
+        </section>
+
+        <!-- 02. PHOTO -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/us.png</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> love --commit</div>
+<pre class="build-log"><span class="info">[INFO]</span> Building a lifetime...
+<span class="info">[INFO]</span> Two hearts. One repository.
+<span class="info">[INFO]</span> Marriage.exe compiled successfully. <span class="ok">✓</span></pre>
+                <div class="prompt" style="margin-top:16px"><b>$</b> open us.png</div>
+                <div class="photo-box">
+                    <img src="../images/us-terminal.webp?v=1" alt="신랑 윤상현과 신부 신아람의 픽셀 아트 웨딩 일러스트" width="892" height="896" loading="lazy">
+                </div>
+                <p class="photo-caption"><span class="c"># love is the ultimate open source</span> <span class="heart">♥</span></p>
+            </div>
+        </section>
+
+        <!-- 03. COUPLE / CONTACT -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/contributors</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> cat contributors.yaml</div>
+<pre><span class="k">groom</span>:
+  <span class="p">name</span>: <span class="s">"윤상현"</span>
+  <span class="p">en</span>: <span class="s">"Youn Sanghyoun"</span>
+  <span class="p">parents</span>: [<span class="s">"윤태락"</span>, <span class="s">"신정순"</span>]  <span class="c"># 의 아들</span>
+<span class="k">bride</span>:
+  <span class="p">name</span>: <span class="s">"신아람"</span>
+  <span class="p">en</span>: <span class="s">"Shin Ahram"</span>
+  <span class="p">parents</span>: [<span class="s">"신동직"</span>, <span class="s">"이선옥"</span>]  <span class="c"># 의 딸</span></pre>
+                <div class="grid-2">
+                    <div class="person">
+                        <div class="role">🤵 groom</div>
+                        <div class="name">윤상현</div>
+                        <div class="en">Youn Sanghyoun</div>
+                        <div class="btn-row">
+                            <a class="btn sm" href="tel:010-9991-8768" aria-label="신랑에게 전화하기">📞 call</a>
+                            <button class="btn sm" type="button" data-copy="kiki8383" data-label="신랑 카카오톡 ID" aria-label="신랑 카카오톡 ID 복사">💬 kakao</button>
+                        </div>
+                    </div>
+                    <div class="person">
+                        <div class="role">👰 bride</div>
+                        <div class="name">신아람</div>
+                        <div class="en">Shin Ahram</div>
+                        <div class="btn-row">
+                            <a class="btn sm" href="tel:010-7303-5186" aria-label="신부에게 전화하기">📞 call</a>
+                            <button class="btn sm" type="button" data-copy="jys282ar" data-label="신부 카카오톡 ID" aria-label="신부 카카오톡 ID 복사">💬 kakao</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04. SCHEDULE -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/schedule</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> cat config/wedding.yaml</div>
+<pre><span class="k">schedule</span>:
+  <span class="p">date</span>: <span class="s">"2026-12-20 (일)"</span>
+  <span class="p">time</span>: <span class="s">"13:00 KST"</span>  <span class="c"># 오후 1시</span>
+  <span class="p">cron</span>: <span class="s">"0 13 20 12 *"</span>  <span class="c"># 단 한 번만 실행됩니다</span>
+<span class="k">venue</span>:
+  <span class="p">name</span>: <span class="s">"더화이트베일"</span>
+  <span class="p">hall</span>: <span class="s">"3F V홀"</span></pre>
+
+                <div class="prompt" style="margin-top:16px"><b>$</b> cal 12 2026</div>
+                <pre class="cal" id="cal"></pre>
+
+                <div class="dday">
+                    <div class="big" id="dday">D-?</div>
+                    <div class="countdown" id="countdown"></div>
+                </div>
+                <div class="btn-row">
+                    <a class="btn full" id="gcal" target="_blank" rel="noopener">📅 Google 캘린더</a>
+                    <button class="btn full" id="ics" type="button">🗓️ 캘린더 저장 (.ics)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05. LOCATION -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/location</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> curl -s https://wedding.local/location | jq</div>
+<pre>{
+  <span class="p">"venue"</span>: <span class="s">"더화이트베일 3층 V홀"</span>,
+  <span class="p">"address"</span>: <span class="s">"서울 서초구 서초중앙로 14"</span>,
+  <span class="p">"subway"</span>: <span class="s">"3호선 남부터미널역 도보 약 3분"</span>,
+  <span class="p">"parking"</span>: <span class="s">"웨딩홀 주차장 이용 가능"</span>
+}</pre>
+                <div class="prompt" style="margin-top:16px"><b>$</b> open --map</div>
+                <div class="nav-row">
+                    <a class="btn full" href="https://map.naver.com/p/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟢 네이버지도</a>
+                    <a class="btn full" href="https://map.kakao.com/link/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟡 카카오맵</a>
+                    <a class="btn full" id="tmap" href="tmap://search?name=%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC">🔵 TMAP</a>
+                </div>
+                <div class="btn-row">
+                    <button class="btn full" type="button" data-copy="서울 서초구 서초중앙로 14" data-label="주소">📋 주소 복사</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 06. GUESTBOOK -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/guestbook</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> git commit -m "축하 메시지"</div>
+                <form class="gb-form" id="gb-form" autocomplete="off">
+                    <div class="row">
+                        <input class="gb-input" name="name" placeholder="이름" maxlength="20" required aria-label="이름">
+                        <input class="gb-input" name="password" type="password" placeholder="비밀번호" maxlength="32" required aria-label="삭제용 비밀번호">
+                    </div>
+                    <textarea class="gb-input" name="message" placeholder="두 사람에게 축하 메시지를 남겨주세요 ♥" maxlength="500" required aria-label="축하 메시지"></textarea>
+                    <div class="gb-meta">
+                        <span id="gb-count">0 / 500</span>
+                        <span>비밀번호는 삭제할 때 필요해요</span>
+                    </div>
+                    <button class="btn full" type="submit" id="gb-submit">💌 축하 메시지 commit</button>
+                </form>
+
+                <div class="prompt" style="margin-top:18px"><b>$</b> git log --oneline guestbook</div>
+                <div class="gb-list" id="gb-list"><div class="gb-empty">loading...</div></div>
+                <div class="btn-row gb-more" id="gb-more" hidden>
+                    <button class="btn full" type="button">더 보기</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 07. SHARE -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding — git push</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> git log -1</div>
+<pre><span class="n">commit a1b2c3d</span> (HEAD -&gt; main, tag: v1.0.0)
+Author: Youn Sanghyoun &amp; Shin Ahram
+Date:   Sun Dec 20 13:00:00 2026 +0900
+
+    Merge branch 'bride' into 'groom' 💍
+    We're getting married!</pre>
+                <div class="btn-row">
+                    <button class="btn full" type="button" id="share">🔗 청첩장 공유하기</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">
+            "It's not a bug, it's a feature — for life."<br>
+            © 2026 Youn Sanghyoun &amp; Shin Ahram
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+    // ===== CONFIG =====
+    const WEDDING = {
+        start: new Date('2026-12-20T13:00:00+09:00'),
+        end:   new Date('2026-12-20T15:00:00+09:00'),
+        title: '윤상현 ♥ 신아람 결혼식',
+        location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
+    };
+
+
+    // ===== Toast / Clipboard =====
+    const toastEl = document.getElementById('toast');
+    let toastTimer;
+    function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+    }
+    async function copyText(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        }
+    }
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('[data-copy]');
+        if (!btn) return;
+        await copyText(btn.dataset.copy);
+        toast(`✓ ${btn.dataset.label || ''} 복사되었습니다`);
+    });
+
+    // ===== Typing hero =====
+    (function typing() {
+        const el = document.getElementById('typing');
+        const lines = [
+            '$ ./wedding --groom 윤상현 --bride 신아람 --date 2026.12.20',
+            '> Build success ✓',
+            '> Deploying to production...',
+        ];
+        const full = lines.join('\n');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const cursor = '<span class="cursor"></span>';
+        if (reduce) { el.textContent = full; el.insertAdjacentHTML('beforeend', cursor); return; }
+        let i = 0;
+        (function step() {
+            el.textContent = full.slice(0, i);
+            el.insertAdjacentHTML('beforeend', cursor);
+            if (i++ < full.length) setTimeout(step, full[i - 1] === '\n' ? 350 : 38);
+        })();
+    })();
+
+    // ===== Calendar (cal 12 2026) =====
+    (function renderCal() {
+        const y = 2026, m = 11, mark = 20; // month index: 11 = December
+        const first = new Date(y, m, 1).getDay();
+        const days = new Date(y, m + 1, 0).getDate();
+        const pad = (s) => String(s).padStart(2, ' ');
+        let html = '   December 2026\n<span class="sun">Su</span> Mo Tu We Th Fr Sa\n';
+        let col = 0;
+        html += '   '.repeat(first); col = first;
+        for (let d = 1; d <= days; d++) {
+            let cell = pad(d);
+            if (d === mark) cell = `<span class="today">${cell}</span>`;
+            else if (col === 0) cell = `<span class="sun">${cell}</span>`;
+            html += cell + (col === 6 ? '\n' : ' ');
+            col = (col + 1) % 7;
+        }
+        document.getElementById('cal').innerHTML = html.trimEnd();
+    })();
+
+    // ===== D-day countdown =====
+    (function dday() {
+        const ddayEl = document.getElementById('dday');
+        const cdEl = document.getElementById('countdown');
+        function tick() {
+            const now = new Date();
+            const diff = WEDDING.start - now;
+            const kst = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+            const dayDiff = Math.round((new Date(kst(WEDDING.start)) - new Date(kst(now))) / 86400e3);
+            if (dayDiff > 0) ddayEl.textContent = `D-${dayDiff}`;
+            else if (dayDiff === 0) ddayEl.textContent = 'D-DAY 💍';
+            else ddayEl.textContent = `+${-dayDiff} days merged ♥`;
+            if (diff > 0) {
+                const d = Math.floor(diff / 86400e3), h = Math.floor(diff / 3600e3) % 24,
+                      mi = Math.floor(diff / 60e3) % 60, s = Math.floor(diff / 1e3) % 60;
+                cdEl.textContent = `deploy in ${d}d ${String(h).padStart(2,'0')}h ${String(mi).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+            } else {
+                cdEl.textContent = 'deployed successfully ✓';
+            }
+        }
+        tick();
+        setInterval(tick, 1000);
+    })();
+
+    // ===== Add to calendar =====
+    (function calendarLinks() {
+        const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+        const gcal = new URL('https://calendar.google.com/calendar/render');
+        gcal.searchParams.set('action', 'TEMPLATE');
+        gcal.searchParams.set('text', WEDDING.title);
+        gcal.searchParams.set('dates', `${fmt(WEDDING.start)}/${fmt(WEDDING.end)}`);
+        gcal.searchParams.set('location', WEDDING.location);
+        document.getElementById('gcal').href = gcal.toString();
+
+        document.getElementById('ics').addEventListener('click', () => {
+            const ics = [
+                'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//wedding.deploy//KO',
+                'BEGIN:VEVENT',
+                `UID:wedding-20261220@youn-shin`,
+                `DTSTAMP:${fmt(new Date())}`,
+                `DTSTART:${fmt(WEDDING.start)}`,
+                `DTEND:${fmt(WEDDING.end)}`,
+                `SUMMARY:${WEDDING.title}`,
+                `LOCATION:${WEDDING.location.replace(/,/g, '\\,')}`,
+                'END:VEVENT', 'END:VCALENDAR',
+            ].join('\r\n');
+            const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+            const a = Object.assign(document.createElement('a'), { href: url, download: 'wedding-20261220.ics' });
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+    })();
+
+    // ===== TMAP: 앱이 없으면 스토어로 이동 =====
+    document.getElementById('tmap').addEventListener('click', () => {
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        if (!isIOS && !isAndroid) { toast('TMAP은 휴대폰에서 열 수 있어요'); return; }
+        const store = isIOS
+            ? 'https://apps.apple.com/kr/app/id431589174'
+            : 'https://play.google.com/store/apps/details?id=com.skt.tmap.ku';
+        const t = setTimeout(() => { if (!document.hidden) location.href = store; }, 1500);
+        document.addEventListener('visibilitychange', () => clearTimeout(t), { once: true });
+    });
+
+    // ===== Share =====
+    document.getElementById('share').addEventListener('click', async () => {
+        const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: location.href };
+        if (navigator.share) {
+            try { await navigator.share(data); } catch { /* 사용자가 취소 */ }
+        } else {
+            await copyText(location.href);
+            toast('✓ 링크가 복사되었습니다');
+        }
+    });
+
+    // ===== Guestbook (api/guestbook.js) =====
+    (function guestbook() {
+        const API = '/api/guestbook';
+        const PAGE = 10;
+        const form = document.getElementById('gb-form');
+        const listEl = document.getElementById('gb-list');
+        const moreEl = document.getElementById('gb-more');
+        const countEl = document.getElementById('gb-count');
+        const submitBtn = document.getElementById('gb-submit');
+        let entries = [], shown = PAGE;
+
+        async function api(method, body) {
+            const res = await fetch(API, {
+                method,
+                headers: body ? { 'Content-Type': 'application/json' } : undefined,
+                body: body ? JSON.stringify(body) : undefined,
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw Object.assign(new Error(data.error || '요청에 실패했습니다.'), { status: res.status });
+            return data;
+        }
+
+        const el = (tag, cls, text) => {
+            const node = document.createElement(tag);
+            if (cls) node.className = cls;
+            if (text != null) node.textContent = text;
+            return node;
+        };
+        const fmtDate = (ts) => new Date(ts).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+        });
+
+        function renderItem(entry) {
+            const item = el('div', 'gb-item');
+            const head = el('div', 'head');
+            const who = el('span');
+            who.append(el('span', 'hash', entry.id.slice(0, 7)), ' ', el('span', 'author', entry.name));
+            const right = el('span');
+            const del = el('button', 'del', '✕ revert');
+            del.type = 'button';
+            del.setAttribute('aria-label', `${entry.name} 님의 메시지 삭제`);
+            right.append(el('span', 'date', fmtDate(entry.createdAt)), del);
+            head.append(who, right);
+            item.append(head, el('div', 'msg', entry.message));
+
+            del.addEventListener('click', () => {
+                if (item.querySelector('.del-form')) return;
+                const f = el('form', 'del-form');
+                const pw = el('input', 'gb-input');
+                Object.assign(pw, { type: 'password', placeholder: '비밀번호', maxLength: 32, required: true });
+                pw.setAttribute('aria-label', '삭제용 비밀번호');
+                const ok = el('button', 'btn sm', '삭제');
+                const cancel = el('button', 'btn sm', '취소');
+                cancel.type = 'button';
+                cancel.addEventListener('click', () => f.remove());
+                f.append(pw, ok, cancel);
+                f.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    ok.disabled = true;
+                    try {
+                        await api('DELETE', { id: entry.id, password: pw.value });
+                        entries = entries.filter((x) => x.id !== entry.id);
+                        render();
+                        toast('✓ 메시지가 삭제되었습니다');
+                    } catch (err) {
+                        toast(err.message);
+                        ok.disabled = false;
+                    }
+                });
+                item.append(f);
+                pw.focus();
+            });
+            return item;
+        }
+
+        function render() {
+            listEl.replaceChildren();
+            if (!entries.length) listEl.append(el('div', 'gb-empty', '# 첫 번째 축하 메시지를 남겨주세요 ♥'));
+            entries.slice(0, shown).forEach((e) => listEl.append(renderItem(e)));
+            moreEl.hidden = entries.length <= shown;
+        }
+
+        async function load() {
+            try {
+                entries = (await api('GET')).entries;
+                render();
+            } catch (err) {
+                listEl.replaceChildren(el('div', 'gb-empty', err.status === 503
+                    ? '# guestbook storage 미설정'
+                    : '# 메시지를 불러오지 못했어요'));
+            }
+        }
+
+        form.elements.message.addEventListener('input', () => { countEl.textContent = `${form.elements.message.value.length} / 500`; });
+        moreEl.querySelector('button').addEventListener('click', () => { shown += PAGE; render(); });
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = { name: form.elements.name.value.trim(), message: form.elements.message.value.trim(), password: form.elements.password.value };
+            if (!body.name || !body.message || !body.password) return toast('이름, 메시지, 비밀번호를 입력해주세요');
+            submitBtn.disabled = true;
+            try {
+                const { entry } = await api('POST', body);
+                entries.unshift(entry);
+                render();
+                form.elements.message.value = '';
+                countEl.textContent = '0 / 500';
+                toast('✓ 축하 메시지가 commit 되었습니다 💌');
+            } catch (err) {
+                toast(err.message);
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        load();
+    })();
+
+    // ===== Matrix rain =====
+    (function matrix() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]=+-♥'.split('');
+        const fontSize = 18;
+        let drops = [], timer = null;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const cols = Math.ceil(canvas.width / fontSize);
+            drops = Array.from({ length: cols }, (_, i) => drops[i] ?? Math.floor(Math.random() * -50));
+        }
+        function draw() {
+            ctx.fillStyle = 'rgba(13, 13, 13, 0.06)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const ch = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillStyle = ch === '♥' ? '#ff79c6' : '#00ff66';
+                ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        function start() { if (!timer) timer = setInterval(draw, 50); }
+        function stop() { clearInterval(timer); timer = null; }
+
+        resize();
+        start();
+        let rt;
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 150); });
+        document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    })();
+    </script>
+</body>
+</html>
