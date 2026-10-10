@@ -493,7 +493,6 @@
         location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
     };
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    try { localStorage.setItem('wedding-theme', 'terminal'); } catch {}   // / 부팅 페이지가 다음에 이 버전을 열도록
     // 결혼식 전 / 당일 / 이후 (KST). 미리보기: ?phase=before|day|after
     const kstDate = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
     const PHASE = (() => {

@@ -68,17 +68,14 @@
     <div class="glitch" id="glitch" aria-hidden="true"></div>
 
     <script>
-    // 대표 주소(/): 공유 썸네일은 터미널·레트로 반반, 열면 둘 중 하나로 랜덤 진입
-    //  - 같은 사람이 다시 열면 마지막으로 본 버전으로 (localStorage 'wedding-theme')
+    // 대표 주소(/): 공유 썸네일은 터미널·레트로 반반, 열 때마다 둘 중 하나로 랜덤 진입
     //  - 테스트: ?theme=terminal|retro 로 고정, ?phase=… 등 다른 파라미터는 그대로 넘김
     (function boot() {
         const PAGES = { terminal: '/terminal.html', retro: '/retro-game.html' };
         const params = new URLSearchParams(location.search);
-        let saved = null;
-        try { saved = localStorage.getItem('wedding-theme'); } catch {}
         const forced = params.get('theme');
         params.delete('theme');
-        const theme = PAGES[forced] ? forced : PAGES[saved] ? saved : (crypto.getRandomValues(new Uint8Array(1))[0] % 2 ? 'retro' : 'terminal');
+        const theme = PAGES[forced] ? forced : (crypto.getRandomValues(new Uint8Array(1))[0] % 2 ? 'retro' : 'terminal');
         const qs = params.toString();
         const target = PAGES[theme] + (qs ? '?' + qs : '') + location.hash;
         const go = () => location.replace(target);
@@ -98,9 +95,7 @@
             await sleep(260);
             line('&gt; mounting 2026-12-20 ......... <span class="ok">ok</span>');
             await sleep(260);
-            if (PAGES[saved] && !PAGES[forced]) {
-                line('&gt; resume last session ........ <span class="ok">ok</span>');
-            } else {
+            {
                 const roll = line('&gt; rolling theme dice ');
                 for (let i = 0; i < 8; i++) { roll.innerHTML = '&gt; rolling theme dice ' + '|/-\\'[i % 4]; await sleep(60); }
                 roll.innerHTML = '&gt; rolling theme dice ........ <span class="ok">ok</span>';
