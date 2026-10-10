@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>🎮 윤상현 ♥ 신아람 WEDDING QUEST | Insert Coin to Start</title>
+    <meta name="description" content="2026년 12월 20일 (일) 오후 1시, 더화이트베일 3층 V홀">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="robots" content="noindex">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="🎮 윤상현 ♥ 신아람 WEDDING QUEST">
+    <meta property="og:description" content="2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀">
+    <meta property="og:image" content="https://wedding-invitation-new-delta.vercel.app/images/og-retro.jpg?v=1">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WEDDING QUEST · 윤상현 ♥ 신아람 · 2026.12.20 SUN 13:00 · 더화이트베일 3F V홀">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 한글 픽셀 글꼴: Galmuri (SIL OFL 1.1) -->
+    <link href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { font-family: 'Press Start 2P', 'Galmuri11', monospace; background: #1a1a2e; color: #fff; line-height: 1.8; overflow-x: hidden; }
+        .ko { font-family: 'Galmuri11', monospace; font-weight: 700; }
+        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px); pointer-events: none; z-index: 999; }
+        .container { max-width: 640px; margin: 0 auto; padding: 16px; }
+        .start-screen { text-align: center; padding: 50px 8px; }
+        .title { font-size: 20px; color: #ff6b6b; text-shadow: 3px 3px #4ecdc4; margin-bottom: 20px; }
+        .title .ko { display: block; font-size: 20px; color: #fff; text-shadow: 2px 2px #ff6b6b; margin-top: 14px; }
+        .subtitle { font-size: 10px; color: #ffe66d; margin-bottom: 30px; }
+        .press-start { font-family: inherit; font-size: 12px; color: #4ecdc4; background: none; border: 0; cursor: pointer; animation: blink 0.5s infinite; display: inline-block; }
+        .game-container { display: none; }
+        .section { background: #16213e; border: 3px solid #4ecdc4; margin: 20px 0; padding: 15px; }
+        .section-title { font-size: 14px; color: #ff6b6b; border-bottom: 3px dashed #4ecdc4; padding-bottom: 10px; margin-bottom: 15px; }
+        .character-select { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .character { text-align: center; padding: 12px 8px; background: #0f3460; border: 3px solid #ff6b6b; }
+        .p-tag { display: inline-block; font-size: 8px; color: #1a1a2e; background: #ffe66d; padding: 4px 6px; line-height: 1; margin-bottom: 8px; }
+        .character:nth-child(2) .p-tag { background: #4ecdc4; }
+        .stage-shot { border: 3px solid #fff; background: #1a1a2e; box-shadow: 4px 4px 0 #0f3460; }
+        .stage-shot img { display: block; width: 100%; height: auto; }
+        .character-name { font-size: 8px; color: #ffe66d; }
+        .character-name .ko { font-size: 16px; color: #fff; display: block; margin: 4px 0; }
+        .character-parents { font-size: 12px; color: #4ecdc4; margin-top: 6px; }
+        .stats-box { background: #0f3460; border: 3px solid #ffe66d; padding: 10px; font-size: 9px; }
+        .stat-row { display: flex; justify-content: space-between; gap: 10px; margin: 6px 0; }
+        .stat-label { color: #4ecdc4; flex-shrink: 0; }
+        .stat-value { color: #fff; text-align: right; }
+        .stat-value.ko { font-size: 13px; }
+        .dday { text-align: center; margin: 16px 0 6px; }
+        .dday .big { font-size: 20px; color: #ffe66d; text-shadow: 2px 2px #ff6b6b; }
+        .dday .countdown { font-size: 8px; color: #4ecdc4; margin-top: 8px; }
+        .map-container { background: #0f3460; border: 3px solid #ff6b6b; padding: 10px; }
+        .map-location { margin: 5px 0; color: #ffe66d; font-size: 13px; }
+        .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; background: #ff6b6b; color: #fff; padding: 10px 12px; font-family: 'Press Start 2P', monospace; font-size: 9px; border: 3px solid #fff; cursor: pointer; text-decoration: none; min-height: 40px; -webkit-tap-highlight-color: transparent; }
+        .btn.alt { background: #0f3460; }
+        .btn.sm { font-size: 8px; padding: 6px 8px; min-height: 34px; border-width: 2px; }
+        .btn.full { flex: 1; }
+        .btn:hover, .btn:active { opacity: 0.8; }
+        .btn:disabled { opacity: 0.5; cursor: default; }
+        .gb-form { display: grid; gap: 8px; }
+        .gb-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .gb-input { font-family: 'Galmuri11', monospace; font-size: 16px; color: #fff; background: #0f3460; border: 3px solid #4ecdc4; padding: 8px; width: 100%; outline: none; border-radius: 0; }
+        .gb-input:focus { border-color: #ffe66d; }
+        .gb-input::placeholder { color: #6b7fa8; }
+        textarea.gb-input { resize: vertical; min-height: 84px; line-height: 1.6; }
+        .gb-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 7px; color: #4ecdc4; }
+        .gb-list { display: grid; gap: 10px; margin-top: 16px; }
+        .gb-item { background: #0f3460; border: 3px solid #ff6b6b; padding: 10px; }
+        .gb-item .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 7px; color: #4ecdc4; }
+        .gb-item .author { font-family: 'Galmuri11', monospace; font-weight: 700; font-size: 14px; color: #ffe66d; }
+        .gb-item .msg { font-family: 'Galmuri11', monospace; font-size: 14px; color: #fff; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .gb-item .del { font-family: inherit; font-size: 7px; color: #6b7fa8; background: none; border: 0; padding: 4px; cursor: pointer; }
+        .gb-item .del:hover { color: #ff6b6b; }
+        .gb-item .del-form { display: flex; gap: 6px; margin-top: 8px; }
+        .gb-empty { text-align: center; font-size: 8px; color: #ffe66d; padding: 10px 0; }
+        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0; } }
+        .footer { text-align: center; margin-top: 30px; padding: 20px; font-size: 7px; color: #4ecdc4; }
+        .footer a { color: #4ecdc4; }
+        .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px); background: #ffe66d; color: #1a1a2e; border: 3px solid #fff; padding: 10px 14px; font-family: 'Galmuri11', monospace; font-weight: 700; font-size: 13px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 1000; white-space: nowrap; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @media (max-width: 400px) {
+            .title { font-size: 15px; } .section-title { font-size: 11px; }
+            .stats-box { font-size: 8px; } .btn { font-size: 8px; padding: 8px; }
+            .character-parents { font-size: 11px; letter-spacing: -0.3px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .press-start { animation: none; } }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="container">
+        <div class="start-screen" id="startScreen">
+            <div class="title">💒 WEDDING QUEST 💒<span class="ko">윤상현 ♥ 신아람</span></div>
+            <div class="subtitle">LEVEL: MARRIAGE<br>RELEASE: 2026.12.20 SUN<br>PLATFORM: THE WHITE VEIL</div>
+            <button class="press-start" type="button" onclick="startGame()">👉 PRESS START 👈</button>
+            <div style="margin-top:30px;font-size:7px;color:#4ecdc4;">© 2026 YOUN &amp; SHIN STUDIOS</div>
+        </div>
+        <div class="game-container" id="gameContainer">
+            <div class="section">
+                <div class="section-title">🎮 PLAYER SELECT</div>
+                <div class="stage-shot">
+                    <img src="../images/garden-stage.webp?v=5" alt="정원 웨딩 아치 앞에 선 신부 신아람과 신랑 윤상현. 서로 다른 map 에서 level up 해온 두 player 가 이제 하나의 party 로 duo play 를 시작합니다. 수많은 stage 끝에 찾아낸 true ending 이니 오셔서 따뜻한 축복으로 buff 를 걸어주세요." width="813" height="1284">
+                </div>
+                <div class="character-select">
+                    <div class="character">
+                        <div class="p-tag">PLAYER 1</div>
+                        <div class="character-name">GROOM<span class="ko">윤상현</span>YOUN SANGHYOUN</div>
+                        <div class="character-parents ko">윤태락 · 신정순의 아들</div>
+                        <div class="btn-row">
+                            <a class="btn sm" href="tel:010-9991-8768" aria-label="신랑에게 전화하기">📞 CALL</a>
+                            <button class="btn sm alt" type="button" data-copy="kiki8383" data-label="신랑 카카오톡 ID" aria-label="신랑 카카오톡 ID 복사">💬 KAKAO</button>
+                        </div>
+                    </div>
+                    <div class="character">
+                        <div class="p-tag">PLAYER 2</div>
+                        <div class="character-name">BRIDE<span class="ko">신아람</span>SHIN AHRAM</div>
+                        <div class="character-parents ko">신동직 · 이선옥의 딸</div>
+                        <div class="btn-row">
+                            <a class="btn sm" href="tel:010-7303-5186" aria-label="신부에게 전화하기">📞 CALL</a>
+                            <button class="btn sm alt" type="button" data-copy="jys282ar" data-label="신부 카카오톡 ID" aria-label="신부 카카오톡 ID 복사">💬 KAKAO</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center;font-size:9px;color:#ffe66d;margin-top:15px;line-height:2.2;white-space:nowrap;">❤️ PLAYER 1 + PLAYER 2 ❤️<br>= PERFECT MATCH</div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📜 QUEST DETAILS</div>
+                <div class="stats-box">
+                    <div class="stat-row"><span class="stat-label">QUEST:</span><span class="stat-value">WEDDING</span></div>
+                    <div class="stat-row"><span class="stat-label">DATE:</span><span class="stat-value">2026.12.20 SUN</span></div>
+                    <div class="stat-row"><span class="stat-label">TIME:</span><span class="stat-value">13:00 KST</span></div>
+                    <div class="stat-row"><span class="stat-label">STAGE:</span><span class="stat-value ko">더화이트베일 3층 V홀</span></div>
+                </div>
+                <div class="dday">
+                    <div class="big" id="dday">D-?</div>
+                    <div class="countdown" id="countdown"></div>
+                </div>
+                <div class="btn-row">
+                    <a class="btn full" id="gcal" target="_blank" rel="noopener">📅 GOOGLE</a>
+                    <button class="btn full alt" id="ics" type="button">🗓️ SAVE .ICS</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🗺️ WORLD MAP</div>
+                <div class="map-container">
+                    <div class="map-location ko">📍 더화이트베일 3층 V홀</div>
+                    <div class="map-location ko">🏠 서울 서초구 서초중앙로 14</div>
+                    <div class="map-location ko">🚇 3호선 남부터미널역 도보 약 3분</div>
+                    <div class="map-location ko">🅿️ 웨딩홀 주차장 이용 가능</div>
+                    <div class="btn-row">
+                        <a class="btn sm" href="https://map.naver.com/p/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟢 NAVER</a>
+                        <a class="btn sm" href="https://map.kakao.com/link/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener">🟡 KAKAO</a>
+                        <a class="btn sm" id="tmap" href="tmap://search?name=%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC">🔵 TMAP</a>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn full alt" type="button" data-copy="서울 서초구 서초중앙로 14" data-label="주소">📋 COPY ADDRESS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">💾 SAVE POINT</div>
+                <form class="gb-form" id="gb-form" autocomplete="off">
+                    <div class="row">
+                        <input class="gb-input" name="name" placeholder="이름" maxlength="20" required aria-label="이름">
+                        <input class="gb-input" name="password" type="password" placeholder="비밀번호" maxlength="32" required aria-label="삭제용 비밀번호">
+                    </div>
+                    <textarea class="gb-input" name="message" placeholder="두 사람에게 축하 메시지를 남겨주세요 ♥" maxlength="500" required aria-label="축하 메시지"></textarea>
+                    <div class="gb-meta"><span id="gb-count">0 / 500</span><span>PASSWORD = DELETE KEY</span></div>
+                    <button class="btn" type="submit" id="gb-submit">💌 SAVE MESSAGE</button>
+                </form>
+                <div class="gb-list" id="gb-list"><div class="gb-empty">LOADING...</div></div>
+                <div class="btn-row" id="gb-more" hidden><button class="btn full alt" type="button">▼ MORE</button></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📡 MULTIPLAYER</div>
+                <div style="text-align:center;font-size:9px;color:#ffe66d;margin:10px 0;">INVITE MORE PLAYERS!</div>
+                <div class="btn-row"><button class="btn full" type="button" id="share">🔗 SHARE</button></div>
+            </div>
+
+            <div class="footer">
+                <div>🎮 MADE WITH ❤️ BY YOUN &amp; SHIN</div>
+                <div style="margin-top:5px;">GAME OVER? NO, JUST THE BEGINNING!</div>
+                <div style="margin-top:12px;"><a href="/">▶ TERMINAL VERSION</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        // ===== CONFIG =====
+        const WEDDING = {
+            start: new Date('2026-12-20T13:00:00+09:00'),
+            end:   new Date('2026-12-20T15:00:00+09:00'),
+            title: '윤상현 ♥ 신아람 결혼식',
+            location: '더화이트베일 3층 V홀, 서울 서초구 서초중앙로 14',
+        };
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                if (e.target.closest('input, textarea, button, a')) return;
+                if (document.getElementById('startScreen').style.display !== 'none') startGame();
+            }
+        });
+
+        // ===== Toast / Clipboard =====
+        const toastEl = document.getElementById('toast');
+        let toastTimer;
+        function toast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+        }
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+            }
+        }
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-copy]');
+            if (!btn) return;
+            await copyText(btn.dataset.copy);
+            toast(`🎁 ITEM GET! ${btn.dataset.label || ''} 복사 완료`);
+        });
+
+        // ===== D-day countdown =====
+        (function dday() {
+            const ddayEl = document.getElementById('dday');
+            const cdEl = document.getElementById('countdown');
+            function tick() {
+                const now = new Date();
+                const diff = WEDDING.start - now;
+                const kst = (d) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+                const dayDiff = Math.round((new Date(kst(WEDDING.start)) - new Date(kst(now))) / 86400e3);
+                if (dayDiff > 0) ddayEl.textContent = `D-${dayDiff}`;
+                else if (dayDiff === 0) ddayEl.textContent = 'D-DAY 💍';
+                else ddayEl.textContent = 'STAGE CLEAR ♥';
+                if (diff > 0) {
+                    const d = Math.floor(diff / 86400e3), h = Math.floor(diff / 3600e3) % 24,
+                          mi = Math.floor(diff / 60e3) % 60, s = Math.floor(diff / 1e3) % 60;
+                    cdEl.textContent = `START IN ${d}D ${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                } else {
+                    cdEl.textContent = 'QUEST COMPLETE ✓';
+                }
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+
+        // ===== Add to calendar =====
+        (function calendarLinks() {
+            const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+            const gcal = new URL('https://calendar.google.com/calendar/render');
+            gcal.searchParams.set('action', 'TEMPLATE');
+            gcal.searchParams.set('text', WEDDING.title);
+            gcal.searchParams.set('dates', `${fmt(WEDDING.start)}/${fmt(WEDDING.end)}`);
+            gcal.searchParams.set('location', WEDDING.location);
+            document.getElementById('gcal').href = gcal.toString();
+
+            document.getElementById('ics').addEventListener('click', () => {
+                const ics = [
+                    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//wedding.deploy//KO',
+                    'BEGIN:VEVENT',
+                    `UID:wedding-20261220@youn-shin`,
+                    `DTSTAMP:${fmt(new Date())}`,
+                    `DTSTART:${fmt(WEDDING.start)}`,
+                    `DTEND:${fmt(WEDDING.end)}`,
+                    `SUMMARY:${WEDDING.title}`,
+                    `LOCATION:${WEDDING.location.replace(/,/g, '\\,')}`,
+                    'END:VEVENT', 'END:VCALENDAR',
+                ].join('\r\n');
+                const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+                const a = Object.assign(document.createElement('a'), { href: url, download: 'wedding-20261220.ics' });
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            });
+        })();
+
+        // ===== TMAP: 앱이 없으면 스토어로 이동 =====
+        document.getElementById('tmap').addEventListener('click', () => {
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            if (!isIOS && !isAndroid) { toast('TMAP은 휴대폰에서 열 수 있어요'); return; }
+            const store = isIOS
+                ? 'https://apps.apple.com/kr/app/id431589174'
+                : 'https://play.google.com/store/apps/details?id=com.skt.tmap.ku';
+            const t = setTimeout(() => { if (!document.hidden) location.href = store; }, 1500);
+            document.addEventListener('visibilitychange', () => clearTimeout(t), { once: true });
+        });
+
+        // ===== Guestbook (api/guestbook.js, index.html 과 같은 저장소) =====
+        (function guestbook() {
+            const API = '/api/guestbook';
+            const PAGE = 10;
+            const form = document.getElementById('gb-form');
+            const listEl = document.getElementById('gb-list');
+            const moreEl = document.getElementById('gb-more');
+            const countEl = document.getElementById('gb-count');
+            const submitBtn = document.getElementById('gb-submit');
+            let entries = [], shown = PAGE;
+
+            async function api(method, body) {
+                const res = await fetch(API, {
+                    method,
+                    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+                    body: body ? JSON.stringify(body) : undefined,
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw Object.assign(new Error(data.error || '요청에 실패했습니다.'), { status: res.status });
+                return data;
+            }
+
+            const el = (tag, cls, text) => {
+                const node = document.createElement(tag);
+                if (cls) node.className = cls;
+                if (text != null) node.textContent = text;
+                return node;
+            };
+            const fmtDate = (ts) => new Date(ts).toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+            });
+
+            function renderItem(entry) {
+                const item = el('div', 'gb-item');
+                const head = el('div', 'head');
+                const right = el('span');
+                const del = el('button', 'del', '✕ DEL');
+                del.type = 'button';
+                del.setAttribute('aria-label', `${entry.name} 님의 메시지 삭제`);
+                right.append(el('span', 'ko', fmtDate(entry.createdAt)), del);
+                head.append(el('span', 'author', `♥ ${entry.name}`), right);
+                item.append(head, el('div', 'msg', entry.message));
+
+                del.addEventListener('click', () => {
+                    if (item.querySelector('.del-form')) return;
+                    const f = el('form', 'del-form');
+                    const pw = el('input', 'gb-input');
+                    Object.assign(pw, { type: 'password', placeholder: '비밀번호', maxLength: 32, required: true });
+                    pw.setAttribute('aria-label', '삭제용 비밀번호');
+                    const ok = el('button', 'btn sm', 'DEL');
+                    const cancel = el('button', 'btn sm alt', 'NO');
+                    cancel.type = 'button';
+                    cancel.addEventListener('click', () => f.remove());
+                    f.append(pw, ok, cancel);
+                    f.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        ok.disabled = true;
+                        try {
+                            await api('DELETE', { id: entry.id, password: pw.value });
+                            entries = entries.filter((x) => x.id !== entry.id);
+                            render();
+                            toast('🗑️ SAVE DATA 삭제 완료');
+                        } catch (err) {
+                            toast(err.message);
+                            ok.disabled = false;
+                        }
+                    });
+                    item.append(f);
+                    pw.focus();
+                });
+                return item;
+            }
+
+            function render() {
+                listEl.replaceChildren();
+                if (!entries.length) listEl.append(el('div', 'gb-empty', 'NO SAVE DATA. BE PLAYER 1!'));
+                entries.slice(0, shown).forEach((e) => listEl.append(renderItem(e)));
+                moreEl.hidden = entries.length <= shown;
+            }
+
+            async function load() {
+                try {
+                    entries = (await api('GET')).entries;
+                    render();
+                } catch (err) {
+                    listEl.replaceChildren(el('div', 'gb-empty', err.status === 503 ? 'SAVE SLOT NOT READY' : 'LOAD ERROR. TRY AGAIN'));
+                }
+            }
+
+            form.elements.message.addEventListener('input', () => { countEl.textContent = `${form.elements.message.value.length} / 500`; });
+            moreEl.querySelector('button').addEventListener('click', () => { shown += PAGE; render(); });
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const body = { name: form.elements.name.value.trim(), message: form.elements.message.value.trim(), password: form.elements.password.value };
+                if (!body.name || !body.message || !body.password) return toast('이름, 메시지, 비밀번호를 입력해주세요');
+                submitBtn.disabled = true;
+                try {
+                    const { entry } = await api('POST', body);
+                    entries.unshift(entry);
+                    render();
+                    form.elements.message.value = '';
+                    countEl.textContent = '0 / 500';
+                    toast('💾 SAVE COMPLETE! 축하 메시지 저장 완료');
+                } catch (err) {
+                    toast(err.message);
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            });
+
+            load();
+        })();
+
+        // ===== Share =====
+        document.getElementById('share').addEventListener('click', async () => {
+            const data = { title: '윤상현 ♥ 신아람 결혼합니다', text: '2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀', url: location.href };
+            if (navigator.share) {
+                try { await navigator.share(data); } catch { /* 사용자가 취소 */ }
+            } else {
+                await copyText(location.href);
+                toast('🎁 ITEM GET! 초대 링크 복사 완료');
+            }
+        });
+    </script>
+</body>
+</html>
