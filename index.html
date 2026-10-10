@@ -94,6 +94,13 @@
         .cal .sun { color: #ff6b6b; }
 
 
+        .build-log { color: #cfe9d6; }
+        .build-log .info { color: var(--cyan); }
+        .build-log .ok { color: var(--green); }
+        .photo-box { border: 1px solid var(--green); border-radius: 6px; overflow: hidden; margin-top: 8px; box-shadow: 0 0 18px rgba(0, 255, 102, 0.18); background: #050805; }
+        .photo-box img { display: block; width: 100%; height: auto; }
+        .photo-caption { text-align: center; font-size: 13px; margin-top: 10px; }
+        .photo-caption .heart { color: var(--pink); }
         .nav-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
         .nav-row .btn { font-size: 12px; padding: 8px 4px; gap: 4px; }
 
@@ -170,7 +177,26 @@
             </div>
         </section>
 
-        <!-- 02. COUPLE / CONTACT -->
+        <!-- 02. PHOTO -->
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
+                <span class="terminal-title">~/wedding/us.png</span>
+            </div>
+            <div class="terminal-content">
+                <div class="prompt"><b>$</b> love --commit</div>
+<pre class="build-log"><span class="info">[INFO]</span> Building a lifetime...
+<span class="info">[INFO]</span> Two hearts. One repository.
+<span class="info">[INFO]</span> Marriage.exe compiled successfully. <span class="ok">✓</span></pre>
+                <div class="prompt" style="margin-top:16px"><b>$</b> open us.png</div>
+                <div class="photo-box">
+                    <img src="images/us-terminal.webp?v=1" alt="신랑 윤상현과 신부 신아람의 픽셀 아트 웨딩 일러스트" width="892" height="896" loading="lazy">
+                </div>
+                <p class="photo-caption"><span class="c"># love is the ultimate open source</span> <span class="heart">♥</span></p>
+            </div>
+        </section>
+
+        <!-- 03. COUPLE / CONTACT -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
@@ -209,7 +235,7 @@
             </div>
         </section>
 
-        <!-- 03. SCHEDULE -->
+        <!-- 04. SCHEDULE -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
@@ -239,7 +265,7 @@
             </div>
         </section>
 
-        <!-- 04. LOCATION -->
+        <!-- 05. LOCATION -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
@@ -266,7 +292,7 @@
         </section>
 
 
-        <!-- 05. GUESTBOOK -->
+        <!-- 06. GUESTBOOK -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
@@ -295,7 +321,7 @@
             </div>
         </section>
 
-        <!-- 06. SHARE -->
+        <!-- 07. SHARE -->
         <section class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-btn btn-red"></div><div class="terminal-btn btn-yellow"></div><div class="terminal-btn btn-green"></div>
