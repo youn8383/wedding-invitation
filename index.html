@@ -7,7 +7,7 @@
     <meta name="description" content="2026년 12월 20일 (일) 오후 1시, 더화이트베일 3층 V홀">
     <link rel="icon" href="/images/icon-main.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/images/apple-touch-main.png">
-    <meta name="theme-color" content="#050506">
+    <meta name="theme-color" content="#fbf1ec">
     <meta property="og:type" content="website">
     <meta property="og:title" content="윤상현 ♥ 신아람 결혼합니다">
     <meta property="og:description" content="2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀">
@@ -19,61 +19,60 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- 다음 페이지 리소스를 미리 받아 전환을 빠르게 -->
+    <!-- same type as the share card: Cormorant (italic script) + Gowun Batang (Korean serif) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
     <link rel="prefetch" href="/terminal.html">
     <link rel="prefetch" href="/retro-game.html">
 
     <style>
-        :root { --bg: #050506; --text: #e8e8ea; --muted: #6f6f78; --green: #4ade80; --gold: #ffcf5c; --rose: #ff6f91; --mint: #6ee7c8; }
+        :root { --ink: #42342f; --soft: #806860; --gold: #b88e5c; --rose: #eca0a8; --dark: #050506; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
-        body { display: grid; place-items: center; background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; overflow: hidden; }
-        .boot { width: min(360px, calc(100vw - 40px)); font-size: 13px; line-height: 2; }
-        .boot .line { white-space: pre; overflow: hidden; text-overflow: ellipsis; color: var(--muted); }
-        .boot .line b { font-weight: 400; color: var(--text); }
-        .boot .ok { color: var(--green); }
-        .boot .pick { margin-top: 10px; font-size: 18px; font-weight: 700; letter-spacing: .04em; }
-        .boot .pick.terminal { color: var(--green); text-shadow: 0 0 14px rgba(74, 222, 128, .5); }
-        .boot .pick.retro { color: var(--gold); text-shadow: 2px 2px 0 var(--rose); }
-        .bar { margin-top: 14px; height: 2px; background: #1a1a1f; overflow: hidden; }
-        .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--mint), var(--gold), var(--rose)); transition: width 2.3s cubic-bezier(.4, 0, .2, 1); }
-        .cursor { display: inline-block; width: 8px; height: 1em; vertical-align: -2px; background: var(--green); animation: blink 1s steps(1) infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
+        body { display: grid; place-items: center; overflow: hidden; color: var(--ink); font-family: 'Gowun Batang', serif;
+            background: radial-gradient(70% 55% at 30% 18%, rgba(255,255,255,.7), transparent 70%), linear-gradient(180deg, #fdf6f0 0%, #f6dad2 100%); }
 
-        /* glitch-out right before switching pages */
-        /* soft glitch-out: drifting RGB bands + blur fade instead of a hard shake */
-        .glitch { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: transparent; }
-        .glitch.go { opacity: 1; animation: veil .45s ease-in .1s forwards; }
-        .glitch::before, .glitch::after { content: ''; position: absolute; left: -10%; right: -10%; height: 16%; opacity: 0; mix-blend-mode: screen; filter: blur(6px); }
-        .glitch::before { top: 24%; background: linear-gradient(90deg, transparent, rgba(0, 255, 255, .45), transparent); }
-        .glitch::after { top: 60%; background: linear-gradient(90deg, transparent, rgba(255, 0, 160, .45), transparent); }
-        .glitch.go::before { animation: band .55s ease-in-out forwards; }
-        .glitch.go::after { animation: band .55s ease-in-out .06s reverse forwards; }
-        @keyframes band { 0% { opacity: 0; transform: translateX(-14px); } 45% { opacity: 1; } 100% { opacity: 0; transform: translateX(14px); } }
-        @keyframes veil { to { background: var(--bg); } }
-        .boot.out { animation: out .5s cubic-bezier(.4, 0, .6, 1) forwards; }
-        @keyframes out {
-            0% { opacity: 1; transform: none; filter: none; }
-            35% { transform: translateX(1.5px); filter: blur(.4px) drop-shadow(-2px 0 0 rgba(0, 255, 255, .5)) drop-shadow(2px 0 0 rgba(255, 0, 160, .5)); }
-            100% { opacity: 0; transform: scale(.985); filter: blur(3px); }
-        }
+        .card { position: relative; text-align: center; padding: 0 24px; }
+        .orn { margin-bottom: 14px; font-size: 14px; color: var(--gold); letter-spacing: .5em; }
+        .script { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 26px; color: var(--gold); }
+        .names { margin-top: 12px; font-size: 38px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; }
+        .names .amp { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; color: var(--gold); line-height: 1.1; }
+        .rule { width: 56px; height: 1px; margin: 18px auto 14px; background: var(--gold); opacity: .7; }
+        .date { font-size: 15px; color: var(--soft); letter-spacing: .02em; }
+        .ask { margin-top: 30px; height: 26px; font-size: 16px; color: var(--ink); }
+        .ask .dots i { display: inline-block; width: 4px; height: 4px; margin: 0 2px; border-radius: 50%; background: var(--gold); vertical-align: middle; animation: dot 1s ease-in-out infinite; }
+        .ask .dots i:nth-child(2) { animation-delay: .15s; } .ask .dots i:nth-child(3) { animation-delay: .3s; }
+        @keyframes dot { 50% { opacity: .2; transform: translateY(-3px); } }
+        .ask .pick { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--gold); }
+
+        /* soft entrance, one element after another */
+        .in { opacity: 0; transform: translateY(8px); animation: rise .9s cubic-bezier(.2, .7, .2, 1) forwards; }
+        @keyframes rise { to { opacity: 1; transform: none; } }
+        .petal { position: fixed; top: -20px; width: 10px; height: 7px; border-radius: 50%; background: rgba(236, 160, 168, .75); pointer-events: none; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translate(var(--dx), 110vh) rotate(540deg); } }
+
+        /* fade into the dark of the invitation pages (they unveil from #050506) */
+        .dusk { position: fixed; inset: 0; z-index: 10; background: var(--dark); opacity: 0; pointer-events: none; transition: opacity .7s cubic-bezier(.4, 0, .2, 1); }
+        .dusk.go { opacity: 1; }
 
         noscript { display: block; text-align: center; line-height: 2.2; }
-        noscript a { color: var(--green); }
+        noscript a { color: var(--gold); }
+        @media (prefers-reduced-motion: reduce) { .in { animation: none; opacity: 1; transform: none; } .petal { display: none; } }
     </style>
 </head>
 <body>
-    <main class="boot" id="boot" aria-live="polite">
-        <noscript>
-            윤상현 ♥ 신아람 결혼합니다<br>
-            <a href="/terminal.html">터미널 버전</a> · <a href="/retro-game.html">레트로 게임 버전</a>
-        </noscript>
+    <main class="card" aria-live="polite">
+        <div class="orn in" style="animation-delay:.05s" aria-hidden="true">✦</div>
+        <p class="script in" style="animation-delay:.15s">We're getting married</p>
+        <h1 class="names in" style="animation-delay:.35s">윤상현<span class="amp">&amp;</span>신아람</h1>
+        <div class="rule in" style="animation-delay:.55s"></div>
+        <p class="date in" style="animation-delay:.65s">2026. 12. 20. 일요일 오후 1시 · 더화이트베일</p>
+        <p class="ask" id="ask"></p>
+        <noscript><a href="/terminal.html">터미널 버전</a> · <a href="/retro-game.html">레트로 게임 버전</a></noscript>
     </main>
-    <div class="glitch" id="glitch" aria-hidden="true"></div>
+    <div class="dusk" id="dusk" aria-hidden="true"></div>
 
     <script>
-    // 대표 주소(/): 공유 썸네일은 터미널·레트로 반반, 열 때마다 둘 중 하나로 랜덤 진입
+    // 대표 주소(/): 클래식 인트로 → 열 때마다 터미널/레트로 중 랜덤 진입
     //  - 테스트: ?theme=terminal|retro 로 고정, ?phase=… 등 다른 파라미터는 그대로 넘김
     (function boot() {
         const PAGES = { terminal: '/terminal.html', retro: '/retro-game.html' };
@@ -87,30 +86,29 @@
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return go();
 
-        const box = document.getElementById('boot');
-        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-        const line = (html, cls = 'line') => { const el = document.createElement('div'); el.className = cls; el.innerHTML = html; box.appendChild(el); return el; };
-        const label = theme === 'retro' ? '▶ RETRO GAME' : '$ TERMINAL';
+        for (let i = 0; i < 14; i++) {                      // a few drifting petals
+            const p = document.createElement('i');
+            p.className = 'petal';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+            p.style.animationDuration = 5 + Math.random() * 5 + 's';
+            p.style.animationDelay = -Math.random() * 8 + 's';
+            document.body.appendChild(p);
+        }
 
+        const ask = document.getElementById('ask');
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         (async () => {
-            const bar = document.createElement('div'); bar.className = 'bar'; bar.innerHTML = '<i></i>';
-            line('<b>wedding.os</b> v1.0 — 윤상현 ♥ 신아람');
-            box.appendChild(bar);
-            requestAnimationFrame(() => { bar.firstChild.style.width = '100%'; });
-            await sleep(420);
-            line('&gt; mounting 2026-12-20 ......... <span class="ok">ok</span>');
-            await sleep(420);
-            {
-                const roll = line('&gt; rolling theme dice ');
-                for (let i = 0; i < 8; i++) { roll.innerHTML = '&gt; rolling theme dice ' + '|/-\\'[i % 4]; await sleep(70); }
-                roll.innerHTML = '&gt; rolling theme dice ........ <span class="ok">ok</span>';
-            }
-            await sleep(220);
-            line(label + ' <span class="cursor"></span>', 'pick ' + theme);
-            await sleep(560);
-            box.classList.add('out');
-            document.getElementById('glitch').classList.add('go');
-            await sleep(450);
+            await sleep(1000);
+            ask.innerHTML = '어떤 청첩장이 열릴까요 <span class="dots"><i></i><i></i><i></i></span>';
+            ask.classList.add('in');
+            await sleep(800);
+            ask.classList.remove('in'); void ask.offsetWidth;
+            ask.innerHTML = `<span class="pick">${theme === 'retro' ? 'Retro Game' : 'Terminal'}</span>`;
+            ask.classList.add('in');
+            await sleep(650);
+            document.getElementById('dusk').classList.add('go');
+            await sleep(700);
             go();
         })();
     })();
