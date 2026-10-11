@@ -11,7 +11,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="🎮 윤상현 ♥ 신아람 WEDDING QUEST">
     <meta property="og:description" content="2026.12.20 (일) 오후 1시 · 더화이트베일 3층 V홀">
-    <meta property="og:image" content="https://wedding-invitation-new-delta.vercel.app/images/og-retro.jpg?v=1">
+    <meta property="og:image" content="https://wedding-invitation-new-delta.vercel.app/images/og-retro.jpg?v=2">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="WEDDING QUEST · 윤상현 ♥ 신아람 · 2026.12.20 SUN 13:00 · 더화이트베일 3F V홀">
@@ -45,7 +45,7 @@
         .wrap { max-width: 520px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
         .s11 { font-family: var(--f11); font-size: 12px; letter-spacing: 1px; }
         .crt { position: fixed; inset: 0; pointer-events: none; z-index: 50;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 3px), radial-gradient(120% 90% at 50% 50%, transparent 60%, rgba(0,0,0,.45)); }
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,.07) 0 1px, transparent 1px 3px), radial-gradient(120% 90% at 50% 50%, transparent 60%, rgba(0,0,0,.45)); }
 
         /* the one window style: cream border, stepped corners, bevel */
         .px { position: relative; background: var(--panel); border: var(--px) solid var(--cream);
@@ -110,6 +110,7 @@
         .bigdate { display: flex; align-items: baseline; justify-content: center; gap: 12px; }
         .bigdate b { font-family: var(--f11); font-size: 48px; font-weight: 700; color: var(--gold); text-shadow: 4px 4px 0 var(--ink); letter-spacing: 2px; line-height: 1.1; }
         .bigdate span { font-size: 15px; }
+        .when-ko { margin-top: 10px; text-align: center; color: var(--mint); }
         .log { margin-top: 18px; display: grid; gap: 8px; }
         .log div { display: flex; align-items: baseline; gap: 8px; }
         .log dt { font-family: var(--f11); font-size: 12px; color: var(--mint); letter-spacing: 1px; }
@@ -291,10 +292,7 @@
             <p class="say px ink">BOSS STAGE 는 12월 20일 일요일 오후 1시! 늦지 말고 와 주세요.</p>
             <div class="px quest stage-body">
                 <div class="bigdate"><b>12.20</b><span>SUN 13:00</span></div>
-                <dl class="log">
-                    <div><dt>DATE</dt><span class="dots"></span><dd>2026년 12월 20일 일요일</dd></div>
-                    <div><dt>TIME</dt><span class="dots"></span><dd>오후 1시</dd></div>
-                </dl>
+                <p class="when-ko">2026년 12월 20일 일요일 오후 1시</p>
                 <div class="timer" id="timer">
                     <div class="px ink"><b data-u="d">0</b><small>DAY</small></div>
                     <div class="px ink"><b data-u="h">00</b><small>HR</small></div>
@@ -303,8 +301,8 @@
                 </div>
                 <p class="dday" id="dday"></p>
                 <div class="row-btns">
-                    <a class="pbtn" id="gcal" target="_blank" rel="noopener"><span data-icon="cal"></span>GOOGLE</a>
-                    <button class="pbtn ghost" id="ics" type="button"><span data-icon="save"></span>SAVE .ICS</button>
+                    <a class="pbtn" id="gcal" target="_blank" rel="noopener"><span data-icon="cal"></span>구글 캘린더</a>
+                    <button class="pbtn ghost" id="ics" type="button"><span data-icon="save"></span>캘린더 저장</button>
                 </div>
             </div>
         </section>
@@ -312,8 +310,7 @@
         <!-- STAGE 3: WORLD MAP (where) -->
         <section class="stage" id="world">
             <div class="stage-head"><span class="no">STAGE 3</span><h2>WORLD MAP</h2></div>
-            <p class="say px ink">남부터미널역에서 걸어서 3분이면 도착하는 더화이트베일 3층 V홀이에요.</p>
-            <div class="px world stage-body">
+                        <div class="px world stage-body">
                 <div class="loc">
                     <div><span data-icon="pin"></span><span>더화이트베일 3층 V홀<small>서울 서초구 서초중앙로 14</small></span></div>
                     <div><span data-icon="train"></span><span>3호선 남부터미널역<small>도보 약 3분</small></span></div>
@@ -331,8 +328,7 @@
         <!-- STAGE 4: PLAYERS -->
         <section class="stage" id="players">
             <div class="stage-head"><span class="no">STAGE 4</span><h2>PLAYER SELECT</h2></div>
-            <p class="say px ink">두 PLAYER 에게 전화하거나 카카오톡 ID 를 복사할 수 있어요.</p>
-            <div class="players stage-body">
+                        <div class="players stage-body">
                 <div class="px player">
                     <span class="tag">1P</span>
                     <div class="role">GROOM</div>
@@ -340,8 +336,8 @@
                     <div class="parents">윤태락 · 신정순<br>의 아들</div>
                     <div class="hp"><b>LOVE</b><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span></div>
                     <div class="btns">
-                        <a class="pbtn" href="tel:010-9991-8768" aria-label="신랑에게 전화하기"><span data-icon="phone"></span>CALL</a>
-                        <button class="pbtn ghost" type="button" data-copy="kiki8383" data-label="신랑 카카오톡 ID" aria-label="신랑 카카오톡 ID 복사"><span data-icon="chat"></span>TALK</button>
+                        <a class="pbtn" href="tel:010-9991-8768" aria-label="신랑에게 전화하기"><span data-icon="phone"></span>전화</a>
+                        <button class="pbtn ghost" type="button" data-copy="kiki8383" data-label="신랑 카카오톡 ID" aria-label="신랑 카카오톡 ID 복사"><span data-icon="chat"></span>카톡</button>
                     </div>
                 </div>
                 <div class="px player">
@@ -351,8 +347,8 @@
                     <div class="parents">신동직 · 이선옥<br>의 딸</div>
                     <div class="hp"><b>LOVE</b><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span><span data-icon="heart"></span></div>
                     <div class="btns">
-                        <a class="pbtn" href="tel:010-7303-5186" aria-label="신부에게 전화하기"><span data-icon="phone"></span>CALL</a>
-                        <button class="pbtn ghost" type="button" data-copy="jys282ar" data-label="신부 카카오톡 ID" aria-label="신부 카카오톡 ID 복사"><span data-icon="chat"></span>TALK</button>
+                        <a class="pbtn" href="tel:010-7303-5186" aria-label="신부에게 전화하기"><span data-icon="phone"></span>전화</a>
+                        <button class="pbtn ghost" type="button" data-copy="jys282ar" data-label="신부 카카오톡 ID" aria-label="신부 카카오톡 ID 복사"><span data-icon="chat"></span>카톡</button>
                     </div>
                 </div>
             </div>
@@ -369,19 +365,18 @@
                         <input class="field" name="password" type="password" placeholder="비밀번호" maxlength="32" required aria-label="삭제용 비밀번호">
                     </div>
                     <textarea class="field" name="message" placeholder="두 사람에게 축하 메시지를 남겨주세요" maxlength="500" required aria-label="축하 메시지"></textarea>
-                    <div class="gb-meta"><span id="gb-count">0 / 500</span><span>KEY = 삭제용 비밀번호</span></div>
-                    <button class="pbtn wide" type="submit" id="gb-submit"><span data-icon="heart"></span>SAVE MESSAGE</button>
+                    <div class="gb-meta"><span id="gb-count">0 / 500</span><span>비밀번호는 삭제할 때 필요해요</span></div>
+                    <button class="pbtn wide" type="submit" id="gb-submit"><span data-icon="heart"></span>메시지 남기기</button>
                 </form>
                 <div class="gb-list" id="gb-list"><div class="gb-empty">LOADING...</div></div>
-                <div class="row-btns" id="gb-more" hidden style="grid-template-columns:1fr"><button class="pbtn ghost" type="button">▼ MORE</button></div>
+                <div class="row-btns" id="gb-more" hidden style="grid-template-columns:1fr"><button class="pbtn ghost" type="button">▼ 더 보기</button></div>
             </div>
         </section>
 
         <!-- STAGE 6: MULTIPLAYER -->
         <section class="stage" id="multi">
             <div class="stage-head"><span class="no">STAGE 6</span><h2>MULTIPLAYER</h2></div>
-            <p class="say px ink">친구에게도 초대장을 보내 파티원을 모아 보세요!</p>
-            <button class="pbtn wide stage-body" type="button" id="share"><span data-icon="share"></span>INVITE FRIENDS</button>
+                        <button class="pbtn wide stage-body" type="button" id="share"><span data-icon="share"></span>청첩장 공유하기</button>
         </section>
 
         <!-- ENDING CREDITS -->
@@ -413,7 +408,7 @@
             <p>숨겨진 커맨드를 찾아낸 당신은<br>진정한 고수 PLAYER!</p>
             <p class="secret-item"><span data-icon="heart"></span> 신랑·신부의 무한 감사 x99 획득</p>
             <p class="secret-sub">12.20 SUN 13:00 · 더화이트베일에서 만나요!</p>
-            <button class="pbtn" type="button" id="secret-close">CONTINUE ▶</button>
+            <button class="pbtn" type="button" id="secret-close">계속하기 ▶</button>
         </div>
     </div>
 
@@ -504,7 +499,7 @@
             const s = 3;                                  // 1 star pixel = 3 css px
             c.width = Math.ceil(innerWidth / s); c.height = Math.ceil(innerHeight / s);
             c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px';
-            pts = Array.from({ length: Math.round(c.width * c.height / 380) }, () => ({
+            pts = Array.from({ length: Math.round(c.width * c.height / 760) }, () => ({
                 x: Math.random() * c.width | 0, y: Math.random() * c.height | 0,
                 col: colors[Math.random() * colors.length | 0], p: Math.random() * 6.28, sp: .02 + Math.random() * .05,
             }));
@@ -842,8 +837,8 @@
                 const pw = el('input', 'field');
                 Object.assign(pw, { type: 'password', placeholder: 'KEY', maxLength: 32, required: true });
                 pw.setAttribute('aria-label', '삭제용 비밀번호');
-                const ok = el('button', 'pbtn', 'DEL');
-                const cancel = el('button', 'pbtn ghost', 'NO');
+                const ok = el('button', 'pbtn', '삭제');
+                const cancel = el('button', 'pbtn ghost', '취소');
                 cancel.type = 'button';
                 cancel.addEventListener('click', () => f.remove());
                 f.append(pw, ok, cancel);
