@@ -39,9 +39,6 @@
         .rule { width: 56px; height: 1px; margin: 18px auto 14px; background: var(--gold); opacity: .7; }
         .date { font-size: 15px; color: var(--soft); letter-spacing: .02em; }
         .ask { margin-top: 30px; height: 26px; font-size: 16px; color: var(--ink); }
-        .ask .dots i { display: inline-block; width: 4px; height: 4px; margin: 0 2px; border-radius: 50%; background: var(--gold); vertical-align: middle; animation: dot 1s ease-in-out infinite; }
-        .ask .dots i:nth-child(2) { animation-delay: .15s; } .ask .dots i:nth-child(3) { animation-delay: .3s; }
-        @keyframes dot { 50% { opacity: .2; transform: translateY(-3px); } }
         .ask .pick { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--gold); }
 
         /* soft entrance, one element after another */
@@ -99,14 +96,10 @@
         const ask = document.getElementById('ask');
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         (async () => {
-            await sleep(1000);
-            ask.innerHTML = '어떤 청첩장이 열릴까요 <span class="dots"><i></i><i></i><i></i></span>';
-            ask.classList.add('in');
-            await sleep(800);
-            ask.classList.remove('in'); void ask.offsetWidth;
+            await sleep(1300);
             ask.innerHTML = `<span class="pick">${theme === 'retro' ? 'Retro Game' : 'Terminal'}</span>`;
             ask.classList.add('in');
-            await sleep(650);
+            await sleep(900);
             document.getElementById('dusk').classList.add('go');
             await sleep(700);
             go();
