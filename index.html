@@ -38,8 +38,6 @@
         .names .amp { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 30px; color: var(--gold); line-height: 1.1; }
         .rule { width: 56px; height: 1px; margin: 18px auto 14px; background: var(--gold); opacity: .7; }
         .date { font-size: 15px; color: var(--soft); letter-spacing: .02em; }
-        .ask { margin-top: 30px; height: 26px; font-size: 16px; color: var(--ink); }
-        .ask .pick { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--gold); }
 
         /* soft entrance, one element after another */
         .in { opacity: 0; transform: translateY(8px); animation: rise .9s cubic-bezier(.2, .7, .2, 1) forwards; }
@@ -63,7 +61,6 @@
         <h1 class="names in" style="animation-delay:.35s">윤상현<span class="amp">&amp;</span>신아람</h1>
         <div class="rule in" style="animation-delay:.55s"></div>
         <p class="date in" style="animation-delay:.65s">2026. 12. 20. 일요일 오후 1시 · 더화이트베일</p>
-        <p class="ask" id="ask"></p>
         <noscript><a href="/terminal.html">터미널 버전</a> · <a href="/retro-game.html">레트로 게임 버전</a></noscript>
     </main>
     <div class="dusk" id="dusk" aria-hidden="true"></div>
@@ -93,13 +90,9 @@
             document.body.appendChild(p);
         }
 
-        const ask = document.getElementById('ask');
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         (async () => {
-            await sleep(1300);
-            ask.innerHTML = `<span class="pick">${theme === 'retro' ? 'Retro Game' : 'Terminal'}</span>`;
-            ask.classList.add('in');
-            await sleep(900);
+            await sleep(2200);
             document.getElementById('dusk').classList.add('go');
             await sleep(700);
             go();
