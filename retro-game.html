@@ -666,7 +666,7 @@
         };
         btn.addEventListener('click', async () => {
             if (Chip.playing) { Chip.stop(); set(false); }
-            else { await Chip.play(); set(true); toast(`♪ ${Chip.track.title}`); }
+            else { await Chip.play(); set(true); }
         });
         document.addEventListener('visibilitychange', () => (document.hidden ? Chip.suspend() : Chip.resume()));
     })();
