@@ -203,9 +203,6 @@
         .to-top:active { transform: translateY(4px); }
         .to-top.hide { opacity: 0; pointer-events: none; }
         .bgm-bar { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: flex; gap: 8px; }
-        .bgm-next { width: 34px; font-family: var(--font); font-size: 12px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
-            box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
-        .bgm-next:active { transform: translateY(2px); }
         .bgm { display: inline-flex; align-items: center; gap: 6px;
             padding: 7px 10px 6px; font-family: var(--font); font-size: 11px; letter-spacing: 1px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
             box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
@@ -415,7 +412,6 @@
 
     <a class="to-top" id="to-top" href="#" aria-label="처음으로 가기" hidden><span class="arrow" aria-hidden="true">▲</span>TOP</a>
     <div class="bgm-bar">
-        <button class="bgm-next" id="bgm-next" type="button" aria-label="다음 곡">⏭</button>
         <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="배경음악 켜기"><span class="note">♪</span><span class="lbl">BGM OFF</span></button>
     </div>
 
@@ -555,40 +551,9 @@
         toast(`ITEM GET! ${btn.dataset.label || ''} 복사 완료`);
     });
 
-    // ===== BGM playlist: public-domain classics as 8-bit chiptune, synthesized with Web Audio — no audio files =====
-    //  melodies/bass transcribed from public-domain MIDI (Mendelssohn, Joplin) and the Wagner "Bridal Chorus"
-    const T3 = 1 / 3;
+    // ===== BGM: Joplin "The Entertainer" (public domain) as 8-bit chiptune, synthesized with Web Audio — no audio files =====
+    //  melody/bass transcribed from a public-domain MIDI
     const TRACKS = [
-        {
-            title: '바그너 – 결혼행진곡', bpm: 96 * 1.8, beats: 24,
-            melody: [
-                ['G4', 1], ['C5', 1.5], ['C5', .5], ['C5', 2],
-                ['G4', 1], ['D5', 1.5], ['B4', .5], ['C5', 2],
-                ['G4', 1], ['C5', 1.5], ['F5', .5], ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1],
-                ['B4', 1], ['C5', 1], ['D5', 2], ['R', 3],
-            ],
-            // one chord per 2 beats, root + fifth on quarter notes
-            bass: ['C', 'C', 'C', 'G', 'C', 'F', 'F', 'C', 'G', 'C', 'G', 'C'].flatMap((c) => ({ C: [['C3', 1], ['G3', 1]], G: [['G2', 1], ['D3', 1]], F: [['F2', 1], ['C3', 1]] })[c]),
-        },
-        {
-            title: '멘델스존 – 결혼행진곡', bpm: 132, beats: 33,
-            melody: [
-                // trumpet fanfare
-                ['C5', T3], ['C5', T3], ['C5', T3], ['C5', 3],
-                ['C5', T3], ['C5', T3], ['C5', T3], ['C5', 3],
-                ['C5', T3], ['C5', T3], ['C5', T3], ['E5', 1], ['E5', T3], ['E5', T3], ['E5', T3], ['E5', 1],
-                ['E5', T3], ['E5', T3], ['E5', T3], ['G5', 1], ['G5', T3], ['G5', T3], ['G5', T3], ['G5', 1], ['G4', 1],
-                // main theme
-                ['C6', 2], ['B5', 1.5], ['F#5', .5], ['A5', 1], ['G5', 1], ['F5', 1], ['D5', 1],
-                ['C5', .25], ['D5', .25], ['C5', .25], ['D5', .25], ['C5', .25], ['D5', .25], ['B4', .25], ['C5', .25],
-                ['D5', 1], ['G4', .75], ['D5', .25], ['E5', 1],
-                ['C4', .5], ['E4', .5], ['G4', .5], ['C5', .5], ['E5', .5], ['G5', .5],
-            ],
-            bass: [
-                ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['G2', 1],
-                ['A2', 2], ['B2', 2], ['E3', 1], ['E3', 1], ['F3', 1], ['F3', 1], ['G2', 2], ['G2', 1], ['G2', 1], ['C3', 1], ['C3', 3],
-            ],
-        },
         {
             title: '조플린 – 엔터테이너', bpm: 100, beats: 16,
             melody: [
@@ -659,13 +624,6 @@
                 }, 250);
             },
             stop: silence,
-            async next() {                                       // ⏭ — next track; keeps playing if it was playing
-                const was = !!loopTimer;
-                silence();
-                current = (current + 1) % TRACKS.length;
-                if (was) await this.play();
-                return TRACKS[current];
-            },
             async jingle() {                                     // short "1-UP" fanfare for the secret
                 ensure(); await ctx.resume();
                 const t = ctx.currentTime + 0.03;
@@ -684,7 +642,6 @@
 
     (function bgmToggle() {
         const btn = document.getElementById('bgm');
-        const skip = document.getElementById('bgm-next');
         const set = (on) => {
             btn.setAttribute('aria-pressed', on);
             btn.setAttribute('aria-label', on ? '배경음악 끄기' : '배경음악 켜기');
@@ -694,17 +651,12 @@
             if (Chip.playing) { Chip.stop(); set(false); }
             else { await Chip.play(); set(true); toast(`♪ ${Chip.track.title}`); }
         });
-        skip.addEventListener('click', async () => {
-            const track = await Chip.next();
-            if (!Chip.playing) { await Chip.play(); set(true); }
-            toast(`♪ ${track.title}`);
-        });
         document.addEventListener('visibilitychange', () => (document.hidden ? Chip.suspend() : Chip.resume()));
     })();
 
     // ===== Button SFX: a short 8-bit "select" blip on every game button =====
     document.addEventListener('click', (e) => {
-        if (e.target.closest('.pbtn, .menu a, .list-menu a, .list-menu button, .to-top, .switch, .slot .del, #bgm-next, #secret-close')) Chip.sfx();
+        if (e.target.closest('.pbtn, .menu a, .list-menu a, .list-menu button, .to-top, .switch, .slot .del, #secret-close')) Chip.sfx();
     });
 
     // ===== Floating "back to title" (shown once the title screen is scrolled away) =====
