@@ -202,7 +202,11 @@
         .to-top .arrow { font-size: 13px; line-height: 1; margin-bottom: 2px; }
         .to-top:active { transform: translateY(4px); }
         .to-top.hide { opacity: 0; pointer-events: none; }
-        .bgm { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: inline-flex; align-items: center; gap: 6px;
+        .bgm-bar { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: flex; gap: 8px; }
+        .bgm-next { width: 34px; font-family: var(--font); font-size: 12px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
+            box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
+        .bgm-next:active { transform: translateY(2px); }
+        .bgm { display: inline-flex; align-items: center; gap: 6px;
             padding: 7px 10px 6px; font-family: var(--font); font-size: 11px; letter-spacing: 1px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
             box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
         .bgm .note { color: var(--dim); }
@@ -410,7 +414,10 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <a class="to-top" id="to-top" href="#" aria-label="처음으로 가기" hidden><span class="arrow" aria-hidden="true">▲</span>TOP</a>
-    <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="배경음악 켜기"><span class="note">♪</span><span class="lbl">BGM OFF</span></button>
+    <div class="bgm-bar">
+        <button class="bgm-next" id="bgm-next" type="button" aria-label="다음 곡">⏭</button>
+        <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="배경음악 켜기"><span class="note">♪</span><span class="lbl">BGM OFF</span></button>
+    </div>
 
     <div class="secret" id="secret" role="dialog" aria-modal="true" aria-labelledby="secret-title" hidden>
         <div class="px ink secret-box">
@@ -548,26 +555,66 @@
         toast(`ITEM GET! ${btn.dataset.label || ''} 복사 완료`);
     });
 
-    // ===== BGM: 8-bit "Bridal Chorus" (Wagner, public domain) synthesized with Web Audio — no audio files =====
+    // ===== BGM playlist: public-domain classics as 8-bit chiptune, synthesized with Web Audio — no audio files =====
+    //  melodies/bass transcribed from public-domain MIDI (Mendelssohn, Joplin) and the Wagner "Bridal Chorus"
+    const T3 = 1 / 3;
+    const TRACKS = [
+        {
+            title: '바그너 – 결혼행진곡', bpm: 96 * 1.8, beats: 24,
+            melody: [
+                ['G4', 1], ['C5', 1.5], ['C5', .5], ['C5', 2],
+                ['G4', 1], ['D5', 1.5], ['B4', .5], ['C5', 2],
+                ['G4', 1], ['C5', 1.5], ['F5', .5], ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1],
+                ['B4', 1], ['C5', 1], ['D5', 2], ['R', 3],
+            ],
+            // one chord per 2 beats, root + fifth on quarter notes
+            bass: ['C', 'C', 'C', 'G', 'C', 'F', 'F', 'C', 'G', 'C', 'G', 'C'].flatMap((c) => ({ C: [['C3', 1], ['G3', 1]], G: [['G2', 1], ['D3', 1]], F: [['F2', 1], ['C3', 1]] })[c]),
+        },
+        {
+            title: '멘델스존 – 결혼행진곡', bpm: 132, beats: 33,
+            melody: [
+                // trumpet fanfare
+                ['C5', T3], ['C5', T3], ['C5', T3], ['C5', 3],
+                ['C5', T3], ['C5', T3], ['C5', T3], ['C5', 3],
+                ['C5', T3], ['C5', T3], ['C5', T3], ['E5', 1], ['E5', T3], ['E5', T3], ['E5', T3], ['E5', 1],
+                ['E5', T3], ['E5', T3], ['E5', T3], ['G5', 1], ['G5', T3], ['G5', T3], ['G5', T3], ['G5', 1], ['G4', 1],
+                // main theme
+                ['C6', 2], ['B5', 1.5], ['F#5', .5], ['A5', 1], ['G5', 1], ['F5', 1], ['D5', 1],
+                ['C5', .25], ['D5', .25], ['C5', .25], ['D5', .25], ['C5', .25], ['D5', .25], ['B4', .25], ['C5', .25],
+                ['D5', 1], ['G4', .75], ['D5', .25], ['E5', 1],
+                ['C4', .5], ['E4', .5], ['G4', .5], ['C5', .5], ['E5', .5], ['G5', .5],
+            ],
+            bass: [
+                ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['C3', 2], ['G2', 1],
+                ['A2', 2], ['B2', 2], ['E3', 1], ['E3', 1], ['F3', 1], ['F3', 1], ['G2', 2], ['G2', 1], ['G2', 1], ['C3', 1], ['C3', 3],
+            ],
+        },
+        {
+            title: '조플린 – 엔터테이너', bpm: 100, beats: 16,
+            melody: [
+                ['D4', .25], ['D#4', .25], ['E4', .25], ['C5', .5], ['E4', .25], ['C5', .5], ['E4', .25], ['C5', 1.5],
+                ['C6', .25], ['D6', .25], ['D#6', .25], ['E6', .25], ['C6', .25], ['D6', .25], ['E6', .5], ['B5', .25], ['D6', .5], ['C6', 1.5],
+                ['D4', .25], ['D#4', .25], ['E4', .25], ['C5', .5], ['E4', .25], ['C5', .5], ['E4', .25], ['C5', 1.75],
+                ['A5', .25], ['G5', .25], ['F#5', .25], ['A5', .25], ['C6', .25], ['E6', .5], ['D6', .25], ['C6', .25], ['A5', .25], ['D6', 1.5],
+            ],
+            // ragtime "oom-pah": bass note on the beat, chord tone on the off-beat
+            bass: [['R', .5],
+                ...['C', 'C', 'G', 'C', 'C', 'D', 'D'].flatMap((c) => ({
+                    C: [['C3', .5], ['E3', .5], ['G2', .5], ['E3', .5]],
+                    G: [['G2', .5], ['F3', .5], ['D3', .5], ['F3', .5]],
+                    D: [['D3', .5], ['F#3', .5], ['A2', .5], ['F#3', .5]],
+                })[c]),
+                ['G2', .5], ['F3', .5], ['D3', .5]],
+        },
+    ];
+
     const Chip = (() => {
-        let ctx = null, master = null, loopTimer = null, t0 = 0;
+        let ctx = null, master = null, loopTimer = null, t0 = 0, current = 0;
         const freq = (n) => {
             const m = /^([A-G])(b|#)?(\d)$/.exec(n);
             const semi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (+m[3] + 1) * 12;
             return 440 * Math.pow(2, (semi - 69) / 12);
         };
-        const BEAT = 60 / (96 * 1.8);                    // 1.8× tempo
-        // melody: [note, beats] — "Here comes the bride…"
-        const MELODY = [
-            ['G4', 1], ['C5', 1.5], ['C5', .5], ['C5', 2],
-            ['G4', 1], ['D5', 1.5], ['B4', .5], ['C5', 2],
-            ['G4', 1], ['C5', 1.5], ['F5', .5], ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1],
-            ['B4', 1], ['C5', 1], ['D5', 2], ['R', 3],
-        ];
-        // bass: one chord per 2 beats, root + fifth on quarter notes
-        const CHORDS = ['C', 'C', 'C', 'G', 'C', 'F', 'F', 'C', 'G', 'C', 'G', 'C'];
-        const BASS = { C: ['C3', 'G3'], G: ['G2', 'D3'], F: ['F2', 'C3'] };
-        const LOOP = 24 * BEAT;
         function tone(f, t, dur, type, vol) {
             const o = ctx.createOscillator(), g = ctx.createGain();
             o.type = type; o.frequency.setValueAtTime(f, t);
@@ -578,43 +625,57 @@
             o.connect(g).connect(master);
             o.start(t); o.stop(t + dur);
         }
-        function scheduleLoop(start) {
-            let b = 0;
-            for (const [n, beats] of MELODY) {
-                if (n !== 'R') tone(freq(n), start + b * BEAT, beats * BEAT, 'square', 0.07);
-                b += beats;
+        function scheduleLoop(start, track) {
+            const beat = 60 / track.bpm;
+            for (const [part, type, vol] of [[track.melody, 'square', 0.07], [track.bass, 'triangle', 0.15]]) {
+                let b = 0;
+                for (const [n, beats] of part) {
+                    if (n !== 'R') tone(freq(n), start + b * beat, beats * beat, type, vol);
+                    b += beats;
+                }
             }
-            CHORDS.forEach((c, i) => {
-                const [root, fifth] = BASS[c];
-                tone(freq(root), start + (i * 2) * BEAT, BEAT, 'triangle', 0.16);
-                tone(freq(fifth), start + (i * 2 + 1) * BEAT, BEAT, 'triangle', 0.12);
-            });
         }
         function ensure() {
             if (ctx) return;
             ctx = new (window.AudioContext || window.webkitAudioContext)();
             master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination);
         }
+        function silence() {                                     // drop every note already queued
+            clearInterval(loopTimer); loopTimer = null;
+            if (ctx) { master.disconnect(); master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination); }
+        }
         return {
             get playing() { return !!loopTimer; },
+            get track() { return TRACKS[current]; },
             async play() {
                 ensure();
                 await ctx.resume();
                 if (loopTimer) return;
+                const track = TRACKS[current], loop = track.beats * 60 / track.bpm;
                 t0 = ctx.currentTime + 0.08;
-                scheduleLoop(t0);
+                scheduleLoop(t0, track);
                 loopTimer = setInterval(() => {                 // queue the next loop ~1s before this one ends
-                    if (ctx.currentTime > t0 + LOOP - 1) { t0 += LOOP; scheduleLoop(t0); }
+                    if (ctx.currentTime > t0 + loop - 1) { t0 += loop; scheduleLoop(t0, track); }
                 }, 250);
             },
-            stop() {
-                clearInterval(loopTimer); loopTimer = null;
-                if (ctx) { master.disconnect(); master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination); }
+            stop: silence,
+            async next() {                                       // ⏭ — next track; keeps playing if it was playing
+                const was = !!loopTimer;
+                silence();
+                current = (current + 1) % TRACKS.length;
+                if (was) await this.play();
+                return TRACKS[current];
             },
             async jingle() {                                     // short "1-UP" fanfare for the secret
                 ensure(); await ctx.resume();
                 const t = ctx.currentTime + 0.03;
                 ['E5', 'G5', 'E6', 'C6', 'D6', 'G6'].forEach((n, i) => tone(freq(n), t + i * 0.09, 0.1, 'square', 0.08));
+            },
+            async sfx() {                                        // menu "select" blip for buttons
+                ensure(); await ctx.resume();
+                const t = ctx.currentTime + 0.005;
+                tone(freq('E6'), t, 0.045, 'square', 0.05);
+                tone(freq('B6'), t + 0.045, 0.07, 'square', 0.05);
             },
             suspend() { if (ctx) ctx.suspend(); },
             resume() { if (ctx && loopTimer) ctx.resume(); },
@@ -623,6 +684,7 @@
 
     (function bgmToggle() {
         const btn = document.getElementById('bgm');
+        const skip = document.getElementById('bgm-next');
         const set = (on) => {
             btn.setAttribute('aria-pressed', on);
             btn.setAttribute('aria-label', on ? '배경음악 끄기' : '배경음악 켜기');
@@ -630,10 +692,20 @@
         };
         btn.addEventListener('click', async () => {
             if (Chip.playing) { Chip.stop(); set(false); }
-            else { await Chip.play(); set(true); }
+            else { await Chip.play(); set(true); toast(`♪ ${Chip.track.title}`); }
+        });
+        skip.addEventListener('click', async () => {
+            const track = await Chip.next();
+            if (!Chip.playing) { await Chip.play(); set(true); }
+            toast(`♪ ${track.title}`);
         });
         document.addEventListener('visibilitychange', () => (document.hidden ? Chip.suspend() : Chip.resume()));
     })();
+
+    // ===== Button SFX: a short 8-bit "select" blip on every game button =====
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.pbtn, .menu a, .list-menu a, .list-menu button, .to-top, .switch, .slot .del, #bgm-next, #secret-close')) Chip.sfx();
+    });
 
     // ===== Floating "back to title" (shown once the title screen is scrolled away) =====
     (function toTop() {
