@@ -39,6 +39,7 @@
         .rule { width: 56px; height: 1px; margin: 18px auto 14px; background: var(--gold); opacity: .7; }
         .date { font-size: 15px; color: var(--soft); letter-spacing: .02em; }
 
+        .invite { margin-top: 34px; font-size: 17px; color: var(--gold); letter-spacing: .04em; opacity: 0; }
         /* soft entrance, one element after another */
         .in { opacity: 0; transform: translateY(8px); animation: rise .9s cubic-bezier(.2, .7, .2, 1) forwards; }
         @keyframes rise { to { opacity: 1; transform: none; } }
@@ -61,6 +62,7 @@
         <h1 class="names in" style="animation-delay:.35s">윤상현<span class="amp">&amp;</span>신아람</h1>
         <div class="rule in" style="animation-delay:.55s"></div>
         <p class="date in" style="animation-delay:.65s">2026. 12. 20. 일요일 오후 1시 · 더화이트베일</p>
+        <p class="invite" id="invite">두 사람의 이야기 속으로 초대합니다</p>
         <noscript><a href="/terminal.html">터미널 버전</a> · <a href="/retro-game.html">레트로 게임 버전</a></noscript>
     </main>
     <div class="dusk" id="dusk" aria-hidden="true"></div>
@@ -80,7 +82,7 @@
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return go();
 
-        for (let i = 0; i < 14; i++) {                      // a few drifting petals
+        for (let i = 0; i < 30; i++) {                      // drifting petals
             const p = document.createElement('i');
             p.className = 'petal';
             p.style.left = Math.random() * 100 + 'vw';
@@ -92,7 +94,9 @@
 
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         (async () => {
-            await sleep(2200);
+            await sleep(1300);
+            document.getElementById('invite').classList.add('in');
+            await sleep(1200);
             document.getElementById('dusk').classList.add('go');
             await sleep(700);
             go();
