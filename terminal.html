@@ -538,6 +538,33 @@
     });
 
     // ===== Sound: Pachelbel "Canon in D" (public domain) as a synth arpeggio + key-click SFX, all synthesized =====
+    // iOS 16 and older mute Web Audio with the ring/silent switch; a looping silent <audio> started in the
+    // same tap moves the page to the "playback" audio session so the BGM is heard in silent mode too
+    const IOSUnmute = (() => {
+        let el = null;
+        function silentWav() {                                   // 0.5s of 8-bit silence, built in place (no file)
+            const n = 4000, v = new DataView(new ArrayBuffer(44 + n));
+            const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+            str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+            v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 8000, true);
+            v.setUint16(32, 1, true); v.setUint16(34, 8, true); str(36, 'data'); v.setUint32(40, n, true);
+            for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+            return URL.createObjectURL(new Blob([v], { type: 'audio/wav' }));
+        }
+        return {
+            on() {
+                try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+                if (!el) {
+                    el = new Audio(silentWav());
+                    el.loop = true; el.preload = 'auto';
+                    el.setAttribute('x-webkit-airplay', 'deny');
+                }
+                el.play().catch(() => {});
+            },
+            off() { if (el) el.pause(); },
+        };
+    })();
+
     const Synth = (() => {
         let ctx = null, bus = null, loopTimer = null, t0 = 0, loopNo = 0;
         const freq = (n) => {
@@ -596,8 +623,9 @@
             stop() {
                 clearInterval(loopTimer); loopTimer = null;
                 if (ctx) { const c = ctx; ctx = null; c.close(); }   // closing drops every note already queued
+                IOSUnmute.off();
             },
-            async unlock() { ensure(); await ctx.resume(); },
+            async unlock() { IOSUnmute.on(); ensure(); await ctx.resume(); },
             click() {                                            // matrix "pop": round sine blip that drops in pitch
                 if (!ctx) return;
                 const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
