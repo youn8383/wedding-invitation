@@ -194,6 +194,14 @@
         .phase-note { margin-top: 18px; padding: 12px 14px; font-size: 13px; line-height: 1.8; color: var(--cream); white-space: pre-line; border-color: var(--rose); }
 
         /* BGM toggle */
+        /* floating "back to title" */
+        .to-top { position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 55; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 52px; height: 52px; font-family: var(--font); font-size: 11px; letter-spacing: 1px; color: var(--void); background: var(--gold); text-decoration: none;
+            box-shadow: inset -3px -3px 0 rgba(0,0,0,.25), inset 3px 3px 0 rgba(255,255,255,.35), 0 0 0 3px var(--void), 0 0 0 5px var(--cream), 0 6px 0 5px var(--void);
+            transition: transform .05s steps(1), opacity .2s steps(2); -webkit-tap-highlight-color: transparent; }
+        .to-top .arrow { font-size: 13px; line-height: 1; margin-bottom: 2px; }
+        .to-top:active { transform: translateY(4px); }
+        .to-top.hide { opacity: 0; pointer-events: none; }
         .bgm { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: inline-flex; align-items: center; gap: 6px;
             padding: 7px 10px 6px; font-family: var(--font); font-size: 11px; letter-spacing: 1px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
             box-shadow: 0 0 0 2px var(--dim), 0 3px 0 2px var(--void); -webkit-tap-highlight-color: transparent; }
@@ -401,6 +409,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <a class="to-top" id="to-top" href="#" aria-label="처음으로 가기" hidden><span class="arrow" aria-hidden="true">▲</span>TOP</a>
     <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="배경음악 켜기"><span class="note">♪</span><span class="lbl">BGM OFF</span></button>
 
     <div class="secret" id="secret" role="dialog" aria-modal="true" aria-labelledby="secret-title" hidden>
@@ -547,7 +556,7 @@
             const semi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (+m[3] + 1) * 12;
             return 440 * Math.pow(2, (semi - 69) / 12);
         };
-        const BEAT = 60 / 96;
+        const BEAT = 60 / (96 * 1.8);                    // 1.8× tempo
         // melody: [note, beats] — "Here comes the bride…"
         const MELODY = [
             ['G4', 1], ['C5', 1.5], ['C5', .5], ['C5', 2],
@@ -624,6 +633,19 @@
             else { await Chip.play(); set(true); }
         });
         document.addEventListener('visibilitychange', () => (document.hidden ? Chip.suspend() : Chip.resume()));
+    })();
+
+    // ===== Floating "back to title" (shown once the title screen is scrolled away) =====
+    (function toTop() {
+        const btn = document.getElementById('to-top');
+        btn.hidden = false;
+        const update = () => btn.classList.toggle('hide', scrollY < innerHeight * 0.6);
+        update();
+        addEventListener('scroll', update, { passive: true });
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+        });
     })();
 
     // ===== Konami code: ↑↑↓↓←→←→BA (keyboard) or the same swipes + 2 taps (touch) =====

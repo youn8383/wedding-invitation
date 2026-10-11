@@ -602,7 +602,7 @@
 
     // ===== Sound: Pachelbel "Canon in D" (public domain) as a synth arpeggio + key-click SFX, all synthesized =====
     const Synth = (() => {
-        let ctx = null, bus = null, loopTimer = null, t0 = 0, noise = null, loopNo = 0;
+        let ctx = null, bus = null, loopTimer = null, t0 = 0, loopNo = 0;
         const freq = (n) => {
             const m = /^([A-G])(b|#)?(\d)$/.exec(n);
             const semi = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (+m[3] + 1) * 12;
@@ -629,9 +629,6 @@
             lp.connect(out); lp.connect(delay); delay.connect(fb).connect(delay); delay.connect(wet).connect(out);
             out.connect(ctx.destination);
             bus = lp;
-            noise = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
-            const d = noise.getChannelData(0);
-            for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
         }
         function tone(f, t, dur, type, vol, attack = 0.02) {
             const o = ctx.createOscillator(), g = ctx.createGain();
@@ -664,13 +661,18 @@
                 if (ctx) { const c = ctx; ctx = null; c.close(); }   // closing drops every note already queued
             },
             async unlock() { ensure(); await ctx.resume(); },
-            click() {                                            // mechanical key: filtered noise burst
+            click() {                                            // matrix "pop": round sine blip that drops in pitch
                 if (!ctx) return;
-                const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
-                src.buffer = noise; bp.type = 'bandpass'; bp.frequency.value = 1800 + Math.random() * 1600; bp.Q.value = 1.2;
-                g.gain.value = 0.35;
-                src.connect(bp).connect(g).connect(ctx.destination);
-                src.start();
+                const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+                const f = [440, 523, 587, 659, 784, 880][Math.random() * 6 | 0] * (Math.random() < 0.3 ? 2 : 1);
+                o.type = 'sine';
+                o.frequency.setValueAtTime(f, t);
+                o.frequency.exponentialRampToValueAtTime(f * 0.5, t + 0.08);
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.exponentialRampToValueAtTime(0.14, t + 0.006);
+                g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+                o.connect(g).connect(ctx.destination);
+                o.start(t); o.stop(t + 0.12);
             },
             blip() {
                 if (!ctx) return;
