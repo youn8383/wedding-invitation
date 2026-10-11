@@ -822,7 +822,7 @@
         };
         const fmtDate = (ts) => new Date(ts).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', year: '2-digit', month: '2-digit', day: '2-digit' });
 
-        function renderItem(entry, i) {     // i: 최신순 위치 → 번호는 가장 먼저 쓴 사람이 01
+        function renderItem(entry, i) {
             const item = el('div', 'px ink slot');
             const head = el('div', 'head');
             head.append(el('span', 'no', `SLOT ${String(entries.length - i).padStart(2, '0')}`), el('span', 'who', entry.name), el('span', 'when', fmtDate(entry.createdAt)));
