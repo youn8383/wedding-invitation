@@ -55,7 +55,7 @@
         .mono { font-family: var(--mono); }
         .icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* matrix rain lives on the first screen only; JS fades it out as you scroll */
+        /* matrix rain: slow, dim, faded behind the content column */
         #matrix { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .32; pointer-events: none; transition: opacity .2s linear;
             -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%);
                     mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%); }
@@ -506,17 +506,10 @@
         if (reduceMotion) return;
         const start = () => { if (!timer) timer = setInterval(draw, 70); };
         const stop = () => { clearInterval(timer); timer = null; };
-        // first screen only: fade out while scrolling away, and stop drawing once invisible (saves battery)
-        const fade = () => {
-            const k = Math.max(0, 1 - scrollY / (innerHeight * 0.8));
-            canvas.style.opacity = (0.32 * k).toFixed(3);
-            if (k === 0 || document.hidden) stop(); else start();
-        };
-        fade();
+        start();
         let rt;
-        addEventListener('scroll', fade, { passive: true });
         addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 150); });
-        document.addEventListener('visibilitychange', fade);
+        document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
     })();
 
     // ===== Toast / Clipboard =====
