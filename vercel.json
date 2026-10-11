@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/i/:code", "destination": "/api/i?code=:code" }
+    {
+      "source": "/i/:code",
+      "destination": "/api/i?code=:code"
+    },
+    {
+      "source": "/cafe",
+      "destination": "/cafe.html"
+    }
   ]
 }
