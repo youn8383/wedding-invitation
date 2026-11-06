@@ -843,7 +843,7 @@
             box.hidden = false;
             const lines = [...box.querySelectorAll('.ln')];
             if (reduceMotion) { lines.forEach((l) => l.classList.add('on')); return; }
-            window.matrixHearts = Date.now() + 14000;             // ~10s of full heart rain + 4s fading out
+            window.matrixHearts = Infinity;                       // every photo seen: it rains hearts from now on
             for (const l of lines) {
                 l.classList.add('on');
                 if (Synth.on) Synth.click();
