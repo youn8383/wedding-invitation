@@ -157,7 +157,7 @@
         .stack { position: relative; aspect-ratio: 3 / 4; margin: 24px 14px 0 6px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
         .stack:focus-visible { outline: 2px solid var(--mint); outline-offset: 8px; }
         .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; contain: layout paint;
-            transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .35s; }
+            transition: transform .38s cubic-bezier(.2, .7, .2, 1), opacity .3s; }
         .stack .slide.drag { transition: none; cursor: grabbing; }
         .stack .slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-user-drag: none; }
         .car-bar { display: flex; align-items: center; margin-top: 30px; }
@@ -407,21 +407,21 @@
                 <div class="dex-head"><span>COLLECTION</span><b id="dex-count" aria-live="polite"></b></div>
                 <div class="dex-bar" aria-hidden="true"><i id="dex-fill"></i></div>
                 <div class="stack" id="gallery-grid" tabindex="0" aria-label="웨딩 사진 카드, 좌우 화살표로 넘기기">
-                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"><span class="no">01</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"><span class="no">02</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">03</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"><span class="no">04</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><img src="images/gallery/05.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">05</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><img src="images/gallery/06.webp" alt="베일 아래에서 얼굴을 맞댄 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">06</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><img src="images/gallery/07.webp" alt="숲속에서 이마를 맞댄 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">07</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><img src="images/gallery/08.webp" alt="나무 아래 정원에서 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">08</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><img src="images/gallery/09.webp" alt="정원 잔디에 앉은 신부와 그 앞에 선 신랑" width="900" height="1600" loading="lazy" decoding="async"><span class="no">09</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="10.jpg" data-thumb="images/gallery/10-s.webp"><img src="images/gallery/10.webp" alt="검은 드레스와 턱시도 차림으로 기대어 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">10</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="11.jpg" data-thumb="images/gallery/11-s.webp"><img src="images/gallery/11.webp" alt="흰 벽 앞에 나란히 서서 웃는 검은 옷차림의 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">11</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="12.jpg" data-thumb="images/gallery/12-s.webp"><img src="images/gallery/12.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">12</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="13.jpg" data-thumb="images/gallery/13-s.webp"><img src="images/gallery/13.webp" alt="나무 벽 앞에서 신랑을 끌어안고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">13</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="14.jpg" data-thumb="images/gallery/14-s.webp"><img src="images/gallery/14.webp" alt="검은 배경 앞에 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">14</span><span class="new" aria-hidden="true">NEW!</span></div>
-                    <div class="slide" data-name="15.jpg" data-thumb="images/gallery/15-s.webp"><img src="images/gallery/15.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">15</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp?v=bed827a6"><img src="images/gallery/01.webp?v=bed827a6" alt="베일을 쓰고 부케를 든 신부" width="900" height="1200" decoding="async"><span class="no">01</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp?v=bed827a6"><img src="images/gallery/02.webp?v=bed827a6" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1200" loading="lazy" decoding="async"><span class="no">02</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp?v=bed827a6"><img src="images/gallery/03.webp?v=bed827a6" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">03</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp?v=bed827a6"><img src="images/gallery/04.webp?v=bed827a6" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1200" loading="lazy" decoding="async"><span class="no">04</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp?v=bed827a6"><img src="images/gallery/05.webp?v=bed827a6" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">05</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp?v=bed827a6"><img src="images/gallery/06.webp?v=bed827a6" alt="베일 아래에서 얼굴을 맞댄 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">06</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp?v=bed827a6"><img src="images/gallery/07.webp?v=bed827a6" alt="숲속에서 이마를 맞댄 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">07</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp?v=bed827a6"><img src="images/gallery/08.webp?v=bed827a6" alt="나무 아래 정원에서 마주 보는 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">08</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp?v=bed827a6"><img src="images/gallery/09.webp?v=bed827a6" alt="정원 잔디에 앉은 신부와 그 앞에 선 신랑" width="900" height="1200" loading="lazy" decoding="async"><span class="no">09</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="10.jpg" data-thumb="images/gallery/10-s.webp?v=bed827a6"><img src="images/gallery/10.webp?v=bed827a6" alt="검은 드레스와 턱시도 차림으로 기대어 선 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">10</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="11.jpg" data-thumb="images/gallery/11-s.webp?v=bed827a6"><img src="images/gallery/11.webp?v=bed827a6" alt="흰 벽 앞에 나란히 서서 웃는 검은 옷차림의 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">11</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="12.jpg" data-thumb="images/gallery/12-s.webp?v=bed827a6"><img src="images/gallery/12.webp?v=bed827a6" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">12</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="13.jpg" data-thumb="images/gallery/13-s.webp?v=bed827a6"><img src="images/gallery/13.webp?v=bed827a6" alt="나무 벽 앞에서 신랑을 끌어안고 웃는 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">13</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="14.jpg" data-thumb="images/gallery/14-s.webp?v=bed827a6"><img src="images/gallery/14.webp?v=bed827a6" alt="검은 배경 앞에 나란히 선 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">14</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="15.jpg" data-thumb="images/gallery/15-s.webp?v=bed827a6"><img src="images/gallery/15.webp?v=bed827a6" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1200" loading="lazy" decoding="async"><span class="no">15</span><span class="new" aria-hidden="true">NEW!</span></div>
                 </div>
                 <div class="car-bar">
                     <span class="count">SCREENSHOT <b id="car-count"></b></span>
@@ -802,7 +802,7 @@
             cv.width = cw; cv.height = ch;
             cv.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
         }
-        async function mosaic(c) {                                // big pixels → sharper in 6 steps, then the real photo
+        async function mosaic(c) {                                // big pixels → sharper in 5 quick steps, then the real photo
             const img = c.querySelector('img');
             await img.decode().catch(() => {});
             if (!img.naturalWidth) { c.classList.add('open'); return; }
@@ -810,10 +810,10 @@
             cv.className = 'mosaic';
             cv.setAttribute('aria-hidden', 'true');
             c.appendChild(cv);
-            for (const cells of [4, 7, 12, 20, 36, 64]) {
+            for (const cells of [4, 8, 16, 32, 64]) {
                 drawMosaic(cv, img, cells);
                 c.classList.add('open');
-                await new Promise((r) => setTimeout(r, 110));
+                await new Promise((r) => setTimeout(r, 100));
             }
             cv.remove();
         }
@@ -891,7 +891,7 @@
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
             top.style.opacity = 0;
-            await wait(380);
+            await wait(325);
             order.push(...order.splice(0, order.indexOf(k)));
             top.classList.add('drag');
             render();
@@ -916,7 +916,7 @@
             void el.offsetWidth;
             el.classList.remove('drag');
             render();
-            await wait(380);
+            await wait(325);
             busy = window.galleryBusy = false;
         }
         let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0;
