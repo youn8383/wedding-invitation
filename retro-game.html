@@ -163,7 +163,7 @@
         .car-bar { display: flex; align-items: center; margin-top: 30px; }
         .car-thumbs { position: relative; display: flex; gap: 10px; margin-top: 12px; padding: 4px; overflow-x: auto; scrollbar-width: none; }
         .car-thumbs::-webkit-scrollbar { display: none; }
-        .car-thumbs button { position: relative; flex: 0 0 44px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .car-thumbs button { position: relative; flex: 0 0 52px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
         .stack .slide { background: var(--ink); box-shadow: 0 0 0 var(--px) var(--cream), 6px 6px 0 var(--px) var(--void);
             background-image: repeating-linear-gradient(45deg, rgba(167, 163, 230, .1) 0 6px, transparent 6px 12px); }
@@ -836,14 +836,14 @@
         const cards = [...stack.children], n = cards.length;
         const TILT = [-5, 6, -4, 5.5, -6.5];
         const order = cards.map((_, k) => k);
-        let busy = false, live = false;
+        let busy = false, live = false, pending = null;
         const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion ? 0 : ms));
         const thumbs = cards.map((c, k) => {
             const b = document.createElement('button');
             b.type = 'button';
             b.setAttribute('aria-label', `${k + 1}번째 사진 보기`);
             b.innerHTML = THUMB(c);
-            b.addEventListener('click', () => goTo(k));
+            b.addEventListener('click', () => { if (busy) pending = k; else goTo(k); });
             strip.appendChild(b);
             return b;
         });
@@ -871,11 +871,14 @@
             const top = order[0], t = thumbs[top];
             countEl.textContent = COUNT(top);
             thumbs.forEach((b, j) => b.setAttribute('aria-current', j === top ? 'true' : 'false'));
-            strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+            const l = t.offsetLeft - strip.scrollLeft;
+            if (l < 0 || l + t.offsetWidth > strip.clientWidth)     // only move the strip when the thumb is out of view: a moving strip swallows taps on iOS
+                strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
             if (live) onTop(top);
         }
         async function goTo(k, dir = -1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
-            if (busy || k === order[0]) return;
+            if (busy) { pending = k; return; }                    // remember the latest tap, run it right after this flight
+            if (k === order[0]) return;
             busy = window.galleryBusy = true;
             const top = cards[order[0]];
             top.style.willChange = 'transform, opacity';
@@ -891,6 +894,7 @@
             top.classList.remove('drag');
             render();
             busy = window.galleryBusy = false;
+            if (pending !== null) { const q = pending; pending = null; goTo(q); }
         }
         async function prev() {                                   // pull the bottom card back on top from the left
             if (busy) return;
