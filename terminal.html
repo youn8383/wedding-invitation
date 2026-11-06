@@ -217,8 +217,10 @@
         .fetch { margin-top: 20px; padding: 16px 16px 18px; border-radius: var(--radius); border: 1px solid rgba(74, 222, 128, .35); background: rgba(17, 17, 20, .96);
             font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--muted); box-shadow: 0 0 0 4px var(--accent-soft); }
         .fetch .cmdl .ps { color: var(--accent); }
-        .fetch-body { display: flex; gap: 16px; margin-top: 10px; }
-        .fetch-art { margin: 0; font: inherit; line-height: 1.25; color: var(--rose); white-space: pre; }
+        .fetch-body { display: flex; align-items: center; gap: 16px; margin-top: 10px; }   /* heart sits at the middle of the info column */
+        /* heart drawn on a fixed 9×8 grid: ♥ is wider than a space in many phone fonts, so text art would skew */
+        .fetch-art { flex: none; display: grid; grid-template-columns: repeat(9, 12px); grid-auto-rows: 12px; color: var(--rose); }
+        .fetch-art i { display: grid; place-items: center; font-style: normal; font-size: 11px; line-height: 1; }
         .fetch-info { min-width: 0; }
         .fetch-info .who { color: var(--accent); }
         .fetch-info .rule { color: var(--faint); }
@@ -491,13 +493,7 @@
                 <div class="fetch" id="fetch" role="status" hidden>
                     <div class="cmdl ln"><span class="ps">$</span> neofetch --wedding</div>
                     <div class="fetch-body">
-<pre class="fetch-art ln" aria-hidden="true">  ♥♥   ♥♥
- ♥♥♥♥ ♥♥♥♥
-♥♥♥♥♥♥♥♥♥♥♥
- ♥♥♥♥♥♥♥♥♥
-  ♥♥♥♥♥♥♥
-    ♥♥♥
-     ♥</pre>
+<div class="fetch-art ln" aria-hidden="true"><i></i><i>♥</i><i>♥</i><i></i><i></i><i></i><i>♥</i><i>♥</i><i></i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i></i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i></i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i></i><i></i><i></i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i></i><i></i><i></i><i></i><i></i><i>♥</i><i>♥</i><i>♥</i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i>♥</i><i></i><i></i><i></i><i></i></div>
                         <div class="fetch-info">
                             <div class="ln"><span class="who">groom</span>@<span class="who">bride</span></div>
                             <div class="ln rule">-----------</div>
