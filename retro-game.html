@@ -148,25 +148,48 @@
         .player .btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
         .player .pbtn { padding: 0 4px; gap: 6px; font-family: var(--f11); font-size: 12px; }
 
-        /* album: one big screenshot at a time (swipe) + slot strip → tap for full view. Real photos stay smooth (no pixelated scaling) */
-        .car-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
-            background: var(--ink); box-shadow: 0 0 0 var(--px) var(--cream), 8px 8px 0 var(--px) var(--void); margin: var(--px); }
-        .car-track::-webkit-scrollbar { display: none; }
-        .car-track .slide { position: relative; flex: 0 0 100%; aspect-ratio: 3 / 4; scroll-snap-align: center; scroll-snap-stop: always; -webkit-tap-highlight-color: transparent; }
-        .car-track img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; image-rendering: auto; }
-        .car-track .slide .no { position: absolute; left: 0; top: 0; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--mint); }
-        .car-track .slide:focus-visible { outline: 2px solid var(--mint); outline-offset: -6px; }
-        .car-bar { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+        /* album: card pile + collection strip. Unseen cards lie face down (?); the first time one comes to the top it flips,
+           shows NEW! and its thumbnail slot unlocks. Real photos stay smooth (no pixelated scaling) */
+        .dex-head { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--f11); font-size: 12px; letter-spacing: 2px; color: var(--mint); }
+        .dex-head b { color: var(--gold); font-weight: 400; letter-spacing: 1px; }
+        .dex-bar { height: 12px; margin-top: 8px; background: var(--void); box-shadow: 0 0 0 2px var(--cream); }
+        .dex-bar i { display: block; width: 0; height: 100%; background: repeating-linear-gradient(90deg, var(--gold) 0 8px, #e0a93a 8px 12px); transition: width .3s steps(6); }
+        .stack { position: relative; aspect-ratio: 3 / 4; margin: 24px 14px 0 6px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+        .stack:focus-visible { outline: 2px solid var(--mint); outline-offset: 8px; }
+        .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; will-change: transform;
+            transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .35s; }
+        .stack .slide.drag { transition: none; cursor: grabbing; }
+        .stack .slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-user-drag: none; }
+        .car-bar { display: flex; align-items: center; margin-top: 30px; }
+        .car-thumbs { position: relative; display: flex; gap: 10px; margin-top: 12px; padding: 4px; overflow-x: auto; scrollbar-width: none; }
+        .car-thumbs::-webkit-scrollbar { display: none; }
+        .car-thumbs button { position: relative; flex: 0 0 44px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+        .stack .slide { background: var(--ink); box-shadow: 0 0 0 var(--px) var(--cream), 6px 6px 0 var(--px) var(--void);
+            background-image: repeating-linear-gradient(45deg, rgba(167, 163, 230, .1) 0 6px, transparent 6px 12px); }
+        .stack .slide::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f11); font-size: 48px; font-weight: 700; color: var(--dim); text-shadow: 4px 4px 0 var(--void); }
+        .stack .slide img { image-rendering: auto; visibility: hidden; position: relative; }
+        .stack .slide.open img { visibility: visible; }
+        .stack .slide.fresh img { animation: unlock .5s steps(5); }
+        .stack .slide .no { position: absolute; left: 0; top: 0; z-index: 1; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--dim); }
+        .stack .slide.open .no { background: var(--mint); }
+        .stack .slide .new { position: absolute; right: 0; bottom: 0; z-index: 1; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--gold); visibility: hidden; }
+        .stack .slide.fresh .new { visibility: visible; animation: blink .5s steps(1) infinite; }
+        @keyframes unlock { 0% { filter: brightness(4) saturate(0); transform: scale(.85); } 100% { filter: none; transform: none; } }
+        .car-bar { gap: 10px; }
         .car-bar .count { flex: 1; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--mint); }
         .car-bar .count b { color: var(--gold); font-weight: 400; }
         .car-bar .pbtn { min-width: 52px; padding: 0 10px; }
-        .car-thumbs { position: relative; display: flex; gap: 10px; margin-top: 14px; padding: 4px; overflow-x: auto; scrollbar-width: none; }
-        .car-thumbs::-webkit-scrollbar { display: none; }
-        .car-thumbs button { flex: 0 0 48px; aspect-ratio: 3 / 4; padding: 0; border: 0; background: var(--ink); cursor: pointer; opacity: .5;
-            box-shadow: 0 0 0 2px var(--dim); -webkit-tap-highlight-color: transparent; }
-        .car-thumbs button[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--void); }
+        .car-thumbs button { border: 0; background: var(--ink); box-shadow: 0 0 0 2px var(--dim); }
+        .car-thumbs button[aria-current="true"] { box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--void); }
         .car-thumbs button:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
-        .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; image-rendering: auto; }
+        .car-thumbs img { image-rendering: auto; visibility: hidden; }
+        .car-thumbs .q { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f11); font-size: 24px; font-weight: 700; color: var(--dim); }
+        .car-thumbs .open img { visibility: visible; animation: unlock .4s steps(4); }
+        .car-thumbs .open .q { display: none; }
+        .dex-done { margin-top: 22px; padding: 14px 16px; text-align: center; animation: pop .3s steps(3); }
+        .dex-done b { display: block; font-family: var(--f11); font-size: 24px; font-weight: 700; color: var(--gold); text-shadow: 2px 2px 0 var(--rose); letter-spacing: 1px; }
+        .dex-done span { display: block; margin-top: 6px; font-size: 15px; }
 
         /* save point */
         .save { padding: 20px 18px; }
@@ -249,6 +272,8 @@
             .press, .menu a .cur, .say.done::after { animation: none !important; }
             .wipe.go { animation: none; }
             .bgm[aria-pressed="true"] .note, .secret-box { animation: none; }
+            .stack .slide.fresh img, .stack .slide.fresh .new, .car-thumbs .open img, .dex-done { animation: none; }
+            .stack .slide { transition: none; }
         }
     </style>
     <style>
@@ -378,18 +403,20 @@
         <!-- STAGE 5: ALBUM -->
         <section class="stage" id="album">
             <div class="stage-head"><span class="no">STAGE 5</span><h2>ALBUM</h2></div>
-            <p class="say px ink">두 PLAYER 의 스크린샷을 모아뒀어요. 옆으로 넘겨서 볼 수 있어요.</p>
+            <p class="say px ink">두 PLAYER 의 스크린샷 카드를 모아보세요! 카드를 넘길 때마다 도감에 등록돼요.</p>
             <div class="stage-body">
-                <div class="car-track" id="gallery-grid">
-                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><span class="no">01</span><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"></div>
-                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><span class="no">02</span><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><span class="no">03</span><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><span class="no">04</span><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><span class="no">05</span><img src="images/gallery/05.webp" alt="흰 드레스를 입고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><span class="no">06</span><img src="images/gallery/06.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><span class="no">07</span><img src="images/gallery/07.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><span class="no">08</span><img src="images/gallery/08.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
-                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><span class="no">09</span><img src="images/gallery/09.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                <div class="dex-head"><span>COLLECTION</span><b id="dex-count" aria-live="polite"></b></div>
+                <div class="dex-bar" aria-hidden="true"><i id="dex-fill"></i></div>
+                <div class="stack" id="gallery-grid" tabindex="0" aria-label="웨딩 사진 카드, 좌우 화살표로 넘기기">
+                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"><span class="no">01</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"><span class="no">02</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">03</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"><span class="no">04</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><img src="images/gallery/05.webp" alt="흰 드레스를 입고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">05</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><img src="images/gallery/06.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">06</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><img src="images/gallery/07.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">07</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><img src="images/gallery/08.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">08</span><span class="new" aria-hidden="true">NEW!</span></div>
+                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><img src="images/gallery/09.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><span class="no">09</span><span class="new" aria-hidden="true">NEW!</span></div>
                 </div>
                 <div class="car-bar">
                     <span class="count">SCREENSHOT <b id="car-count"></b></span>
@@ -397,6 +424,7 @@
                     <button class="pbtn" type="button" id="car-next" aria-label="다음 사진">▶</button>
                 </div>
                 <div class="car-thumbs" id="car-thumbs"></div>
+                <div class="dex-done px ink" id="dex-done" hidden><b>★ COLLECTION COMPLETE ★</b><span>모든 스크린샷을 모았어요!<br>12.20 에 실물로 만나요</span></div>
             </div>
         </section>
 
@@ -746,38 +774,138 @@
         if (e.target.closest('.pbtn, .menu a, .list-menu a, .list-menu button, .to-top, .switch, .slot .del, #secret-close')) Chip.sfx();
     });
 
-    // ===== Gallery carousel: native scroll-snap track + thumbnail strip =====
+    // ===== Album: card pile + collection strip — every card you flip to registers in the collection =====
     (function gallery() {
-        const track = document.getElementById('gallery-grid'), thumbs = document.getElementById('car-thumbs'), carCount = document.getElementById('car-count');
-        const slides = [...track.children], n = slides.length;
-        const COUNT = (k) => `${String(k + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`;
-        let at = -1;
-        slides.forEach((el, k) => {
+        const pad = (k) => String(k).padStart(2, '0');
+        const COUNT = (k) => `${pad(k + 1)} / ${pad(n)}`;
+        const THUMB = (c) => `<img src="${c.dataset.thumb}" alt="" loading="lazy" decoding="async"><span class="q" aria-hidden="true">?</span>`;
+        const dexCount = document.getElementById('dex-count'), fill = document.getElementById('dex-fill'), doneBox = document.getElementById('dex-done');
+        const got = new Set();
+        const update = () => { dexCount.textContent = `${pad(got.size)} / ${pad(n)}`; fill.style.width = got.size / n * 100 + '%'; };
+        function activate() {}
+        function onTop(k) {                                       // first time on top: flip face up, NEW!, unlock its slot
+            if (got.has(k)) return;
+            got.add(k);
+            const c = cards[k];
+            c.querySelector('img').loading = 'eager';
+            c.classList.add('open');
+            thumbs[k].classList.add('open');
+            if (!reduceMotion) {
+                c.classList.add('fresh');
+                setTimeout(() => c.classList.remove('fresh'), 2400);
+                if (Chip.playing) Chip.sfx();
+            }
+            update();
+            if (got.size === n) {
+                doneBox.hidden = false;
+                if (Chip.playing) setTimeout(() => Chip.jingle(), 250);
+            }
+        }
+        const init = update;
+        // ---- card stack engine: drag the top card aside, ◀ ▶, arrow keys, or tap a thumbnail ----
+        const stack = document.getElementById('gallery-grid'), countEl = document.getElementById('car-count'), strip = document.getElementById('car-thumbs');
+        const cards = [...stack.children], n = cards.length;
+        const TILT = [-5, 6, -4, 5.5, -6.5];
+        const order = cards.map((_, k) => k);
+        let busy = false, live = false;
+        const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion ? 0 : ms));
+        const thumbs = cards.map((c, k) => {
             const b = document.createElement('button');
             b.type = 'button';
             b.setAttribute('aria-label', `${k + 1}번째 사진 보기`);
-            b.innerHTML = `<img src="${el.dataset.thumb}" alt="" loading="lazy" decoding="async">`;
-            b.addEventListener('click', () => go(k));
-            thumbs.appendChild(b);
+            b.innerHTML = THUMB(c);
+            b.addEventListener('click', () => goTo(k));
+            strip.appendChild(b);
+            return b;
         });
-        function go(k) {
-            k = (k + n) % n;
-            track.scrollTo({ left: k * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+        function place(el, depth) {
+            const d = Math.min(depth, 3), k = cards.indexOf(el);
+            el.style.zIndex = n - depth;
+            el.style.opacity = depth > 3 ? 0 : 1;
+            el.style.transform = depth === 0 ? 'none'
+                : `translate(${d * 3}px, ${d * 6}px) rotate(${TILT[k % TILT.length]}deg) scale(${1 - d * 0.02})`;
+            el.setAttribute('aria-hidden', depth === 0 ? 'false' : 'true');
         }
-        function mark(k) {
-            at = k;
-            carCount.textContent = COUNT(k);
-            [...thumbs.children].forEach((b, j) => b.setAttribute('aria-current', j === k ? 'true' : 'false'));
-            const t = thumbs.children[k];
-            thumbs.scrollTo({ left: t.offsetLeft - (thumbs.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+        function render() {
+            order.forEach((k, depth) => place(cards[k], depth));
+            const top = order[0], t = thumbs[top];
+            countEl.textContent = COUNT(top);
+            thumbs.forEach((b, j) => b.setAttribute('aria-current', j === top ? 'true' : 'false'));
+            strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+            const nextImg = cards[order[1 % n]].querySelector('img');
+            if (nextImg.loading === 'lazy') nextImg.loading = 'eager';            // warm up the card underneath
+            if (live) onTop(top);
         }
-        track.addEventListener('scroll', () => {
-            const k = Math.round(track.scrollLeft / track.clientWidth);
-            if (k !== at && k >= 0 && k < n) mark(k);
-        }, { passive: true });
-        document.getElementById('car-prev').addEventListener('click', () => go(at - 1));
-        document.getElementById('car-next').addEventListener('click', () => go(at + 1));
-        mark(0);
+        async function goTo(k, dir = -1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
+            if (busy || k === order[0]) return;
+            busy = true;
+            const top = cards[order[0]];
+            top.classList.remove('drag');
+            top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
+            top.style.opacity = 0;
+            await wait(380);
+            order.push(...order.splice(0, order.indexOf(k)));
+            top.classList.add('drag');
+            render();
+            top.style.opacity = 0;
+            void top.offsetWidth;
+            top.classList.remove('drag');
+            render();
+            busy = false;
+        }
+        async function prev() {                                   // pull the bottom card back on top from the left
+            if (busy) return;
+            busy = true;
+            order.unshift(order.pop());
+            const el = cards[order[0]];
+            el.classList.add('drag');
+            el.style.zIndex = n + 1;
+            el.style.opacity = 0;
+            el.style.transform = `translate(${-stack.clientWidth * 1.4}px, 40px) rotate(-24deg)`;
+            void el.offsetWidth;
+            el.classList.remove('drag');
+            render();
+            await wait(380);
+            busy = false;
+        }
+        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0;
+        stack.addEventListener('pointerdown', (e) => {
+            const top = cards[order[0]];
+            if (busy || !e.isPrimary || !top.contains(e.target)) return;
+            id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now();
+            top.setPointerCapture(id);
+            top.classList.add('drag');
+        });
+        stack.addEventListener('pointermove', (e) => {
+            if (e.pointerId !== id) return;
+            dx = e.clientX - sx; dy = (e.clientY - sy) * 0.3;
+            cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+        });
+        function end(e, cancelled) {
+            if (e.pointerId !== id) return;
+            id = null;
+            const top = cards[order[0]], speed = Math.abs(dx) / (performance.now() - t0);
+            top.classList.remove('drag');
+            if (!cancelled && (Math.abs(dx) > stack.clientWidth * 0.28 || (speed > 0.5 && Math.abs(dx) > 30))) goTo(order[1], dx < 0 ? -1 : 1, dy);
+            else place(top, 0);                                   // not far enough: spring back
+        }
+        stack.addEventListener('pointerup', (e) => end(e, false));
+        stack.addEventListener('pointercancel', (e) => end(e, true));
+        stack.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault(); goTo(order[1]); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+        });
+        document.getElementById('car-prev').addEventListener('click', prev);
+        document.getElementById('car-next').addEventListener('click', () => goTo(order[1]));
+        init();
+        render();
+        // the show starts the first time the pile scrolls into view
+        const start = () => { if (live) return; live = true; activate(); onTop(order[0]); };
+        if (reduceMotion || !('IntersectionObserver' in window)) start();
+        else {
+            const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); start(); } }, { threshold: 0.4 });
+            io.observe(stack);
+        }
     })();
 
     // ===== Floating "back to title" (shown once the title screen is scrolled away) =====
