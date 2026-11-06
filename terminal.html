@@ -56,7 +56,7 @@
         .icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
         /* matrix rain: slow, dim, faded behind the content column */
-        #matrix { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 0; opacity: .32; pointer-events: none; transition: opacity .2s linear;
+        #matrix { position: fixed; left: 0; top: 0; z-index: 0; opacity: .32; pointer-events: none; transition: opacity .2s linear;
             -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%);
                     mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%); }
 
@@ -212,6 +212,24 @@
         .car-thumbs img { opacity: 0; transition: opacity .5s; }
         .car-thumbs .seen img { opacity: 1; }
         .car-thumbs .seen .t-ascii { opacity: 0; transition: opacity .5s; }
+
+        /* all photos opened → `neofetch` card */
+        .fetch { margin-top: 20px; padding: 16px 16px 18px; border-radius: var(--radius); border: 1px solid rgba(74, 222, 128, .35); background: rgba(17, 17, 20, .96);
+            font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--muted); box-shadow: 0 0 0 4px var(--accent-soft); }
+        .fetch .cmdl .ps { color: var(--accent); }
+        .fetch-body { display: flex; gap: 16px; margin-top: 10px; }
+        .fetch-art { margin: 0; font: inherit; line-height: 1.25; color: var(--rose); white-space: pre; }
+        .fetch-info { min-width: 0; }
+        .fetch-info .who { color: var(--accent); }
+        .fetch-info .rule { color: var(--faint); }
+        .fetch-info b { color: var(--accent); font-weight: 500; }
+        .fetch-info span { color: var(--text); }
+        .fetch-colors { display: flex; gap: 0; margin-top: 8px; }
+        .fetch-colors i { width: 18px; height: 12px; }
+        .fetch-msg { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font-family: var(--sans); font-size: 16px; color: var(--text); line-height: 1.7; }
+        .fetch-msg small { display: block; font-size: 14px; color: var(--muted); }
+        .fetch .ln { opacity: 0; }
+        .fetch .ln.on { opacity: 1; }
 
 
         /* guestbook */
@@ -464,6 +482,30 @@
                     <button class="icon-btn" type="button" id="car-next" aria-label="다음 사진"><svg class="icon"><use href="#i-right"/></svg></button>
                 </div>
                 <div class="car-thumbs" id="car-thumbs"></div>
+                <div class="fetch" id="fetch" role="status" hidden>
+                    <div class="cmdl ln"><span class="ps">$</span> neofetch --wedding</div>
+                    <div class="fetch-body">
+<pre class="fetch-art ln" aria-hidden="true">  ♥♥   ♥♥
+ ♥♥♥♥ ♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥
+ ♥♥♥♥♥♥♥♥♥
+  ♥♥♥♥♥♥♥
+    ♥♥♥
+     ♥</pre>
+                        <div class="fetch-info">
+                            <div class="ln"><span class="who">groom</span>@<span class="who">bride</span></div>
+                            <div class="ln rule">-----------</div>
+                            <div class="ln"><b>Groom</b>: <span>윤상현</span></div>
+                            <div class="ln"><b>Bride</b>: <span>신아람</span></div>
+                            <div class="ln"><b>Date</b>: <span>2026.12.20 SUN 13:00</span></div>
+                            <div class="ln"><b>Venue</b>: <span>더화이트베일 3F V홀</span></div>
+                            <div class="ln"><b>Photos</b>: <span id="fetch-photos"></span> ✓</div>
+                            <div class="ln"><b>Status</b>: <span>ready to merge ♥</span></div>
+                            <div class="fetch-colors ln" aria-hidden="true"><i style="background:#09090b"></i><i style="background:#f28b8b"></i><i style="background:#4ade80"></i><i style="background:#fbd38d"></i><i style="background:#7aa2ff"></i><i style="background:#f4a3b6"></i><i style="background:#6ee7c8"></i><i style="background:#ededef"></i></div>
+                        </div>
+                    </div>
+                    <p class="fetch-msg ln">모든 사진을 다 보셨어요!<small>나머지 장면은 12월 20일, 실물로 보여드릴게요.</small></p>
+                </div>
             </div>
         </section>
 
@@ -559,12 +601,14 @@
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]=+-'.split('');
         const size = 16;
         let drops = [], timer = null;
-        let lastW = 0;
+        let lastW = 0, W = 0, H = 0;                             // the canvas' own CSS size: fade, draw and wrap all use it
         function resize() {
-            if (innerWidth === lastW) return;                    // mobile URL bar only changes the height: keep the canvas
-            lastW = innerWidth;
-            const dpr = Math.min(window.devicePixelRatio || 1, 2), h = Math.max(innerHeight, screen.height || 0);
-            canvas.width = innerWidth * dpr; canvas.height = h * dpr;
+            const h = Math.max(innerHeight, screen.height || 0);
+            if (innerWidth === lastW && h <= H) return;          // mobile URL bar only changes the height: keep the canvas
+            lastW = innerWidth; W = innerWidth; H = h;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.style.width = W + 'px'; canvas.style.height = H + 'px';   // 1:1 with the backing store, no squashing
+            canvas.width = W * dpr; canvas.height = H * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             const cols = Math.ceil(innerWidth / size);
             drops = Array.from({ length: cols }, (_, i) => drops[i] ?? Math.floor(Math.random() * -60));
@@ -572,13 +616,14 @@
         function draw() {
             if (window.galleryBusy) return;                      // give the frame budget to the photo cards
             ctx.fillStyle = 'rgba(9, 9, 11, 0.09)';
-            ctx.fillRect(0, 0, innerWidth, innerHeight);
+            ctx.fillRect(0, 0, W, H);
             ctx.font = `${size - 2}px 'JetBrains Mono', monospace`;
             for (let i = 0; i < drops.length; i++) {
-                const heart = Math.random() < 0.004;
+                const left = (window.matrixHearts || 0) - Date.now();   // celebration: hearts for a while, then tapering back to code
+                const heart = Math.random() < (left > 4000 ? 0.55 : left > 0 ? 0.004 + 0.546 * left / 4000 : 0.004);
                 ctx.fillStyle = heart ? '#f4a3b6' : Math.random() < 0.06 ? '#d9ffe6' : '#4ade80';
                 ctx.fillText(heart ? '♥' : chars[Math.random() * chars.length | 0], i * size, drops[i] * size);
-                if (drops[i] * size > innerHeight && Math.random() > 0.975) drops[i] = 0;
+                if (drops[i] * size > H && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
@@ -786,9 +831,32 @@
         const total = document.getElementById('dl-total');
         const seen = new Set();
         let saved = 0;
+        let opened = 0;
         const setTotal = () => {
-            total.innerHTML = saved < n ? `downloading <b>${saved}</b> / ${n} files…` : `<b>✓</b> ${n} files saved to ./photos`;
+            total.innerHTML = saved < n ? `downloading <b>${saved}</b> / ${n} files…`
+                : opened < n ? `<b>✓</b> ${n} files saved · opened <b>${opened}</b> / ${n}`
+                : `<b>✓</b> all ${n} photos opened`;
         };
+        async function complete() {                               // every photo opened: neofetch card + a few seconds of heart rain
+            const box = document.getElementById('fetch');
+            document.getElementById('fetch-photos').textContent = `${n} / ${n}`;
+            box.hidden = false;
+            const lines = [...box.querySelectorAll('.ln')];
+            if (reduceMotion) { lines.forEach((l) => l.classList.add('on')); return; }
+            window.matrixHearts = Date.now() + 14000;             // ~10s of full heart rain + 4s fading out
+            for (const l of lines) {
+                l.classList.add('on');
+                if (Synth.on) Synth.click();
+                await new Promise((r) => setTimeout(r, 70));
+            }
+        }
+        function markSeen(k) {                                    // the thumbnail may now show the real photo
+            if (thumbs[k].classList.contains('seen')) return;
+            thumbs[k].classList.add('seen');
+            opened++;
+            setTotal();
+            if (opened === n) complete();
+        }
         const bar = (p) => { const k = Math.round(p / 12.5); return '[' + '█'.repeat(k) + '░'.repeat(8 - k) + ']'; };
         function activate() {                                     // thumbnails come down one after another
             thumbs.forEach((b, j) => setTimeout(async () => {
@@ -846,7 +914,7 @@
             seen.add(k);
             const c = cards[k], img = c.querySelector('img'), barEl = c.querySelector('.bar'), pct = c.querySelector('.pct');
             img.loading = 'eager';
-            if (reduceMotion) { c.classList.add('got'); thumbs[k].classList.add('seen'); return; }
+            if (reduceMotion) { c.classList.add('got'); markSeen(k); return; }
             let art = null;                                       // ASCII renderer, ready once the photo is decoded
             img.decode().catch(() => {}).then(() => { if (img.naturalWidth) art = ascii(c.querySelector('.dl-ascii'), img); else art = { draw() {} }; });
             c.classList.add('loading');
@@ -868,7 +936,7 @@
             });
             await new Promise((r) => setTimeout(r, 350));                    // let the finished ASCII picture sit a beat
             c.classList.replace('loading', 'got');
-            thumbs[k].classList.add('seen');                         // now the thumbnail may show the real photo
+            markSeen(k);
             if (Synth.on) Synth.click();
         }
         const init = setTotal;
