@@ -5,6 +5,3 @@
 .agents
 .claude/skills
 skills-lock.json
-
-# 원본 웨딩 사진 (용량 큼, 배포용은 images/gallery 의 WebP)
-images/wedding_images/
