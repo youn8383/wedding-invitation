@@ -181,7 +181,7 @@
         .car-bar { display: flex; align-items: center; margin-top: 28px; }
         .car-thumbs { position: relative; display: flex; gap: 6px; margin-top: 12px; padding: 4px; overflow-x: auto; scrollbar-width: none; }
         .car-thumbs::-webkit-scrollbar { display: none; }
-        .car-thumbs button { position: relative; flex: 0 0 56px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        .car-thumbs button { position: relative; flex: 0 0 64px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
         .stack .slide { padding: 8px 8px 34px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface-2); box-shadow: 0 16px 28px -16px rgba(0, 0, 0, .9); }
         .stack .slide[aria-hidden="true"] { background: #121216; }
@@ -203,7 +203,7 @@
         .car-bar { gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
         .car-bar .ps { color: var(--accent); }
         .car-bar .count { flex: 1; font-variant-numeric: tabular-nums; }
-        .car-thumbs { gap: 8px; margin-top: 14px; padding: 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
+        .car-thumbs { gap: 10px; margin-top: 14px; padding: 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
         .car-thumbs button { border-radius: 8px; border: 1px solid rgba(74, 222, 128, .28); background: #0b0b0d; transition: border-color .2s, box-shadow .2s; }
         .car-thumbs button.seen { border-color: var(--line); }
         .car-thumbs button[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 14px -2px rgba(74, 222, 128, .6); }
@@ -281,7 +281,11 @@
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         /* sound: one toggle for BGM + SFX, with a tiny terminal log above it */
-        .sound { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .sound { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+            transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+        /* while the photo strip is on screen the toggle moves to the top-right corner instead of covering the right-hand thumbnails
+           (column-reverse keeps the little log under the button up there; 100% = the box's own height) */
+        .sound.up { flex-direction: column-reverse; transform: translateY(calc(-100svh + 100% + 28px + env(safe-area-inset-bottom) + env(safe-area-inset-top))); }
         .sound-btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
             font-family: var(--mono); font-size: 12px; color: var(--muted); background: rgba(17, 17, 20, .88); border: 1px solid var(--line);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px -10px rgba(0,0,0,.8); -webkit-tap-highlight-color: transparent; transition: color .2s, border-color .2s; }
@@ -308,7 +312,7 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .stack .slide, .stack .slide.got img, .car-thumbs button, .car-thumbs img, .dl-ascii, .dl-ov { transition: none; }
+            .stack .slide, .stack .slide.got img, .car-thumbs button, .car-thumbs img, .dl-ascii, .dl-ov, .sound { transition: none; }
             .cursor, .hero-top .live::before, .scroll-hint::after, .sound-btn .eq i { animation: none !important; }
         }
     </style>
@@ -957,10 +961,33 @@
             b.type = 'button';
             b.setAttribute('aria-label', `${k + 1}번째 사진 보기`);
             b.innerHTML = THUMB(c);
-            b.addEventListener('click', () => { if (busy) pending = k; else goTo(k); });
+            b.addEventListener('click', () => pick(k));
             strip.appendChild(b);
             return b;
         });
+        function pick(k) { if (busy) pending = k; else goTo(k); }
+        // forgiving taps: a strip that scrolls sideways makes phones read a slightly moving finger as a scroll and drop the click.
+        // Anything that moved < 14px and lasted < 600ms counts as a tap on the thumbnail it started on.
+        let tap = null;
+        strip.addEventListener('touchstart', (e) => {
+            const b = e.target.closest('button');
+            tap = b && e.touches.length === 1 ? { b, x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now(), sl: strip.scrollLeft } : null;
+        }, { passive: true });
+        strip.addEventListener('touchend', (e) => {
+            if (!tap) return;
+            const p = e.changedTouches[0], t = tap;
+            tap = null;
+            const moved = Math.hypot(p.clientX - t.x, p.clientY - t.y), slid = Math.abs(strip.scrollLeft - t.sl);
+            if (moved < 14 && slid < 14 && performance.now() - t.t < 600) {
+                e.preventDefault();                               // we handled it: skip the synthetic click
+                pick(thumbs.indexOf(t.b));
+            }
+        }, { passive: false });
+        strip.addEventListener('touchcancel', () => { tap = null; }, { passive: true });
+        if ('IntersectionObserver' in window) {                   // the fixed ./bgm.sh button would cover the right-hand thumbnails
+            const soundBox = document.querySelector('.sound');
+            new IntersectionObserver((es) => soundBox.classList.toggle('up', es[0].isIntersecting)).observe(strip);
+        }
         const decoded = new Set();
         function warm(k) {                                        // decode before the card shows, not mid-animation
             if (decoded.has(k)) return;

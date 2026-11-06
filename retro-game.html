@@ -237,9 +237,13 @@
         .to-top { position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 55; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
             width: 52px; height: 52px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--gold); text-decoration: none;
             box-shadow: inset -3px -3px 0 rgba(0,0,0,.25), inset 3px 3px 0 rgba(255,255,255,.35), 0 0 0 3px var(--void), 0 0 0 5px var(--cream), 0 6px 0 5px var(--void);
-            transition: transform .05s steps(1), opacity .2s steps(2); -webkit-tap-highlight-color: transparent; }
+            --lift: 0px; transform: translateY(var(--lift));
+            transition: transform .3s steps(6), opacity .2s steps(2); -webkit-tap-highlight-color: transparent; }
         .to-top .arrow { font-size: 12px; line-height: 1; margin-bottom: 3px; }
-        .to-top:active { transform: translateY(4px); }
+        .to-top:active { transform: translateY(calc(var(--lift) + 4px)); transition-duration: .05s; }
+        /* while the photo strip is on screen, TOP hops up under the BGM button instead of covering the right-hand thumbnails
+           (100% = its own height; 72px clears the BGM button and both pixel borders) */
+        .to-top.up { --lift: calc(-100svh + 100% + 16px + 72px + env(safe-area-inset-bottom) + env(safe-area-inset-top)); }
         .to-top.hide { opacity: 0; pointer-events: none; }
         .bgm-bar { position: fixed; top: calc(12px + env(safe-area-inset-top)); right: 12px; z-index: 55; display: flex; gap: 8px; }
         .bgm { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--cream); background: var(--ink); border: 0; cursor: pointer;
@@ -272,7 +276,7 @@
             .wipe.go { animation: none; }
             .bgm[aria-pressed="true"] .note, .secret-box { animation: none; }
             .stack .slide.fresh .new, .dex-done { animation: none; }
-            .stack .slide { transition: none; }
+            .stack .slide, .to-top { transition: none; }
         }
     </style>
     <style>
@@ -849,10 +853,33 @@
             b.type = 'button';
             b.setAttribute('aria-label', `${k + 1}번째 사진 보기`);
             b.innerHTML = THUMB(c);
-            b.addEventListener('click', () => { if (busy) pending = k; else goTo(k); });
+            b.addEventListener('click', () => pick(k));
             strip.appendChild(b);
             return b;
         });
+        function pick(k) { if (busy) pending = k; else goTo(k); }
+        // forgiving taps: a strip that scrolls sideways makes phones read a slightly moving finger as a scroll and drop the click.
+        // Anything that moved < 14px and lasted < 600ms counts as a tap on the thumbnail it started on.
+        let tap = null;
+        strip.addEventListener('touchstart', (e) => {
+            const b = e.target.closest('button');
+            tap = b && e.touches.length === 1 ? { b, x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now(), sl: strip.scrollLeft } : null;
+        }, { passive: true });
+        strip.addEventListener('touchend', (e) => {
+            if (!tap) return;
+            const p = e.changedTouches[0], t = tap;
+            tap = null;
+            const moved = Math.hypot(p.clientX - t.x, p.clientY - t.y), slid = Math.abs(strip.scrollLeft - t.sl);
+            if (moved < 14 && slid < 14 && performance.now() - t.t < 600) {
+                e.preventDefault();                               // we handled it: skip the synthetic click
+                pick(thumbs.indexOf(t.b));
+            }
+        }, { passive: false });
+        strip.addEventListener('touchcancel', () => { tap = null; }, { passive: true });
+        if ('IntersectionObserver' in window) {                   // the fixed TOP button would cover the right-hand thumbnails
+            const topBtn = document.getElementById('to-top');
+            new IntersectionObserver((es) => topBtn.classList.toggle('up', es[0].isIntersecting)).observe(strip);
+        }
         const decoded = new Set();
         function warm(k) {                                        // decode before the card shows, not mid-animation
             if (decoded.has(k)) return;
