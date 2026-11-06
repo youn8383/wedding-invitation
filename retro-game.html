@@ -58,7 +58,7 @@
 
         /* ---------- title screen ---------- */
         .title { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 64px 0 56px; position: relative; }
-        #stars { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+        #stars { position: fixed; left: 0; top: 0; z-index: 0; }
         .coin { font-family: var(--f11); font-size: 12px; color: var(--dim); letter-spacing: 2px; }
         .logo { margin-top: 22px; font-family: var(--f11); font-weight: 700; font-size: 48px; line-height: 1.1; letter-spacing: 2px; color: var(--gold);
             text-shadow: 4px 4px 0 var(--rose), 8px 8px 0 var(--ink); }
@@ -148,7 +148,7 @@
         .player .btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
         .player .pbtn { padding: 0 4px; gap: 6px; font-family: var(--f11); font-size: 12px; }
 
-        /* album: card pile + collection strip. Unseen cards lie face down (?); the first time one comes to the top it flips,
+        /* album: card pile + collection strip. Unseen cards lie face down (?); the first time one comes to the top it resolves from a pixel mosaic,
            shows NEW! and its thumbnail slot unlocks. Real photos stay smooth (no pixelated scaling) */
         .dex-head { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--f11); font-size: 12px; letter-spacing: 2px; color: var(--mint); }
         .dex-head b { color: var(--gold); font-weight: 400; letter-spacing: 1px; }
@@ -156,7 +156,7 @@
         .dex-bar i { display: block; width: 0; height: 100%; background: repeating-linear-gradient(90deg, var(--gold) 0 8px, #e0a93a 8px 12px); transition: width .3s steps(6); }
         .stack { position: relative; aspect-ratio: 3 / 4; margin: 24px 14px 0 6px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
         .stack:focus-visible { outline: 2px solid var(--mint); outline-offset: 8px; }
-        .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; will-change: transform;
+        .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; contain: layout paint;
             transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .35s; }
         .stack .slide.drag { transition: none; cursor: grabbing; }
         .stack .slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-user-drag: none; }
@@ -170,12 +170,11 @@
         .stack .slide::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f11); font-size: 48px; font-weight: 700; color: var(--dim); text-shadow: 4px 4px 0 var(--void); }
         .stack .slide img { image-rendering: auto; visibility: hidden; position: relative; }
         .stack .slide.open img { visibility: visible; }
-        .stack .slide.fresh img { animation: unlock .5s steps(5); }
-        .stack .slide .no { position: absolute; left: 0; top: 0; z-index: 1; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--dim); }
+        .stack .slide .mosaic { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
+        .stack .slide .no { position: absolute; left: 0; top: 0; z-index: 2; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--dim); }
         .stack .slide.open .no { background: var(--mint); }
-        .stack .slide .new { position: absolute; right: 0; bottom: 0; z-index: 1; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--gold); visibility: hidden; }
+        .stack .slide .new { position: absolute; right: 0; bottom: 0; z-index: 2; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--gold); visibility: hidden; }
         .stack .slide.fresh .new { visibility: visible; animation: blink .5s steps(1) infinite; }
-        @keyframes unlock { 0% { filter: brightness(4) saturate(0); transform: scale(.85); } 100% { filter: none; transform: none; } }
         .car-bar { gap: 10px; }
         .car-bar .count { flex: 1; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--mint); }
         .car-bar .count b { color: var(--gold); font-weight: 400; }
@@ -185,7 +184,7 @@
         .car-thumbs button:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
         .car-thumbs img { image-rendering: auto; visibility: hidden; }
         .car-thumbs .q { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f11); font-size: 24px; font-weight: 700; color: var(--dim); }
-        .car-thumbs .open img { visibility: visible; animation: unlock .4s steps(4); }
+        .car-thumbs .open img { visibility: visible; }
         .car-thumbs .open .q { display: none; }
         .dex-done { margin-top: 22px; padding: 14px 16px; text-align: center; animation: pop .3s steps(3); }
         .dex-done b { display: block; font-family: var(--f11); font-size: 24px; font-weight: 700; color: var(--gold); text-shadow: 2px 2px 0 var(--rose); letter-spacing: 1px; }
@@ -272,7 +271,7 @@
             .press, .menu a .cur, .say.done::after { animation: none !important; }
             .wipe.go { animation: none; }
             .bgm[aria-pressed="true"] .note, .secret-box { animation: none; }
-            .stack .slide.fresh img, .stack .slide.fresh .new, .car-thumbs .open img, .dex-done { animation: none; }
+            .stack .slide.fresh .new, .dex-done { animation: none; }
             .stack .slide { transition: none; }
         }
     </style>
@@ -570,16 +569,21 @@
         const ctx = c.getContext('2d');
         const colors = ['#f5ecd7', '#ffcf5c', '#6ee7c8', '#ff6f91', '#8f8bd9'];
         let pts = [];
+        let lastW = 0;
         function resize() {
-            const s = 3;                                  // 1 star pixel = 3 css px
-            c.width = Math.ceil(innerWidth / s); c.height = Math.ceil(innerHeight / s);
-            c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px';
+            if (innerWidth === lastW) return false;      // mobile URL bar only changes the height: keep the stars
+            lastW = innerWidth;
+            const s = 3, h = Math.max(innerHeight, screen.height || 0);   // 1 star pixel = 3 css px
+            c.width = Math.ceil(innerWidth / s); c.height = Math.ceil(h / s);
+            c.style.width = innerWidth + 'px'; c.style.height = h + 'px';
             pts = Array.from({ length: Math.round(c.width * c.height / 760) }, () => ({
                 x: Math.random() * c.width | 0, y: Math.random() * c.height | 0,
                 col: colors[Math.random() * colors.length | 0], p: Math.random() * 6.28, sp: .02 + Math.random() * .05,
             }));
+            return true;
         }
         function draw() {
+            if (window.galleryBusy) return;              // give the frame budget to the photo cards
             ctx.clearRect(0, 0, c.width, c.height);
             for (const s of pts) {
                 s.p += s.sp;
@@ -594,7 +598,7 @@
         resize(); draw();
         if (reduceMotion) return;
         let t = setInterval(draw, 120);
-        addEventListener('resize', () => { resize(); draw(); });
+        addEventListener('resize', () => { if (resize()) draw(); });
         document.addEventListener('visibilitychange', () => { clearInterval(t); if (!document.hidden) t = setInterval(draw, 120); });
     })();
 
@@ -783,14 +787,39 @@
         const got = new Set();
         const update = () => { dexCount.textContent = `${pad(got.size)} / ${pad(n)}`; fill.style.width = got.size / n * 100 + '%'; };
         function activate() {}
-        function onTop(k) {                                       // first time on top: flip face up, NEW!, unlock its slot
+        // photo drawn tiny (object-fit: cover, focus 50% 30%) and scaled up without smoothing = chunky pixels
+        function drawMosaic(cv, img, cells) {
+            const w = cv.clientWidth || 3, h = cv.clientHeight || 4;
+            const cw = cells, ch = Math.round(cells * h / w), ir = img.naturalWidth / img.naturalHeight, cr = cw / ch;
+            let sw = img.naturalWidth, sh = img.naturalHeight, sx = 0, sy = 0;
+            if (ir > cr) { sw = sh * cr; sx = (img.naturalWidth - sw) / 2; } else { sh = sw / cr; sy = (img.naturalHeight - sh) * 0.3; }
+            cv.width = cw; cv.height = ch;
+            cv.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+        }
+        async function mosaic(c) {                                // big pixels → sharper in 6 steps, then the real photo
+            const img = c.querySelector('img');
+            await img.decode().catch(() => {});
+            if (!img.naturalWidth) { c.classList.add('open'); return; }
+            const cv = document.createElement('canvas');
+            cv.className = 'mosaic';
+            cv.setAttribute('aria-hidden', 'true');
+            c.appendChild(cv);
+            for (const cells of [4, 7, 12, 20, 36, 64]) {
+                drawMosaic(cv, img, cells);
+                c.classList.add('open');
+                await new Promise((r) => setTimeout(r, 110));
+            }
+            cv.remove();
+        }
+        function onTop(k) {                                       // first time on top: mosaic → photo, NEW!, unlock its slot
             if (got.has(k)) return;
             got.add(k);
             const c = cards[k];
             c.querySelector('img').loading = 'eager';
-            c.classList.add('open');
             thumbs[k].classList.add('open');
-            if (!reduceMotion) {
+            if (reduceMotion) c.classList.add('open');
+            else {
+                mosaic(c);
                 c.classList.add('fresh');
                 setTimeout(() => c.classList.remove('fresh'), 2400);
                 if (Chip.playing) Chip.sfx();
@@ -818,13 +847,24 @@
             strip.appendChild(b);
             return b;
         });
+        const decoded = new Set();
+        function warm(k) {                                        // decode before the card shows, not mid-animation
+            if (decoded.has(k)) return;
+            decoded.add(k);
+            const img = cards[k].querySelector('img');
+            img.loading = 'eager';
+            img.decode().catch(() => {});
+        }
         function place(el, depth) {
             const d = Math.min(depth, 3), k = cards.indexOf(el);
             el.style.zIndex = n - depth;
             el.style.opacity = depth > 3 ? 0 : 1;
+            el.style.visibility = depth > 3 ? 'hidden' : 'visible';   // deep cards stop painting
+            el.style.willChange = depth <= 1 ? 'transform' : 'auto';   // only the top two keep a GPU layer
             el.style.transform = depth === 0 ? 'none'
                 : `translate(${d * 3}px, ${d * 6}px) rotate(${TILT[k % TILT.length]}deg) scale(${1 - d * 0.02})`;
             el.setAttribute('aria-hidden', depth === 0 ? 'false' : 'true');
+            if (depth <= 2) warm(k);
         }
         function render() {
             order.forEach((k, depth) => place(cards[k], depth));
@@ -832,14 +872,13 @@
             countEl.textContent = COUNT(top);
             thumbs.forEach((b, j) => b.setAttribute('aria-current', j === top ? 'true' : 'false'));
             strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
-            const nextImg = cards[order[1 % n]].querySelector('img');
-            if (nextImg.loading === 'lazy') nextImg.loading = 'eager';            // warm up the card underneath
             if (live) onTop(top);
         }
         async function goTo(k, dir = -1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
             if (busy || k === order[0]) return;
-            busy = true;
+            busy = window.galleryBusy = true;
             const top = cards[order[0]];
+            top.style.willChange = 'transform, opacity';
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
             top.style.opacity = 0;
@@ -851,13 +890,15 @@
             void top.offsetWidth;
             top.classList.remove('drag');
             render();
-            busy = false;
+            busy = window.galleryBusy = false;
         }
         async function prev() {                                   // pull the bottom card back on top from the left
             if (busy) return;
-            busy = true;
+            busy = window.galleryBusy = true;
             order.unshift(order.pop());
             const el = cards[order[0]];
+            el.style.visibility = 'visible';
+            el.style.willChange = 'transform, opacity';
             el.classList.add('drag');
             el.style.zIndex = n + 1;
             el.style.opacity = 0;
@@ -866,20 +907,24 @@
             el.classList.remove('drag');
             render();
             await wait(380);
-            busy = false;
+            busy = window.galleryBusy = false;
         }
-        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0;
+        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0;
         stack.addEventListener('pointerdown', (e) => {
             const top = cards[order[0]];
             if (busy || !e.isPrimary || !top.contains(e.target)) return;
             id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now();
             top.setPointerCapture(id);
             top.classList.add('drag');
+            window.galleryBusy = true;
         });
         stack.addEventListener('pointermove', (e) => {
             if (e.pointerId !== id) return;
             dx = e.clientX - sx; dy = (e.clientY - sy) * 0.3;
-            cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+            if (!raf) raf = requestAnimationFrame(() => {
+                raf = 0;
+                if (id !== null) cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+            });
         });
         function end(e, cancelled) {
             if (e.pointerId !== id) return;
@@ -887,7 +932,7 @@
             const top = cards[order[0]], speed = Math.abs(dx) / (performance.now() - t0);
             top.classList.remove('drag');
             if (!cancelled && (Math.abs(dx) > stack.clientWidth * 0.28 || (speed > 0.5 && Math.abs(dx) > 30))) goTo(order[1], dx < 0 ? -1 : 1, dy);
-            else place(top, 0);                                   // not far enough: spring back
+            else { place(top, 0); window.galleryBusy = false; }   // not far enough: spring back
         }
         stack.addEventListener('pointerup', (e) => end(e, false));
         stack.addEventListener('pointercancel', (e) => end(e, true));

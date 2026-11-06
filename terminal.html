@@ -56,7 +56,7 @@
         .icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
         /* matrix rain: slow, dim, faded behind the content column */
-        #matrix { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: .32; pointer-events: none; transition: opacity .2s linear;
+        #matrix { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 0; opacity: .32; pointer-events: none; transition: opacity .2s linear;
             -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%);
                     mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,.35), #000 75%); }
 
@@ -174,7 +174,7 @@
         .dl-total b { color: var(--accent); font-weight: 400; }
         .stack { position: relative; aspect-ratio: 3 / 4; margin: 18px 12px 0 2px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
         .stack:focus-visible { outline: 2px solid var(--accent); outline-offset: 8px; }
-        .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; will-change: transform;
+        .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; contain: layout paint;
             transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .35s; }
         .stack .slide.drag { transition: none; cursor: grabbing; }
         .stack .slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-user-drag: none; }
@@ -183,25 +183,28 @@
         .car-thumbs::-webkit-scrollbar { display: none; }
         .car-thumbs button { position: relative; flex: 0 0 46px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
-        .stack .slide { --p: 0; padding: 8px 8px 34px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface-2); box-shadow: 0 24px 50px -24px rgba(0, 0, 0, .95); }
+        .stack .slide { padding: 8px 8px 34px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface-2); box-shadow: 0 16px 28px -16px rgba(0, 0, 0, .9); }
         .stack .slide[aria-hidden="true"] { background: #121216; }
-        .stack .slide.got { --p: 1; }
-        .stack .slide img { border-radius: 8px; background: #0b0b0d; clip-path: inset(0 0 calc((1 - var(--p)) * 100%) 0 round 8px); }
+        .stack .slide img { border-radius: 8px; background: #0b0b0d; }
+        /* download reveal: as the bar fills, the photo is typed out as ASCII art row by row, then fades into the real photo */
+        .dl-ascii { position: absolute; left: 8px; top: 8px; width: calc(100% - 16px); height: calc(100% - 42px); border-radius: 8px; background: #0b0b0d; pointer-events: none;
+            transition: opacity .6s, visibility 0s .6s; }
+        .stack .slide.got .dl-ascii { opacity: 0; visibility: hidden; }
         .stack .slide::after { content: attr(data-name); position: absolute; left: 14px; bottom: 9px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
-        .stack .slide.loading::before { content: ''; position: absolute; z-index: 1; left: 8px; right: 8px; top: calc(8px + (100% - 42px) * var(--p)); height: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-        .dl-ov { position: absolute; left: 8px; right: 8px; top: 8px; bottom: 34px; display: grid; place-content: center; gap: 4px; text-align: center; border-radius: 8px;
-            font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--muted); background: rgba(9, 9, 11, .5); }
+        .dl-ov { position: absolute; left: 8px; right: 8px; bottom: 34px; display: flex; align-items: center; gap: 8px; padding: 22px 12px 10px; border-radius: 0 0 8px 8px;
+            font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--muted); background: linear-gradient(transparent, rgba(9, 9, 11, .92) 55%);
+            transition: opacity .4s, visibility 0s .4s; }
         .dl-ov .bar { color: var(--accent); letter-spacing: -1px; }
-        .dl-ov .pct { color: var(--faint); font-size: 12px; font-variant-numeric: tabular-nums; }
-        .stack .slide.got .dl-ov { display: none; }
+        .dl-ov .pct { margin-left: auto; color: var(--faint); font-variant-numeric: tabular-nums; }
+        .stack .slide.got .dl-ov { opacity: 0; visibility: hidden; }
         .car-bar { gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
         .car-bar .ps { color: var(--accent); }
         .car-bar .count { flex: 1; font-variant-numeric: tabular-nums; }
         .car-thumbs button { border-radius: 8px; border: 1px solid var(--line); background: #0b0b0d; opacity: .5; transition: opacity .2s, border-color .2s; }
         .car-thumbs button[aria-current="true"] { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
         .car-thumbs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-        .car-thumbs img { clip-path: inset(0 0 100% 0); transition: clip-path .35s linear; }
-        .car-thumbs .got img { clip-path: inset(0); }
+        .car-thumbs img { opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .3s; }
+        .car-thumbs .got img { opacity: 1; transform: none; }
 
 
         /* guestbook */
@@ -275,7 +278,7 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .stack .slide, .car-thumbs button, .car-thumbs img { transition: none; }
+            .stack .slide, .car-thumbs button, .car-thumbs img, .dl-ascii, .dl-ov { transition: none; }
             .cursor, .hero-top .live::before, .scroll-hint::after, .sound-btn .eq i { animation: none !important; }
         }
     </style>
@@ -438,15 +441,15 @@
             <p class="dl-total reveal" id="dl-total" aria-live="polite"></p>
             <div class="reveal">
                 <div class="stack" id="gallery-grid" tabindex="0" aria-label="웨딩 사진 카드, 좌우 화살표로 넘기기">
-                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"><div class="dl-ov" aria-hidden="true"><span>01.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>02.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>03.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>04.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><img src="images/gallery/05.webp" alt="흰 드레스를 입고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>05.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><img src="images/gallery/06.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>06.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><img src="images/gallery/07.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>07.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><img src="images/gallery/08.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>08.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
-                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><img src="images/gallery/09.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><div class="dl-ov" aria-hidden="true"><span>09.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>01.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>02.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>03.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>04.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><img src="images/gallery/05.webp" alt="흰 드레스를 입고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>05.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><img src="images/gallery/06.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>06.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><img src="images/gallery/07.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>07.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><img src="images/gallery/08.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>08.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
+                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><img src="images/gallery/09.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"><canvas class="dl-ascii" aria-hidden="true"></canvas><div class="dl-ov" aria-hidden="true"><span>09.jpg</span><span class="bar">[░░░░░░░░]</span><span class="pct">queued</span></div></div>
                 </div>
                 <div class="car-bar">
                     <span class="count"><span class="ps">$</span> next <span id="car-count"></span></span>
@@ -549,14 +552,18 @@
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]=+-'.split('');
         const size = 16;
         let drops = [], timer = null;
+        let lastW = 0;
         function resize() {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
+            if (innerWidth === lastW) return;                    // mobile URL bar only changes the height: keep the canvas
+            lastW = innerWidth;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2), h = Math.max(innerHeight, screen.height || 0);
+            canvas.width = innerWidth * dpr; canvas.height = h * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             const cols = Math.ceil(innerWidth / size);
             drops = Array.from({ length: cols }, (_, i) => drops[i] ?? Math.floor(Math.random() * -60));
         }
         function draw() {
+            if (window.galleryBusy) return;                      // give the frame budget to the photo cards
             ctx.fillStyle = 'rgba(9, 9, 11, 0.09)';
             ctx.fillRect(0, 0, innerWidth, innerHeight);
             ctx.font = `${size - 2}px 'JetBrains Mono', monospace`;
@@ -779,29 +786,73 @@
         function activate() {                                     // thumbnails come down one after another
             thumbs.forEach((b, j) => setTimeout(() => { b.classList.add('got'); saved++; setTotal(); }, reduceMotion ? 0 : 250 + j * 160));
         }
-        async function onTop(k) {                                 // first time on top: this card downloads in
+        // photo → ASCII art on a canvas; draw(f) types out rows up to fraction f (only the new rows each call)
+        const RAMP = ' .:-=+*#%@', NOISE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]=+-';
+        function ascii(cv, img) {
+            const dpr = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight;
+            cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+            const ctx = cv.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const cols = 36, cw = w / cols, lh = cw * 1.25, rows = Math.ceil(h / lh);
+            const sc = document.createElement('canvas'), sx = sc.getContext('2d', { willReadFrequently: true });
+            sc.width = cols; sc.height = rows;
+            const ir = img.naturalWidth / img.naturalHeight, cr = cols / (rows * 1.25);     // cells are 1 : 1.25
+            let sw = img.naturalWidth, sh = img.naturalHeight, ox = 0, oy = 0;
+            if (ir > cr) { sw = sh * cr; ox = (img.naturalWidth - sw) / 2; } else { sh = sw / cr; oy = (img.naturalHeight - sh) * 0.3; }
+            sx.drawImage(img, ox, oy, sw, sh, 0, 0, cols, rows);
+            const px = sx.getImageData(0, 0, cols, rows).data;
+            const L = new Float32Array(cols * rows);              // luminance, stretched to this photo's own range so shapes read
+            let lo = 1, hi = 0;
+            for (let i = 0; i < L.length; i++) { const v = (px[i * 4] * .3 + px[i * 4 + 1] * .59 + px[i * 4 + 2] * .11) / 255; L[i] = v; if (v < lo) lo = v; if (v > hi) hi = v; }
+            for (let i = 0; i < L.length; i++) L[i] = Math.pow(Math.min(1, Math.max(0, (L[i] - lo) / ((hi - lo) || 1))), 1.4);
+            ctx.font = `${cw * 1.15}px 'JetBrains Mono', monospace`;
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#0b0b0d'; ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = 'rgba(74, 222, 128, .12)';                      // faint noise where nothing has arrived yet
+            for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) ctx.fillText(NOISE[Math.random() * NOISE.length | 0], x * cw, y * lh);
+            let done = 0;
+            return {
+                draw(f) {
+                    const upto = Math.min(rows, Math.ceil(rows * f));
+                    for (; done < upto; done++) {
+                        const y = done;
+                        ctx.fillStyle = '#0b0b0d'; ctx.fillRect(0, y * lh, w, lh);
+                        for (let x = 0; x < cols; x++) {
+                            const lum = L[y * cols + x];
+                            ctx.fillStyle = `rgba(74, 222, 128, ${0.25 + lum * 0.75})`;
+                            ctx.fillText(RAMP[Math.min(RAMP.length - 1, lum * RAMP.length | 0)], x * cw, y * lh);
+                        }
+                    }
+                },
+            };
+        }
+        async function onTop(k) {                                 // first time on top: this card downloads in as ASCII art
             if (seen.has(k)) return;
             seen.add(k);
             const c = cards[k], img = c.querySelector('img'), barEl = c.querySelector('.bar'), pct = c.querySelector('.pct');
             img.loading = 'eager';
             if (reduceMotion) { c.classList.add('got'); return; }
-            let loaded = false;
-            img.decode().catch(() => {}).then(() => { loaded = true; });
+            let art = null;                                       // ASCII renderer, ready once the photo is decoded
+            img.decode().catch(() => {}).then(() => { if (img.naturalWidth) art = ascii(c.querySelector('.dl-ascii'), img); else art = { draw() {} }; });
             c.classList.add('loading');
-            const dur = 700 + Math.random() * 500, t0 = performance.now();
+            const dur = 1300 + Math.random() * 400, t0 = performance.now();
+            let shown = -1;
             await new Promise((res) => {
                 (function step(now) {
                     const x = Math.min(1, (now - t0) / dur);
                     let p = Math.floor(100 * (1 - (1 - x) * (1 - x)));
-                    if (!loaded) p = Math.min(p, 92);                       // never "finish" before the real image is in
-                    c.style.setProperty('--p', p / 100);
-                    barEl.textContent = bar(p);
-                    pct.textContent = p + '%';
+                    if (!art) p = Math.min(p, 20);                          // nothing to draw until the real image is in
+                    if (art) art.draw(p / 100);
+                    if (p - shown >= 4 || p === 100) {                       // text only every few %, it's the costly part
+                        shown = p;
+                        barEl.textContent = bar(p);
+                        pct.textContent = p + '%';
+                    }
                     if (p >= 100) res(); else requestAnimationFrame(step);
                 })(t0);
             });
+            await new Promise((r) => setTimeout(r, 350));                    // let the finished ASCII picture sit a beat
             c.classList.replace('loading', 'got');
-            c.style.removeProperty('--p');
             if (Synth.on) Synth.click();
         }
         const init = setTotal;
@@ -821,13 +872,24 @@
             strip.appendChild(b);
             return b;
         });
+        const decoded = new Set();
+        function warm(k) {                                        // decode before the card shows, not mid-animation
+            if (decoded.has(k)) return;
+            decoded.add(k);
+            const img = cards[k].querySelector('img');
+            img.loading = 'eager';
+            img.decode().catch(() => {});
+        }
         function place(el, depth) {
             const d = Math.min(depth, 3), k = cards.indexOf(el);
             el.style.zIndex = n - depth;
             el.style.opacity = depth > 3 ? 0 : 1;
+            el.style.visibility = depth > 3 ? 'hidden' : 'visible';   // deep cards stop painting
+            el.style.willChange = depth <= 1 ? 'transform' : 'auto';   // only the top two keep a GPU layer
             el.style.transform = depth === 0 ? 'none'
                 : `translate(${d * 3}px, ${d * 6}px) rotate(${TILT[k % TILT.length]}deg) scale(${1 - d * 0.02})`;
             el.setAttribute('aria-hidden', depth === 0 ? 'false' : 'true');
+            if (depth <= 2) warm(k);
         }
         function render() {
             order.forEach((k, depth) => place(cards[k], depth));
@@ -835,14 +897,13 @@
             countEl.textContent = COUNT(top);
             thumbs.forEach((b, j) => b.setAttribute('aria-current', j === top ? 'true' : 'false'));
             strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
-            const nextImg = cards[order[1 % n]].querySelector('img');
-            if (nextImg.loading === 'lazy') nextImg.loading = 'eager';            // warm up the card underneath
             if (live) onTop(top);
         }
         async function goTo(k, dir = -1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
             if (busy || k === order[0]) return;
-            busy = true;
+            busy = window.galleryBusy = true;
             const top = cards[order[0]];
+            top.style.willChange = 'transform, opacity';
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
             top.style.opacity = 0;
@@ -854,13 +915,15 @@
             void top.offsetWidth;
             top.classList.remove('drag');
             render();
-            busy = false;
+            busy = window.galleryBusy = false;
         }
         async function prev() {                                   // pull the bottom card back on top from the left
             if (busy) return;
-            busy = true;
+            busy = window.galleryBusy = true;
             order.unshift(order.pop());
             const el = cards[order[0]];
+            el.style.visibility = 'visible';
+            el.style.willChange = 'transform, opacity';
             el.classList.add('drag');
             el.style.zIndex = n + 1;
             el.style.opacity = 0;
@@ -869,20 +932,24 @@
             el.classList.remove('drag');
             render();
             await wait(380);
-            busy = false;
+            busy = window.galleryBusy = false;
         }
-        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0;
+        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0;
         stack.addEventListener('pointerdown', (e) => {
             const top = cards[order[0]];
             if (busy || !e.isPrimary || !top.contains(e.target)) return;
             id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now();
             top.setPointerCapture(id);
             top.classList.add('drag');
+            window.galleryBusy = true;
         });
         stack.addEventListener('pointermove', (e) => {
             if (e.pointerId !== id) return;
             dx = e.clientX - sx; dy = (e.clientY - sy) * 0.3;
-            cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+            if (!raf) raf = requestAnimationFrame(() => {
+                raf = 0;
+                if (id !== null) cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+            });
         });
         function end(e, cancelled) {
             if (e.pointerId !== id) return;
@@ -890,7 +957,7 @@
             const top = cards[order[0]], speed = Math.abs(dx) / (performance.now() - t0);
             top.classList.remove('drag');
             if (!cancelled && (Math.abs(dx) > stack.clientWidth * 0.28 || (speed > 0.5 && Math.abs(dx) > 30))) goTo(order[1], dx < 0 ? -1 : 1, dy);
-            else place(top, 0);                                   // not far enough: spring back
+            else { place(top, 0); window.galleryBusy = false; }   // not far enough: spring back
         }
         stack.addEventListener('pointerup', (e) => end(e, false));
         stack.addEventListener('pointercancel', (e) => end(e, true));
