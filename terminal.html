@@ -168,29 +168,27 @@
         .photo img { display: block; width: 100%; height: auto; }
         .photo figcaption { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; font-family: var(--mono); font-size: 12px; color: var(--faint); border-top: 1px solid var(--line-soft); background: var(--surface); }
 
-        /* gallery: `ls ./photos` grid → tap to open */
+        /* gallery: one big photo at a time (swipe) + thumbnail strip → tap for full view */
         .ls-meta { margin-top: 20px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
         .ls-meta b { color: var(--accent); font-weight: 400; }
-        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
-        .gallery a { position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
-            -webkit-tap-highlight-color: transparent; }
-        .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform .6s var(--ease), filter .3s; }
-        .gallery a::after { content: attr(data-name); position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 8px 6px; font-family: var(--mono); font-size: 12px; color: #d4d4d8;
-            background: linear-gradient(transparent, rgba(9, 9, 11, .75)); }
-        .gallery a:hover img { transform: scale(1.04); }
-        .gallery a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .carousel { margin-top: 10px; }
+        .car-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+            border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); box-shadow: 0 40px 80px -40px rgba(74, 222, 128, .2); }
+        .car-track::-webkit-scrollbar { display: none; }
+        .car-track .slide { flex: 0 0 100%; aspect-ratio: 3 / 4; scroll-snap-align: center; scroll-snap-stop: always; -webkit-tap-highlight-color: transparent; }
+        .car-track img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+        .car-track .slide:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+        .car-bar { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
+        .car-bar .ps { color: var(--accent); }
+        .car-bar .count { flex: 1; font-variant-numeric: tabular-nums; }
+        .car-thumbs { position: relative; display: flex; gap: 6px; margin-top: 10px; padding: 2px; overflow-x: auto; scrollbar-width: none; }
+        .car-thumbs::-webkit-scrollbar { display: none; }
+        .car-thumbs button { flex: 0 0 52px; aspect-ratio: 3 / 4; padding: 0; overflow: hidden; border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
+            opacity: .45; cursor: pointer; transition: opacity .2s, border-color .2s; -webkit-tap-highlight-color: transparent; }
+        .car-thumbs button[aria-current="true"] { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+        .car-thumbs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .car-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 
-        /* lightbox */
-        .lb { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: rgba(5, 5, 6, .985); opacity: 0; transition: opacity .25s; touch-action: pan-y pinch-zoom; }
-        .lb.show { opacity: 1; }
-        .lb-bar { display: flex; align-items: center; gap: 12px; padding: calc(12px + env(safe-area-inset-top)) 12px 12px 18px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
-        .lb-bar .ps { color: var(--accent); }
-        .lb-bar .count { margin-left: auto; font-variant-numeric: tabular-nums; }
-        .lb-stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; padding: 0 12px; }
-        .lb-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; user-select: none; -webkit-user-drag: none; transition: opacity .2s; }
-        .lb-nav { display: flex; justify-content: center; gap: 12px; padding: 14px 12px calc(18px + env(safe-area-inset-bottom)); }
-        .lb .icon-btn { background: rgba(23, 23, 27, .9); }
-        .lb .icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
         /* guestbook */
         .field { width: 100%; font-family: var(--sans); font-size: 16px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; outline: none; transition: border-color .2s, box-shadow .2s; }
@@ -263,7 +261,7 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .lb, .lb-stage img, .gallery img { transition: none; }
+            .car-thumbs button { transition: none; }
             .cursor, .hero-top .live::before, .scroll-hint::after, .sound-btn .eq i { animation: none !important; }
         }
     </style>
@@ -301,7 +299,6 @@
         <symbol id="i-park" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></symbol>
         <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
         <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
-        <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
         <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
         <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
         <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
@@ -423,18 +420,26 @@
         <!-- 07. GALLERY -->
         <section class="block" id="gallery">
             <div class="cmd reveal"><span class="path">~/wedding</span><span class="ps">$</span><span class="c">ls ./photos</span></div>
-            <h2 class="reveal">우리의 순간들<small>사진을 누르면 크게 볼 수 있어요</small></h2>
+            <h2 class="reveal">우리의 순간들<small>옆으로 넘겨서 볼 수 있어요</small></h2>
             <p class="ls-meta reveal"><b>9</b> files · ./photos</p>
-            <div class="gallery reveal" id="gallery-grid">
-                <a href="images/gallery/01.webp" data-name="01.jpg"><img src="images/gallery/01-s.webp" alt="베일을 쓰고 부케를 든 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/02.webp" data-name="02.jpg"><img src="images/gallery/02-s.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/03.webp" data-name="03.jpg"><img src="images/gallery/03-s.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/04.webp" data-name="04.jpg"><img src="images/gallery/04-s.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/05.webp" data-name="05.jpg"><img src="images/gallery/05-s.webp" alt="흰 드레스를 입고 웃는 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/06.webp" data-name="06.jpg"><img src="images/gallery/06-s.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/07.webp" data-name="07.jpg"><img src="images/gallery/07-s.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/08.webp" data-name="08.jpg"><img src="images/gallery/08-s.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
-                <a href="images/gallery/09.webp" data-name="09.jpg"><img src="images/gallery/09-s.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+            <div class="carousel reveal">
+                <div class="car-track" id="gallery-grid">
+                    <div class="slide" data-name="01.jpg" data-thumb="images/gallery/01-s.webp"><img src="images/gallery/01.webp" alt="베일을 쓰고 부케를 든 신부" width="900" height="1600" decoding="async"></div>
+                    <div class="slide" data-name="02.jpg" data-thumb="images/gallery/02-s.webp"><img src="images/gallery/02.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="03.jpg" data-thumb="images/gallery/03-s.webp"><img src="images/gallery/03.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="04.jpg" data-thumb="images/gallery/04-s.webp"><img src="images/gallery/04.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="05.jpg" data-thumb="images/gallery/05-s.webp"><img src="images/gallery/05.webp" alt="흰 드레스를 입고 웃는 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="06.jpg" data-thumb="images/gallery/06-s.webp"><img src="images/gallery/06.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="07.jpg" data-thumb="images/gallery/07-s.webp"><img src="images/gallery/07.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="08.jpg" data-thumb="images/gallery/08-s.webp"><img src="images/gallery/08.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                    <div class="slide" data-name="09.jpg" data-thumb="images/gallery/09-s.webp"><img src="images/gallery/09.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="900" height="1600" loading="lazy" decoding="async"></div>
+                </div>
+                <div class="car-bar">
+                    <span class="count"><span class="ps">$</span> slideshow <span id="car-count"></span></span>
+                    <button class="icon-btn" type="button" id="car-prev" aria-label="이전 사진"><svg class="icon"><use href="#i-left"/></svg></button>
+                    <button class="icon-btn" type="button" id="car-next" aria-label="다음 사진"><svg class="icon"><use href="#i-right"/></svg></button>
+                </div>
+                <div class="car-thumbs" id="car-thumbs"></div>
             </div>
         </section>
 
@@ -485,15 +490,6 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="사진 크게 보기" hidden>
-        <div class="lb-bar"><span><span class="ps">$</span> open <span id="lb-name"></span></span><span class="count" id="lb-count"></span>
-            <button class="icon-btn" type="button" id="lb-close" aria-label="닫기"><svg class="icon"><use href="#i-x"/></svg></button></div>
-        <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""></div>
-        <div class="lb-nav">
-            <button class="icon-btn" type="button" id="lb-prev" aria-label="이전 사진"><svg class="icon"><use href="#i-left"/></svg></button>
-            <button class="icon-btn" type="button" id="lb-next" aria-label="다음 사진"><svg class="icon"><use href="#i-right"/></svg></button>
-        </div>
-    </div>
 
     <div class="sound">
         <div class="sound-log" id="sound-log" aria-live="polite"></div>
@@ -755,58 +751,38 @@
         document.addEventListener('visibilitychange', () => (document.hidden ? Synth.suspend() : Synth.resume()));
     })();
 
-    // ===== Gallery lightbox: tap a photo → full view, swipe / arrows to move =====
+    // ===== Gallery carousel: native scroll-snap track + thumbnail strip =====
     (function gallery() {
-        const links = [...document.querySelectorAll('#gallery-grid a')];
-        const lb = document.getElementById('lb'), img = document.getElementById('lb-img'), stage = document.getElementById('lb-stage');
-        const nameEl = document.getElementById('lb-name'), countEl = document.getElementById('lb-count'), closeBtn = document.getElementById('lb-close');
-        const n = links.length;
-        let cur = 0, opener = null;
-        const preload = (k) => { new Image().src = links[(k + n) % n].href; };
-        function show(k) {
-            cur = (k + n) % n;
-            const a = links[cur];
-            img.style.opacity = 0;
-            img.onload = () => { img.style.opacity = 1; };
-            img.src = a.href;
-            img.alt = a.querySelector('img').alt;
-            nameEl.textContent = a.dataset.name;
-            countEl.textContent = `${cur + 1} / ${n}`;
-            preload(cur + 1); preload(cur - 1);
-        }
-        function open(k) {
-            opener = document.activeElement;
-            show(k);
-            lb.hidden = false;
-            document.documentElement.style.overflow = 'hidden';
-            requestAnimationFrame(() => lb.classList.add('show'));
-            closeBtn.focus();
-        }
-        function close() {
-            lb.classList.remove('show');
-            lb.hidden = true;
-            document.documentElement.style.overflow = '';
-            if (opener) opener.focus();
-        }
-        links.forEach((a, k) => a.addEventListener('click', (e) => { e.preventDefault(); open(k); }));
-        closeBtn.addEventListener('click', close);
-        document.getElementById('lb-prev').addEventListener('click', () => show(cur - 1));
-        document.getElementById('lb-next').addEventListener('click', () => show(cur + 1));
-        stage.addEventListener('click', (e) => { if (e.target === stage) close(); });
-        addEventListener('keydown', (e) => {
-            if (lb.hidden) return;
-            if (e.key === 'Escape') close();
-            else if (e.key === 'ArrowLeft') show(cur - 1);
-            else if (e.key === 'ArrowRight') show(cur + 1);
+        const track = document.getElementById('gallery-grid'), thumbs = document.getElementById('car-thumbs'), carCount = document.getElementById('car-count');
+        const slides = [...track.children], n = slides.length;
+        const COUNT = (k) => `${slides[k].dataset.name}  ${k + 1} / ${n}`;
+        let at = -1;
+        slides.forEach((el, k) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.setAttribute('aria-label', `${k + 1}번째 사진 보기`);
+            b.innerHTML = `<img src="${el.dataset.thumb}" alt="" loading="lazy" decoding="async">`;
+            b.addEventListener('click', () => go(k));
+            thumbs.appendChild(b);
         });
-        let sx = 0, sy = 0, multi = false;
-        lb.addEventListener('touchstart', (e) => { multi = e.touches.length > 1; sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-        lb.addEventListener('touchend', (e) => {
-            if (multi || e.touches.length) return;                // ignore pinch-zoom
-            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(cur + (dx < 0 ? 1 : -1));
-            else if (dy > 90 && dy > Math.abs(dx) * 1.5) close(); // swipe down to close
+        function go(k) {
+            k = (k + n) % n;
+            track.scrollTo({ left: k * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
+        function mark(k) {
+            at = k;
+            carCount.textContent = COUNT(k);
+            [...thumbs.children].forEach((b, j) => b.setAttribute('aria-current', j === k ? 'true' : 'false'));
+            const t = thumbs.children[k];
+            thumbs.scrollTo({ left: t.offsetLeft - (thumbs.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
+        track.addEventListener('scroll', () => {
+            const k = Math.round(track.scrollLeft / track.clientWidth);
+            if (k !== at && k >= 0 && k < n) mark(k);
         }, { passive: true });
+        document.getElementById('car-prev').addEventListener('click', () => go(at - 1));
+        document.getElementById('car-next').addEventListener('click', () => go(at + 1));
+        mark(0);
     })();
 
     // ===== Reveal on scroll =====
