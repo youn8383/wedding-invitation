@@ -1022,6 +1022,17 @@
             if (k === order[0]) return;
             busy = window.galleryBusy = true;
             const top = cards[order[0]];
+            const target = cards[k], jump = k !== order[1];
+            if (jump) {                                           // jumping via a thumbnail: slip the target right under the top card
+                for (let d = 1; d <= 3 && d < n; d++) {           // and hide the cards in between, so the flight reveals k —
+                    const el = cards[order[d]];                   // not some other (maybe already finished) photo
+                    if (el !== target) { el.classList.add('drag'); el.style.visibility = 'hidden'; }
+                }
+                target.classList.add('drag');
+                place(target, 1);
+                target.style.zIndex = n - 1;
+                void target.offsetWidth;
+            }
             top.style.willChange = 'transform, opacity';
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
@@ -1033,6 +1044,7 @@
             top.style.opacity = 0;
             void top.offsetWidth;
             top.classList.remove('drag');
+            if (jump) cards.forEach((el) => { if (el !== top) el.classList.remove('drag'); });
             render();
             busy = window.galleryBusy = false;
             if (pending !== null) { const q = pending; pending = null; goTo(q); }

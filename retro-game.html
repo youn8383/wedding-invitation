@@ -170,7 +170,9 @@
         .stack .slide::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f11); font-size: 48px; font-weight: 700; color: var(--dim); text-shadow: 4px 4px 0 var(--void); }
         .stack .slide img { image-rendering: auto; visibility: hidden; position: relative; }
         .stack .slide.open img { visibility: visible; }
-        .stack .slide .mosaic { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
+        .stack .slide .mosaic { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; background: var(--ink); }
+        /* the real photo stays off until the mosaic is done: a phone may composite a fresh canvas a frame late, which would flash the finished photo */
+        .stack .slide.mosaicking img { visibility: hidden; }
         .stack .slide .no { position: absolute; left: 0; top: 0; z-index: 2; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--dim); }
         .stack .slide.open .no { background: var(--mint); }
         .stack .slide .new { position: absolute; right: 0; bottom: 0; z-index: 2; padding: 3px 7px 2px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--gold); visibility: hidden; }
@@ -813,13 +815,16 @@
             const cv = document.createElement('canvas');
             cv.className = 'mosaic';
             cv.setAttribute('aria-hidden', 'true');
+            c.classList.add('mosaicking');                        // photo stays hidden under the mosaic the whole time
             c.appendChild(cv);
             for (const cells of [4, 8, 16, 32, 64]) {
                 drawMosaic(cv, img, cells);
                 c.classList.add('open');
                 await new Promise((r) => setTimeout(r, 100));
             }
-            cv.remove();
+            c.classList.remove('mosaicking');                     // photo on (still under the canvas) …
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+            cv.remove();                                          // … and only once it has painted, lift the canvas
         }
         function onTop(k) {                                       // first time on top: mosaic → photo, NEW!, unlock its slot
             if (got.has(k)) return;
@@ -914,6 +919,17 @@
             if (k === order[0]) return;
             busy = window.galleryBusy = true;
             const top = cards[order[0]];
+            const target = cards[k], jump = k !== order[1];
+            if (jump) {                                           // jumping via a thumbnail: slip the target right under the top card
+                for (let d = 1; d <= 3 && d < n; d++) {           // and hide the cards in between, so the flight reveals k —
+                    const el = cards[order[d]];                   // not some other (maybe already finished) photo
+                    if (el !== target) { el.classList.add('drag'); el.style.visibility = 'hidden'; }
+                }
+                target.classList.add('drag');
+                place(target, 1);
+                target.style.zIndex = n - 1;
+                void target.offsetWidth;
+            }
             top.style.willChange = 'transform, opacity';
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
@@ -925,6 +941,7 @@
             top.style.opacity = 0;
             void top.offsetWidth;
             top.classList.remove('drag');
+            if (jump) cards.forEach((el) => { if (el !== top) el.classList.remove('drag'); });
             render();
             busy = window.galleryBusy = false;
             if (pending !== null) { const q = pending; pending = null; goTo(q); }
