@@ -148,6 +148,23 @@
         .player .btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
         .player .pbtn { padding: 0 4px; gap: 6px; font-family: var(--f11); font-size: 12px; }
 
+        /* album: screenshot slots → tap for full view. Real photos stay smooth (no pixelated scaling) */
+        .album { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .album a { position: relative; display: block; aspect-ratio: 3 / 4; background: var(--ink); box-shadow: 0 0 0 2px var(--cream), 4px 4px 0 2px var(--void);
+            -webkit-tap-highlight-color: transparent; transition: transform .1s steps(2); }
+        .album img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; image-rendering: auto; }
+        .album a .no { position: absolute; left: 0; top: 0; padding: 2px 5px 1px; font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--void); background: var(--mint); }
+        .album a:hover, .album a:focus-visible { transform: translate(-2px, -2px); box-shadow: 0 0 0 2px var(--gold), 6px 6px 0 2px var(--void); outline: none; }
+        .lb { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; background: rgba(15, 14, 31, .985); touch-action: pan-y pinch-zoom; }
+        .lb-bar { display: flex; align-items: center; gap: 10px; padding: calc(12px + env(safe-area-inset-top)) 12px 12px 16px; }
+        .lb-bar .t { font-family: var(--f11); font-size: 12px; letter-spacing: 1px; color: var(--mint); }
+        .lb-bar .t b { color: var(--gold); font-weight: 400; }
+        .lb-bar .pbtn { margin-left: auto; min-width: 44px; padding: 0 12px; }
+        .lb-stage { flex: 1; min-height: 0; display: grid; place-items: center; padding: 0 16px; }
+        .lb-stage img { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: auto; border: var(--px) solid var(--cream); box-shadow: 8px 8px 0 var(--void);
+            user-select: none; -webkit-user-drag: none; animation: pop .2s steps(2); }
+        .lb-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 16px calc(18px + env(safe-area-inset-bottom)); max-width: 360px; width: 100%; margin: 0 auto; }
+
         /* save point */
         .save { padding: 20px 18px; }
         .gb-form { display: grid; gap: 10px; }
@@ -228,7 +245,7 @@
             html { scroll-behavior: auto; }
             .press, .menu a .cur, .say.done::after { animation: none !important; }
             .wipe.go { animation: none; }
-            .bgm[aria-pressed="true"] .note, .secret-box { animation: none; }
+            .bgm[aria-pressed="true"] .note, .secret-box, .lb-stage img { animation: none; }
         }
     </style>
     <style>
@@ -272,6 +289,7 @@
                 <a href="#story" class="on"><span class="cur">▶</span>START<small>스토리</small></a>
                 <a href="#quest"><span class="cur">▶</span>QUEST<small>일시</small></a>
                 <a href="#world"><span class="cur">▶</span>MAP<small>오시는 길</small></a>
+                <a href="#album"><span class="cur">▶</span>ALBUM<small>사진</small></a>
                 <a href="#save"><span class="cur">▶</span>SAVE<small>축하 메시지</small></a>
             </nav>
             <div class="press" id="press">PRESS START</div>
@@ -354,9 +372,26 @@
             </div>
         </section>
 
-        <!-- STAGE 5: SAVE POINT -->
+        <!-- STAGE 5: ALBUM -->
+        <section class="stage" id="album">
+            <div class="stage-head"><span class="no">STAGE 5</span><h2>ALBUM</h2></div>
+            <p class="say px ink">두 PLAYER 의 스크린샷을 모아뒀어요. 누르면 크게 볼 수 있어요.</p>
+            <div class="album stage-body" id="gallery-grid">
+                <a href="images/gallery/01.webp"><span class="no">01</span><img src="images/gallery/01-s.webp" alt="베일을 쓰고 부케를 든 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/02.webp"><span class="no">02</span><img src="images/gallery/02-s.webp" alt="흰 턱시도 재킷 차림으로 부케를 든 신랑" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/03.webp"><span class="no">03</span><img src="images/gallery/03-s.webp" alt="정원에서 베일을 쓰고 앉은 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/04.webp"><span class="no">04</span><img src="images/gallery/04-s.webp" alt="나무 벽 앞 의자에 앉은 신랑" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/05.webp"><span class="no">05</span><img src="images/gallery/05-s.webp" alt="흰 드레스를 입고 웃는 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/06.webp"><span class="no">06</span><img src="images/gallery/06-s.webp" alt="창가에서 서로 마주 보는 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/07.webp"><span class="no">07</span><img src="images/gallery/07-s.webp" alt="검은 드레스와 턱시도 차림으로 나란히 선 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/08.webp"><span class="no">08</span><img src="images/gallery/08-s.webp" alt="얼굴을 맞대고 웃는 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+                <a href="images/gallery/09.webp"><span class="no">09</span><img src="images/gallery/09-s.webp" alt="햇살 드는 소파에 나란히 앉은 신랑과 신부" width="540" height="960" loading="lazy" decoding="async"></a>
+            </div>
+        </section>
+
+        <!-- STAGE 6: SAVE POINT -->
         <section class="stage" id="save">
-            <div class="stage-head"><span class="no">STAGE 5</span><h2>SAVE POINT</h2></div>
+            <div class="stage-head"><span class="no">STAGE 6</span><h2>SAVE POINT</h2></div>
             <p class="say px ink">축하 메시지를 남기면 세이브 슬롯에 기록돼요. 비밀번호는 지울 때 필요해요.</p>
             <div class="px save stage-body">
                 <form class="gb-form" id="gb-form" autocomplete="off">
@@ -373,9 +408,9 @@
             </div>
         </section>
 
-        <!-- STAGE 6: MULTIPLAYER -->
+        <!-- STAGE 7: MULTIPLAYER -->
         <section class="stage" id="multi">
-            <div class="stage-head"><span class="no">STAGE 6</span><h2>MULTIPLAYER</h2></div>
+            <div class="stage-head"><span class="no">STAGE 7</span><h2>MULTIPLAYER</h2></div>
                         <button class="pbtn wide stage-body" type="button" id="share"><span data-icon="share"></span>청첩장 공유하기</button>
         </section>
 
@@ -396,6 +431,16 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="사진 크게 보기" hidden>
+        <div class="lb-bar"><span class="t">SCREENSHOT <b id="lb-count"></b></span>
+            <button class="pbtn ghost" type="button" id="lb-close" aria-label="닫기">✕</button></div>
+        <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""></div>
+        <div class="lb-nav">
+            <button class="pbtn ghost" type="button" id="lb-prev" aria-label="이전 사진">◀ PREV</button>
+            <button class="pbtn" type="button" id="lb-next" aria-label="다음 사진">NEXT ▶</button>
+        </div>
+    </div>
 
     <a class="to-top" id="to-top" href="#" aria-label="처음으로 가기" hidden><span class="arrow" aria-hidden="true">▲</span>TOP</a>
     <div class="bgm-bar">
@@ -698,6 +743,56 @@
     document.addEventListener('click', (e) => {
         if (e.target.closest('.pbtn, .menu a, .list-menu a, .list-menu button, .to-top, .switch, .slot .del, #secret-close')) Chip.sfx();
     });
+
+    // ===== Album lightbox: tap a screenshot → full view, swipe / arrows to move =====
+    (function gallery() {
+        const links = [...document.querySelectorAll('#gallery-grid a')];
+        const lb = document.getElementById('lb'), img = document.getElementById('lb-img'), stage = document.getElementById('lb-stage');
+        const countEl = document.getElementById('lb-count'), closeBtn = document.getElementById('lb-close');
+        const n = links.length, pad = (k) => String(k).padStart(2, '0');
+        let cur = 0, opener = null;
+        const preload = (k) => { new Image().src = links[(k + n) % n].href; };
+        function show(k) {
+            cur = (k + n) % n;
+            const a = links[cur];
+            img.src = a.href;
+            img.alt = a.querySelector('img').alt;
+            img.style.animation = 'none'; void img.offsetWidth; img.style.animation = '';   // replay the pop
+            countEl.textContent = `${pad(cur + 1)} / ${pad(n)}`;
+            preload(cur + 1); preload(cur - 1);
+        }
+        function open(k) {
+            opener = document.activeElement;
+            show(k);
+            lb.hidden = false;
+            document.documentElement.style.overflow = 'hidden';
+            closeBtn.focus();
+        }
+        function close() {
+            lb.hidden = true;
+            document.documentElement.style.overflow = '';
+            if (opener) opener.focus();
+        }
+        links.forEach((a, k) => a.addEventListener('click', (e) => { e.preventDefault(); open(k); }));
+        closeBtn.addEventListener('click', close);
+        document.getElementById('lb-prev').addEventListener('click', () => show(cur - 1));
+        document.getElementById('lb-next').addEventListener('click', () => show(cur + 1));
+        stage.addEventListener('click', (e) => { if (e.target === stage) close(); });
+        addEventListener('keydown', (e) => {
+            if (lb.hidden) return;
+            if (e.key === 'Escape') close();
+            else if (e.key === 'ArrowLeft') show(cur - 1);
+            else if (e.key === 'ArrowRight') show(cur + 1);
+        });
+        let sx = 0, sy = 0, multi = false;
+        lb.addEventListener('touchstart', (e) => { multi = e.touches.length > 1; sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        lb.addEventListener('touchend', (e) => {
+            if (multi || e.touches.length) return;                // ignore pinch-zoom
+            const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(cur + (dx < 0 ? 1 : -1));
+            else if (dy > 90 && dy > Math.abs(dx) * 1.5) close(); // swipe down to close
+        }, { passive: true });
+    })();
 
     // ===== Floating "back to title" (shown once the title screen is scrolled away) =====
     (function toTop() {
