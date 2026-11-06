@@ -175,7 +175,7 @@
         .stack { position: relative; aspect-ratio: 3 / 4; margin: 18px 12px 0 2px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
         .stack:focus-visible { outline: 2px solid var(--accent); outline-offset: 8px; }
         .stack .slide { position: absolute; inset: 0; touch-action: pan-y; cursor: grab; contain: layout paint;
-            transition: transform .27s cubic-bezier(.2, .7, .2, 1), opacity .21s; }
+            transition: transform .22s cubic-bezier(.2, .7, .2, 1), opacity .17s; }
         .stack .slide.drag { transition: none; cursor: grabbing; }
         .stack .slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; pointer-events: none; -webkit-user-drag: none; }
         .car-bar { display: flex; align-items: center; margin-top: 28px; }
@@ -186,9 +186,12 @@
         .stack .slide { padding: 8px 8px 34px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface-2); box-shadow: 0 16px 28px -16px rgba(0, 0, 0, .9); }
         .stack .slide[aria-hidden="true"] { background: #121216; }
         .stack .slide img { border-radius: 8px; background: #0b0b0d; }
+        /* ASCII → photo: the photo floats up out of transparency while the ASCII art fades away */
+        .stack .slide:not(.got) img { opacity: 0; transform: translateY(14px) scale(.97); }
+        .stack .slide.got img { transition: opacity .4s ease-out, transform .4s cubic-bezier(.2, .7, .2, 1); }
         /* download reveal: as the bar fills, the photo is typed out as ASCII art row by row, then fades into the real photo */
         .dl-ascii { position: absolute; left: 8px; top: 8px; width: calc(100% - 16px); height: calc(100% - 42px); border-radius: 8px; background: #0b0b0d; pointer-events: none;
-            transition: opacity .34s, visibility 0s .34s; }
+            transition: opacity .27s, visibility 0s .27s; }
         .stack .slide.got .dl-ascii { opacity: 0; visibility: hidden; }
         .stack .slide::after { content: attr(data-name); position: absolute; left: 14px; bottom: 9px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
         .dl-ov { position: absolute; left: 8px; right: 8px; bottom: 34px; display: flex; align-items: center; gap: 8px; padding: 22px 12px 10px; border-radius: 0 0 8px 8px;
@@ -305,7 +308,7 @@
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .stack .slide, .car-thumbs button, .car-thumbs img, .dl-ascii, .dl-ov { transition: none; }
+            .stack .slide, .stack .slide.got img, .car-thumbs button, .car-thumbs img, .dl-ascii, .dl-ov { transition: none; }
             .cursor, .hero-top .live::before, .scroll-hint::after, .sound-btn .eq i { animation: none !important; }
         }
     </style>
@@ -868,7 +871,7 @@
                 b.classList.add('got');
                 saved++;
                 setTotal();
-            }, reduceMotion ? 0 : 130 + j * 84));
+            }, reduceMotion ? 0 : 105 + j * 67));
         }
         // photo → ASCII art on a canvas; draw(f) types out rows up to fraction f (only the new rows each call)
         const RAMP = ' .:-=+*#%@', NOISE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]=+-';
@@ -920,7 +923,7 @@
             let art = null;                                       // ASCII renderer, ready once the photo is decoded
             img.decode().catch(() => {}).then(() => { if (img.naturalWidth) art = ascii(c.querySelector('.dl-ascii'), img); else art = { draw() {} }; });
             c.classList.add('loading');
-            const dur = 680 + Math.random() * 210, t0 = performance.now();
+            const dur = 545 + Math.random() * 170, t0 = performance.now();
             let shown = -1;
             await new Promise((res) => {
                 (function step(now) {
@@ -936,7 +939,7 @@
                     if (p >= 100) res(); else requestAnimationFrame(step);
                 })(t0);
             });
-            await new Promise((r) => setTimeout(r, 185));                    // let the finished ASCII picture sit a beat
+            await new Promise((r) => setTimeout(r, 70));                     // let the finished ASCII picture sit a beat
             c.classList.replace('loading', 'got');
             markSeen(k);
             if (Synth.on) Synth.click();
@@ -996,7 +999,7 @@
             top.classList.remove('drag');
             top.style.transform = `translate(${dir * stack.clientWidth * 1.4}px, ${y + 40}px) rotate(${dir * 24}deg)`;
             top.style.opacity = 0;
-            await wait(230);
+            await wait(185);
             order.push(...order.splice(0, order.indexOf(k)));
             top.classList.add('drag');
             render();
@@ -1021,7 +1024,7 @@
             void el.offsetWidth;
             el.classList.remove('drag');
             render();
-            await wait(230);
+            await wait(185);
             busy = window.galleryBusy = false;
         }
         let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0;
