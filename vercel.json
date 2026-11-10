@@ -19,5 +19,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/classic",
+      "destination": "https://w.theirmood.com/card/tikzorQ2tv",
+      "permanent": false
+    }
   ]
 }

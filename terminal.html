@@ -262,6 +262,7 @@
         .gb-empty .btn { min-height: 44px; font-size: 14px; }
 
         /* closing scene */
+        .switch-2 { margin-top: 12px !important; }
         .switch { display: grid; gap: 4px; margin-top: 48px; padding: 18px 20px; border-radius: var(--radius); text-decoration: none; color: var(--text);
             background: rgba(17, 17, 20, .92); border: 1px dashed #34343b; transition: border-color .2s, background .2s; }
         .switch:hover { border-color: rgba(74, 222, 128, .5); background: rgba(74, 222, 128, .05); }
@@ -347,6 +348,7 @@
         <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
         <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
         <symbol id="i-train" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l1.5-4M15 21l-1.5-4"/><circle cx="9" cy="14" r=".6"/><circle cx="15" cy="14" r=".6"/></symbol>
+        <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21v-3M16 21v-3"/><circle cx="8" cy="14.5" r=".6"/><circle cx="16" cy="14.5" r=".6"/></symbol>
         <symbol id="i-park" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></symbol>
         <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
         <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></symbol>
@@ -415,8 +417,9 @@
             <div class="card reveal">
                 <div class="rows">
                     <div class="row"><svg class="icon"><use href="#i-pin"/></svg><div><b>서울 서초구 서초중앙로 14</b></div></div>
-                    <div class="row"><svg class="icon"><use href="#i-train"/></svg><div>3호선 남부터미널역<small>도보 약 3분</small></div></div>
-                    <div class="row"><svg class="icon"><use href="#i-park"/></svg><div>웨딩홀 주차장 이용 가능</div></div>
+                    <div class="row"><svg class="icon"><use href="#i-train"/></svg><div>3호선 남부터미널역 4-1번 출구<small>출구 앞 290m, 도보 약 4분</small></div></div>
+                    <div class="row"><svg class="icon"><use href="#i-bus"/></svg><div>버스 남부터미널 · 국제전자센터 하차<small>남부터미널 정류장 바로 앞</small></div></div>
+                    <div class="row"><svg class="icon"><use href="#i-park"/></svg><div>맞은편 주차 타워<small>2시간 무료 · 초과 10분당 1,000원</small></div></div>
                 </div>
                 <div class="btns three">
                     <a class="btn" href="https://map.naver.com/p/search/%EB%8D%94%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B2%A0%EC%9D%BC" target="_blank" rel="noopener"><i class="dot" style="background:#03c75a"></i>네이버</a>
@@ -555,6 +558,10 @@
         <a class="switch reveal" href="/retro-game.html">
             <span class="switch-cmd"><span class="ps">$</span> ./wedding --theme retro</span>
             <span class="switch-go">레트로 게임 버전 <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="switch switch-2 reveal" href="/classic" target="_blank" rel="noopener">
+            <span class="switch-cmd"><span class="ps">$</span> open --classic</span>
+            <span class="switch-go">클래식 청첩장 <span aria-hidden="true">↗</span></span>
         </a>
 
         <footer class="reveal">
