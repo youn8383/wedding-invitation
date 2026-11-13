@@ -442,7 +442,7 @@
                     <div class="slide" style="--r: 676/1200" data-name="23.jpg" data-thumb="images/gallery/23-s.webp?v=960e5dfb"><img src="images/gallery/23.webp?v=960e5dfb" alt="창가에서 서로 마주 보는 신랑과 신부" width="676" height="1200" loading="lazy" decoding="async"><span class="no">23</span><span class="new" aria-hidden="true">NEW!</span></div>
                 </div>
                 <div class="car-bar">
-                    <span class="count">SCREENSHOT <b id="car-count"></b></span>
+                    <span class="count"><span id="car-label">SCREENSHOT</span> <b id="car-count"></b></span>
                     <button class="pbtn ghost" type="button" id="car-prev" aria-label="이전 사진">◀</button>
                     <button class="pbtn" type="button" id="car-next" aria-label="다음 사진">▶</button>
                 </div>
@@ -783,6 +783,11 @@
                 tone(freq('E6'), t, 0.045, 'square', 0.05);
                 tone(freq('B6'), t + 0.045, 0.07, 'square', 0.05);
             },
+            async rewind() {                                     // "rewind": four quick falling blips
+                ensure(); await ctx.resume();
+                const t = ctx.currentTime + 0.005;
+                ['B6', 'G6', 'E6', 'C6'].forEach((note, i) => tone(freq(note), t + i * 0.045, 0.04, 'square', 0.045));
+            },
             suspend() { if (ctx) ctx.suspend(); },
             resume() { if (ctx && loopTimer) ctx.resume(); },
         };
@@ -811,6 +816,16 @@
     (function gallery() {
         const pad = (k) => String(k).padStart(2, '0');
         const COUNT = (k) => `${pad(k + 1)} / ${pad(n)}`;
+        const labelEl = document.getElementById('car-label');
+        let labelTimer;
+        function onDir(d) {                                       // going back: ◀ REWIND for a moment (+ a rewind blip when the BGM is on)
+            clearTimeout(labelTimer);
+            if (d < 0) {
+                labelEl.textContent = '◀ REWIND';
+                if (Chip.playing) Chip.rewind();
+                labelTimer = setTimeout(() => { labelEl.textContent = 'SCREENSHOT'; }, 900);
+            } else labelEl.textContent = 'SCREENSHOT';
+        }
         const THUMB = (c) => `<img src="${c.dataset.thumb}" alt="" loading="lazy" decoding="async"><span class="q" aria-hidden="true">?</span>`;
         const dexCount = document.getElementById('dex-count'), fill = document.getElementById('dex-fill'), doneBox = document.getElementById('dex-done');
         const got = new Set();
@@ -931,10 +946,11 @@
                 strip.scrollTo({ left: t.offsetLeft - (strip.clientWidth - t.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
             if (live) onTop(top);
         }
-        async function goTo(k, dir = -1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
+        async function goTo(k, dir = 1, y = 0) {                // throw the top card aside; k comes up (cards in between go under)
             if (busy) { pending = k; return; }                    // remember the latest tap, run it right after this flight
             if (k === order[0]) return;
             busy = window.galleryBusy = true;
+            onDir(k === order[1] || k > order[0] ? 1 : -1);
             const top = cards[order[0]];
             const target = cards[k], jump = k !== order[1];
             if (jump) {                                           // jumping via a thumbnail: slip the target right under the top card
@@ -963,9 +979,10 @@
             busy = window.galleryBusy = false;
             if (pending !== null) { const q = pending; pending = null; goTo(q); }
         }
-        async function prev() {                                   // pull the bottom card back on top from the left
+        async function prev() {                                   // ◀ / ← key: pull the last card back on top from the right
             if (busy) return;
             busy = window.galleryBusy = true;
+            onDir(-1);
             order.unshift(order.pop());
             const el = cards[order[0]];
             el.style.visibility = 'visible';
@@ -973,18 +990,20 @@
             el.classList.add('drag');
             el.style.zIndex = n + 1;
             el.style.opacity = 0;
-            el.style.transform = `translate(${-stack.clientWidth * 1.4}px, 40px) rotate(-24deg)`;
+            el.style.transform = `translate(${stack.clientWidth * 1.4}px, 40px) rotate(24deg)`;
             void el.offsetWidth;
             el.classList.remove('drag');
             render();
             await wait(325);
             busy = window.galleryBusy = false;
         }
-        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0;
+        // swipe right = throw the top card away (next) · swipe left = pull the previous card back in from the right, following the finger
+        const pose = (p, y = 0) => `translate(${stack.clientWidth * 1.15 * (1 - p)}px, ${30 * (1 - p) + y}px) rotate(${18 * (1 - p)}deg)`;
+        let id = null, sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, raf = 0, mode = null, back = null;
         stack.addEventListener('pointerdown', (e) => {
             const top = cards[order[0]];
             if (busy || !e.isPrimary || !top.contains(e.target)) return;
-            id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now();
+            id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now(); mode = null; back = null;
             top.setPointerCapture(id);
             top.classList.add('drag');
             window.galleryBusy = true;
@@ -992,18 +1011,45 @@
         stack.addEventListener('pointermove', (e) => {
             if (e.pointerId !== id) return;
             dx = e.clientX - sx; dy = (e.clientY - sy) * 0.3;
+            if (!mode && Math.abs(dx) > 6) {                      // the first sideways move decides the gesture
+                mode = dx > 0 ? 'next' : 'prev';
+                if (mode === 'prev') {
+                    back = cards[order[n - 1]];
+                    cards[order[0]].classList.remove('drag');     // the top card stays where it is
+                    warm(order[n - 1]);
+                    back.classList.add('drag');
+                    Object.assign(back.style, { visibility: 'visible', opacity: 1, zIndex: n + 1, willChange: 'transform', transform: pose(0) });
+                    onDir(-1);
+                }
+            }
             if (!raf) raf = requestAnimationFrame(() => {
                 raf = 0;
-                if (id !== null) cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+                if (id === null) return;
+                if (mode === 'prev') back.style.transform = pose(Math.min(1, Math.max(0, -dx / (stack.clientWidth * 0.85))), dy);
+                else cards[order[0]].style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
             });
         });
-        function end(e, cancelled) {
+        async function end(e, cancelled) {
             if (e.pointerId !== id) return;
             id = null;
             const top = cards[order[0]], speed = Math.abs(dx) / (performance.now() - t0);
+            const far = !cancelled && (Math.abs(dx) > stack.clientWidth * 0.28 || (speed > 0.5 && Math.abs(dx) > 30));
             top.classList.remove('drag');
-            if (!cancelled && (Math.abs(dx) > stack.clientWidth * 0.28 || (speed > 0.5 && Math.abs(dx) > 30))) goTo(order[1], dx < 0 ? -1 : 1, dy);
-            else { place(top, 0); window.galleryBusy = false; }   // not far enough: spring back
+            if (mode === 'prev') {
+                const el = back, keep = far && dx < 0;
+                mode = null; back = null; busy = true;
+                el.classList.remove('drag');
+                if (keep) { order.unshift(order.pop()); render(); }   // it lands on top of the pile
+                else { el.style.transform = pose(0); el.style.opacity = 0; onDir(1); }   // not far enough: back out to the right
+                await wait(325);
+                if (!keep) { el.classList.add('drag'); place(el, n - 1); void el.offsetWidth; el.classList.remove('drag'); }
+                busy = window.galleryBusy = false;
+                if (pending !== null) { const q = pending; pending = null; goTo(q); }
+                return;
+            }
+            mode = null;
+            if (far && dx > 0) goTo(order[1], 1, dy);
+            else { place(top, 0); window.galleryBusy = false; }   // not far enough (or a leftward fling of the top card): spring back
         }
         stack.addEventListener('pointerup', (e) => end(e, false));
         stack.addEventListener('pointercancel', (e) => end(e, true));
